@@ -24,7 +24,7 @@ export default function Page() {
       token: ""
     }
   });
-  
+
   const handleSubmit = (event) => {
     event.preventDefault(); // Previene el comportamiento por defecto del formulario (recargar la página)
     MedicalOfficeWebApi.Login(usr, password)
