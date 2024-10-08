@@ -61,6 +61,7 @@ const HttpRequest = (function () {
 
 export const MedicalOfficeWebApi = (function (apiUrl){
     apiUrl = 'http://localhost:5038'
+    //apiUrl = 'https://localhost:32769'
 
 return{
     //#region Post
