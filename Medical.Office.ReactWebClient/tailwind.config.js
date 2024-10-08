@@ -1,8 +1,8 @@
 // /** @type {import('tailwindcss').Config} */
 //module.exports = {
-  const withMT = require("@material-tailwind/react/utils/withMT");
+  import withMT from "@material-tailwind/react/utils/withMT";
  
-  module.exports = withMT({
+  export default withMT({
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",

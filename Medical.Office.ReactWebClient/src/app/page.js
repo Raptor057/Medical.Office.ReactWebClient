@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { MedicalOfficeWebApi } from "./utils/HttpRequests";
 import { useRouter } from 'next/navigation';
-import CryptoLogin from "../components/login";
+import CryptoLogin from "./components/login";
 
 export default function Page() {
   const router = useRouter();

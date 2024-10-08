@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import SimpleRegistrationForm from '../../components/signup';
+import SimpleRegistrationForm from '../components/signup';
 import { MedicalOfficeWebApi } from '../utils/HttpRequests';
 import '../globals.css';
 
