@@ -6,19 +6,20 @@ import { MedicalOfficeWebApi } from '../utils/HttpRequests';
 import '../globals.css';
 
 export default function SignupPage() {
+
   const [configurationsResponse, setConfigurationsResponse] = useState({
-    getAllConfigurations: {
-      getOfficeSetupDto: {
+    AllConfigurations: {
+      OfficeSetup: {
         nameOfOffice: "",
         address: "",
         openingTime: "00:00:00",
         closingTime: "00:00:00"
       },
-      getPositionsDto: [],
-      getRolesDto: [],
-      getSpecialtiesDto: [],
-      getGendersDto: [],
-      getUserStatuesDto: []
+      Positions: [],
+      Roles: [],
+      Specialties: [],
+      Genders: [],
+      UserStatues: []
     }
   });
 
@@ -36,16 +37,16 @@ export default function SignupPage() {
       });
   };
 
-  
+
 
   return (
     <div className="centered-div">
       <SimpleRegistrationForm configurations={configurationsResponse} />
-      {configurationsResponse.getAllConfigurations.getOfficeSetupDto.nameOfOffice && (
-        <div>
-          <h2>Bienvenido a, {configurationsResponse.getAllConfigurations.getOfficeSetupDto.nameOfOffice}</h2>
-        </div>
-      )}
+      {configurationsResponse.AllConfigurations?.OfficeSetup?.nameOfOffice && (
+  <div>
+    <h2>Bienvenido a, {configurationsResponse.AllConfigurations.OfficeSetup.nameOfOffice}</h2>
+  </div>
+)}
       <style jsx>{`
         .centered-div {
           display: flex;

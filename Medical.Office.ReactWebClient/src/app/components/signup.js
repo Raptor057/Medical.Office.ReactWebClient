@@ -71,7 +71,7 @@ export function SimpleRegistrationForm({ configurations }) {
           </Typography>
           <div className="w-72">
             <Select label="Select Role">
-              {configurations.getAllConfigurations.getRolesDto.map((role, index) => (
+              {configurations.AllConfigurations.Roles.map((role, index) => (
                 <Option key={index}>{role.rolesName}</Option>
               ))}
             </Select>
@@ -81,7 +81,7 @@ export function SimpleRegistrationForm({ configurations }) {
           </Typography>
           <div className="w-72">
             <Select label="Select Position">
-              {configurations.getAllConfigurations.getPositionsDto.map((position, index) => (
+              {configurations.AllConfigurations.Positions.map((position, index) => (
                 <Option key={index}>{position.positionName}</Option>
               ))}
             </Select>
@@ -91,7 +91,7 @@ export function SimpleRegistrationForm({ configurations }) {
           </Typography>
           <div className="w-72">
             <Select label="Select Specialty">
-              {configurations.getAllConfigurations.getSpecialtiesDto.map((specialty, index) => (
+              {configurations.AllConfigurations.Specialties.map((specialty, index) => (
                 <Option key={index}>{specialty.specialty}</Option>
               ))}
             </Select>

@@ -1,4 +1,4 @@
-//Login
+// Login
 'use client';
 
 import { useState } from 'react';
@@ -35,12 +35,13 @@ export default function Page() {
       })
       .catch((error) => {
         alert("Error en el inicio de sesión: " + error.message);
-      });};
+      });
+  };
 
-      const handleSubmitNewUser = (event) => {
-        event.preventDefault();
-        router.push('/signup');
-      };
+  const handleSubmitNewUser = (event) => {
+    event.preventDefault();
+    router.push('/signup'); // Redirige a la página de registro de nuevos usuarios
+  };
 
   return (
     <div>
@@ -52,11 +53,10 @@ export default function Page() {
         handleSubmit={handleSubmit}
         handleSubmitNewUser={handleSubmitNewUser}
       />
-      {loginResponse.userLoginResponseDto.user.name && (
+      {/* Asegúrate de que `loginResponse` tiene los datos antes de intentar renderizar el nombre */}
+      {loginResponse.userLoginResponseDto && loginResponse.userLoginResponseDto.user && loginResponse.userLoginResponseDto.user.name && (
         <div>
           <h2>Bienvenido, {loginResponse.userLoginResponseDto.user.name}</h2>
-          {/* <p>Rol: {loginResponse.userLoginResponseDto.user.role}</p>
-          <p>Token: {loginResponse.userLoginResponseDto.token}</p> */}
         </div>
       )}
     </div>
