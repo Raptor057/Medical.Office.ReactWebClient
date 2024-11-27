@@ -9,8 +9,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #ffffff;
-    --foreground: #000000;
+    --background: #ffffff; /* Fondo oscuro en modo oscuro */
+    --foreground: #000000; /* Texto blanco en modo oscuro */
   }
 }
 
@@ -22,13 +22,15 @@ body {
 
 @layer utilities {
   .text-balance {
-    text-wrap: balance;
+    text-align: justify; /* Usamos justify en lugar de balance */
   }
+
   .centered-div {
     display: flex;
     justify-content: center; /* Centra horizontalmente */
     align-items: center; /* Centra verticalmente */
-    height: calc(100vh - 50px); /* Ajusta la altura para tener en cuenta el margen superior */
+    min-height: 100vh; /* Asegura que el div ocupe toda la altura disponible */
     margin-top: 50px; /* Añade un margen superior */
+    width: 100%; /* Asegura que el div ocupe todo el ancho disponible */
   }
 }

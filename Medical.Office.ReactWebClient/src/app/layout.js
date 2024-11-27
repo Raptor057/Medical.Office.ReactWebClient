@@ -1,6 +1,6 @@
 import localFont from "next/font/local";
+import Script from "next/script"; // Importa el componente Script
 import "./globals.css";
-
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,9 +22,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/*children*/}
-                {/* Layout UI */}
-                <main>{children}</main>
+        {/* Agregamos el script para el efecto dominó */}
+        <Script
+          src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js"
+          strategy="afterInteractive" // Carga el script después de que se haya renderizado la página
+        />
+        {/* Layout UI */}
+        <main>{children}</main>
       </body>
     </html>
   );

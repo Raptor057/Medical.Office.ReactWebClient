@@ -12,6 +12,7 @@
   "dependencies": {
     "@docsearch/react": "^3.6.2",
     "@heroicons/react": "^2.1.5",
+    "@material-tailwind/html": "^2.3.2",
     "@material-tailwind/react": "^2.1.10",
     "next": "14.2.14",
     "react": "^18",
