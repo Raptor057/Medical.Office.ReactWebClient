@@ -1,64 +1,54 @@
-// Login
 'use client';
 
 import { useState } from 'react';
 import { MedicalOfficeWebApi } from "./utils/HttpRequests";
 import { useRouter } from 'next/navigation';
-import CryptoLogin from "./components/login";
+import CryptoLogin from '@/app/components/login';
+import Alert from '@/app/components/Alerts'; // Asegúrate de importar el componente Alert
 
-export default function Page() {
+export default function LoginPage() {
   const router = useRouter();
   const [usr, setUsr] = useState('');
   const [password, setPassword] = useState('');
-  const [loginResponse, setLoginResponse] = useState({
-    userLoginResponseDto: {
-      user: {
-        usr: "",
-        name: "",
-        lastname: "",
-        role: "",
-        position: "",
-        specialtie: ""
-      },
-      role: "",
-      token: ""
-    }
-  });
+  const [alertData, setAlertData] = useState(null);
 
-  const handleSubmit = (event) => {
-    event.preventDefault(); // Previene el comportamiento por defecto del formulario (recargar la página)
-    MedicalOfficeWebApi.Login(usr, password)
-      .then((data) => {
-        setLoginResponse(data); // Actualiza el estado con la respuesta de login
-        alert(`Bienvenido ${data.userLoginResponseDto.user.name}`);
-        router.push('/home'); // Redirige a la página de inicio
-      })
-      .catch((error) => {
-        alert("Error en el inicio de sesión: " + error.message);
-      });
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const data = await MedicalOfficeWebApi.Login(usr, password);
+      setAlertData({ isSuccess: true, message: "" });
+      setTimeout(() => setAlertData(null), 3000);
+      router.push('/home');
+    } catch (error) {
+      setAlertData({ isSuccess: false, message: error.message || "Error inesperado al iniciar sesión." });
+    }
   };
 
-  const handleSubmitNewUser = (event) => {
-    event.preventDefault();
+  const handleSubmitNewUser = () => {
     router.push('/signup'); // Redirige a la página de registro de nuevos usuarios
   };
 
   return (
-    <div>
-      <CryptoLogin
-        usr={usr}
-        password={password}
-        setUsr={setUsr}
-        setPassword={setPassword}
-        handleSubmit={handleSubmit}
-        handleSubmitNewUser={handleSubmitNewUser}
-      />
-      {/* Asegúrate de que `loginResponse` tiene los datos antes de intentar renderizar el nombre */}
-      {loginResponse.userLoginResponseDto && loginResponse.userLoginResponseDto.user && loginResponse.userLoginResponseDto.user.name && (
-        <div>
-          <h2>Bienvenido, {loginResponse.userLoginResponseDto.user.name}</h2>
-        </div>
-      )}
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+      <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-md">
+        <CryptoLogin
+          usr={usr}
+          password={password}
+          setUsr={setUsr}
+          setPassword={setPassword}
+          handleSubmit={handleSubmit}
+          handleSubmitNewUser={handleSubmitNewUser}
+        />
+      </div>
+
+      {/* Componente de alerta para mensajes de éxito/error */}
+      {alertData && (
+    <Alert
+      isSuccess={alertData.isSuccess}
+      message={alertData.message}
+      onClose={() => setAlertData(null)}
+    />
+  )}
     </div>
   );
 }

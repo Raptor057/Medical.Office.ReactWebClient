@@ -28,301 +28,133 @@ export default function InsertPatientDataForm({ onSubmit }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prevData) => ({
+      ...prevData,
       [name]: value,
-    });
+    }));
+  };
+
+  const handleValidation = () => {
+    const requiredFields = ["name", "fathersSurname", "dateOfBirth", "gender"];
+    for (const field of requiredFields) {
+      if (!formData[field]) {
+        alert(`El campo ${field} es obligatorio.`);
+        return false;
+      }
+    }
+    return true;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (onSubmit) onSubmit(formData);
+    if (handleValidation() && onSubmit) {
+      onSubmit(formData);
+    }
   };
 
+  const renderInput = (label, name, type = "text", placeholder = "") => (
+    <div>
+      <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+        {label}
+      </label>
+      <Input
+        id={name}
+        name={name}
+        type={type}
+        value={formData[name]}
+        onChange={handleChange}
+        placeholder={placeholder}
+        className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+  );
+
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg p-6 mx-auto space-y-6 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-2xl font-semibold text-center text-gray-800">Patient Data</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-4xl p-6 mx-auto space-y-6 bg-white rounded-lg shadow-md"
+    >
+      <h2 className="text-2xl font-semibold text-center text-gray-800">
+        Registro de Paciente
+      </h2>
 
-      {/* Name */}
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
-        <Input
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          id="name"
-          placeholder="Enter patient's full name"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
+      {/* Datos personales */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {renderInput("Nombre", "name", "text", "Ingresa el nombre del paciente")}
+        {renderInput("Apellido Paterno", "fathersSurname", "text", "Ingresa el apellido paterno")}
+        {renderInput("Apellido Materno", "mothersSurname", "text", "Ingresa el apellido materno")}
+        {renderInput("Fecha de Nacimiento", "dateOfBirth", "date")}
       </div>
 
-      {/* Father's Surname */}
+      {/* Selección de género */}
       <div>
-        <label htmlFor="fathersSurname" className="block text-sm font-medium text-gray-700">Father's Surname</label>
-        <Input
-          name="fathersSurname"
-          value={formData.fathersSurname}
-          onChange={handleChange}
-          id="fathersSurname"
-          placeholder="Enter father's surname"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Mother's Surname */}
-      <div>
-        <label htmlFor="mothersSurname" className="block text-sm font-medium text-gray-700">Mother's Surname</label>
-        <Input
-          name="mothersSurname"
-          value={formData.mothersSurname}
-          onChange={handleChange}
-          id="mothersSurname"
-          placeholder="Enter mother's surname"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Date of Birth */}
-      <div>
-        <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">Date of Birth</label>
-        <Input
-          type="date"
-          name="dateOfBirth"
-          value={formData.dateOfBirth}
-          onChange={handleChange}
-          id="dateOfBirth"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Gender */}
-      <div>
-        <label htmlFor="gender" className="block text-sm font-medium text-gray-700">Gender</label>
+        <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
+          Género
+        </label>
         <Select
+          id="gender"
           name="gender"
           value={formData.gender}
-          onChange={handleChange}
-          id="gender"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          onChange={(value) => setFormData((prev) => ({ ...prev, gender: value }))}
+          className="w-full mt-1"
         >
-          <Option value="male">Male</Option>
-          <Option value="female">Female</Option>
-          <Option value="other">Other</Option>
+          <Option value="">Selecciona el género</Option>
+          <Option value="male">Masculino</Option>
+          <Option value="female">Femenino</Option>
+          <Option value="other">Otro</Option>
         </Select>
       </div>
 
-      {/* Address */}
-      <div>
-        <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
-        <Input
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-          id="address"
-          placeholder="Enter patient's address"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
+      {/* Información de contacto */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {renderInput("Teléfono", "phoneNumber", "tel", "Ingresa el número de teléfono")}
+        {renderInput("Correo Electrónico", "email", "email", "Ingresa el correo electrónico")}
+        {renderInput("Nombre del Contacto de Emergencia", "emergencyContactName", "text", "Ingresa el nombre del contacto de emergencia")}
+        {renderInput("Teléfono del Contacto de Emergencia", "emergencyContactPhone", "tel", "Ingresa el teléfono del contacto de emergencia")}
       </div>
 
-      {/* Country */}
+      {/* Dirección */}
       <div>
-        <label htmlFor="country" className="block text-sm font-medium text-gray-700">Country</label>
-        <Input
-          name="country"
-          value={formData.country}
-          onChange={handleChange}
-          id="country"
-          placeholder="Enter country"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
+        <h3 className="text-lg font-medium text-gray-700">Dirección</h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {renderInput("Calle y Número", "address", "text", "Ingresa la calle y número")}
+          {renderInput("Ciudad", "city", "text", "Ingresa la ciudad")}
+          {renderInput("Estado", "state", "text", "Ingresa el estado")}
+          {renderInput("Código Postal", "zipCode", "text", "Ingresa el código postal")}
+          {renderInput("País", "country", "text", "Ingresa el país")}
+        </div>
       </div>
 
-      {/* City */}
+      {/* Seguro médico */}
       <div>
-        <label htmlFor="city" className="block text-sm font-medium text-gray-700">City</label>
-        <Input
-          name="city"
-          value={formData.city}
-          onChange={handleChange}
-          id="city"
-          placeholder="Enter city"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
+        <h3 className="text-lg font-medium text-gray-700">Seguro Médico</h3>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {renderInput("Proveedor de Seguro", "insuranceProvider", "text", "Ingresa el proveedor de seguro")}
+          {renderInput("Número de Póliza", "policyNumber", "text", "Ingresa el número de póliza")}
+        </div>
       </div>
 
-      {/* State */}
+      {/* Notas internas */}
       <div>
-        <label htmlFor="state" className="block text-sm font-medium text-gray-700">State</label>
-        <Input
-          name="state"
-          value={formData.state}
-          onChange={handleChange}
-          id="state"
-          placeholder="Enter state"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Zip Code */}
-      <div>
-        <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">Zip Code</label>
-        <Input
-          name="zipCode"
-          value={formData.zipCode}
-          onChange={handleChange}
-          id="zipCode"
-          placeholder="Enter zip code"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Outside Number */}
-      <div>
-        <label htmlFor="outsideNumber" className="block text-sm font-medium text-gray-700">Outside Number</label>
-        <Input
-          name="outsideNumber"
-          value={formData.outsideNumber}
-          onChange={handleChange}
-          id="outsideNumber"
-          placeholder="Enter outside number"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Inside Number */}
-      <div>
-        <label htmlFor="insideNumber" className="block text-sm font-medium text-gray-700">Inside Number</label>
-        <Input
-          name="insideNumber"
-          value={formData.insideNumber}
-          onChange={handleChange}
-          id="insideNumber"
-          placeholder="Enter inside number"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Phone Number */}
-      <div>
-        <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">Phone Number</label>
-        <Input
-          name="phoneNumber"
-          value={formData.phoneNumber}
-          onChange={handleChange}
-          id="phoneNumber"
-          placeholder="Enter phone number"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Email */}
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-        <Input
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          id="email"
-          placeholder="Enter email"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Emergency Contact Name */}
-      <div>
-        <label htmlFor="emergencyContactName" className="block text-sm font-medium text-gray-700">Emergency Contact Name</label>
-        <Input
-          name="emergencyContactName"
-          value={formData.emergencyContactName}
-          onChange={handleChange}
-          id="emergencyContactName"
-          placeholder="Enter emergency contact name"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Emergency Contact Phone */}
-      <div>
-        <label htmlFor="emergencyContactPhone" className="block text-sm font-medium text-gray-700">Emergency Contact Phone</label>
-        <Input
-          name="emergencyContactPhone"
-          value={formData.emergencyContactPhone}
-          onChange={handleChange}
-          id="emergencyContactPhone"
-          placeholder="Enter emergency contact phone"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Insurance Provider */}
-      <div>
-        <label htmlFor="insuranceProvider" className="block text-sm font-medium text-gray-700">Insurance Provider</label>
-        <Input
-          name="insuranceProvider"
-          value={formData.insuranceProvider}
-          onChange={handleChange}
-          id="insuranceProvider"
-          placeholder="Enter insurance provider"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Policy Number */}
-      <div>
-        <label htmlFor="policyNumber" className="block text-sm font-medium text-gray-700">Policy Number</label>
-        <Input
-          name="policyNumber"
-          value={formData.policyNumber}
-          onChange={handleChange}
-          id="policyNumber"
-          placeholder="Enter policy number"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Blood Type */}
-      <div>
-        <label htmlFor="bloodType" className="block text-sm font-medium text-gray-700">Blood Type</label>
-        <Input
-          name="bloodType"
-          value={formData.bloodType}
-          onChange={handleChange}
-          id="bloodType"
-          placeholder="Enter blood type"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Photo */}
-      <div>
-        <label htmlFor="photo" className="block text-sm font-medium text-gray-700">Photo URL</label>
-        <Input
-          name="photo"
-          value={formData.photo}
-          onChange={handleChange}
-          id="photo"
-          placeholder="Enter URL for photo"
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
-      </div>
-
-      {/* Internal Notes */}
-      <div>
-        <label htmlFor="internalNotes" className="block text-sm font-medium text-gray-700">Internal Notes</label>
+        <label htmlFor="internalNotes" className="block text-sm font-medium text-gray-700">
+          Notas Internas
+        </label>
         <Textarea
+          id="internalNotes"
           name="internalNotes"
           value={formData.internalNotes}
           onChange={handleChange}
-          id="internalNotes"
-          placeholder="Enter any internal notes"
+          placeholder="Escribe cualquier nota interna"
           rows={4}
-          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
-      {/* Submit Button */}
-      <div className="mt-4 text-center">
-        <Button type="submit" color="blue">Submit</Button>
+      {/* Botón de envío */}
+      <div className="text-center">
+        <Button type="submit" color="blue" className="w-full">
+          Guardar
+        </Button>
       </div>
     </form>
   );

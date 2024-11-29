@@ -1,25 +1,22 @@
 import React from "react";
+import Link from "next/link"; // Para enrutamiento interno
 import {
   Card,
   Typography,
   List,
   ListItem,
   ListItemPrefix,
-  ListItemSuffix,
-  Chip,
   Accordion,
   AccordionHeader,
   AccordionBody,
 } from "@material-tailwind/react";
 import {
   PresentationChartBarIcon,
-  ShoppingBagIcon,
   UserCircleIcon,
   Cog6ToothIcon,
-  InboxIcon,
   PowerIcon,
 } from "@heroicons/react/24/solid";
-import { ChevronRightIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 export function MultiLevelSidebar() {
   const [open, setOpen] = React.useState(0);
@@ -29,204 +26,175 @@ export function MultiLevelSidebar() {
   };
 
   return (
-    <Card className="h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
-      <div className="mb-2 p-4">
-        <Typography variant="h5" color="blue-gray">
-          Menu
+    <Card className="h-screen w-full max-w-[18rem] p-4 shadow-xl bg-gradient-to-b from-blue-50 to-white">
+      {/* Logo y encabezado */}
+      <div className="p-4 mb-6 text-center border-b border-gray-200">
+        <Typography variant="h5" color="blue-gray" className="font-bold">
+          Medical Office
+        </Typography>
+        <Typography color="gray" className="text-sm font-normal">
+          Sistema de Gestión
         </Typography>
       </div>
+
       <List>
+        {/* Pacientes */}
         <Accordion
           open={open === 1}
           icon={
             <ChevronDownIcon
               strokeWidth={2.5}
-              className={`mx-auto h-4 w-4 transition-transform ${open === 1 ? "rotate-180" : ""}`}
+              className={`mx-auto h-4 w-4 transition-transform ${
+                open === 1 ? "rotate-180" : ""
+              }`}
             />
           }
         >
           <ListItem className="p-0" selected={open === 1}>
-            <AccordionHeader onClick={() => handleOpen(1)} className="border-b-0 p-3">
+            <AccordionHeader
+              onClick={() => handleOpen(1)}
+              className="p-3 border-b-0"
+            >
               <ListItemPrefix>
-                <PresentationChartBarIcon className="h-5 w-5" />
+                <PresentationChartBarIcon className="w-5 h-5 text-blue-500" />
               </ListItemPrefix>
-              <Typography color="blue-gray" className="mr-auto font-normal">
+              <Typography color="blue-gray" className="mr-auto font-medium">
                 Pacientes
               </Typography>
             </AccordionHeader>
           </ListItem>
           <AccordionBody className="py-1">
             <List className="p-0">
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Agregar Pacientes
+              <ListItem className="hover:bg-blue-100">
+                <Link href="/home/patients/insertpatient" className="flex w-full">
+                  <ListItemPrefix>
+                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
+                  </ListItemPrefix>
+                  Agregar Paciente
+                </Link>
               </ListItem>
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Lista de Pacientes
+              <ListItem className="hover:bg-blue-100">
+                <Link href="/home/patients/insertpatient" className="flex w-full">
+                  <ListItemPrefix>
+                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
+                  </ListItemPrefix>
+                  Lista de Pacientes
+                </Link>
               </ListItem>
             </List>
           </AccordionBody>
         </Accordion>
+
+        {/* Perfil */}
         <Accordion
           open={open === 2}
           icon={
             <ChevronDownIcon
               strokeWidth={2.5}
-              className={`mx-auto h-4 w-4 transition-transform ${open === 2 ? "rotate-180" : ""}`}
+              className={`mx-auto h-4 w-4 transition-transform ${
+                open === 2 ? "rotate-180" : ""
+              }`}
             />
           }
         >
           <ListItem className="p-0" selected={open === 2}>
-            <AccordionHeader onClick={() => handleOpen(2)} className="border-b-0 p-3">
+            <AccordionHeader
+              onClick={() => handleOpen(2)}
+              className="p-3 border-b-0"
+            >
               <ListItemPrefix>
-                <ShoppingBagIcon className="h-5 w-5" />
+                <UserCircleIcon className="w-5 h-5 text-blue-500" />
               </ListItemPrefix>
-              <Typography color="blue-gray" className="mr-auto font-normal">
-                Ventas
+              <Typography color="blue-gray" className="mr-auto font-medium">
+                Perfil
               </Typography>
             </AccordionHeader>
           </ListItem>
           <AccordionBody className="py-1">
             <List className="p-0">
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Cobranza
+              <ListItem className="hover:bg-blue-100">
+                <Link href="/profile" className="flex w-full">
+                  <ListItemPrefix>
+                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
+                  </ListItemPrefix>
+                  Ver Perfil
+                </Link>
               </ListItem>
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Productos
+              <ListItem className="hover:bg-blue-100">
+                <Link href="/settings" className="flex w-full">
+                  <ListItemPrefix>
+                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
+                  </ListItemPrefix>
+                  Configuración
+                </Link>
               </ListItem>
             </List>
           </AccordionBody>
         </Accordion>
-        <ListItem>
-          <ListItemPrefix>
-            <InboxIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Calendario
-          {/* <ListItemSuffix>
-            <Chip value="" size="sm" variant="ghost" color="blue-gray" className="rounded-full" />
-          </ListItemSuffix> */}
-        </ListItem>
+
+        {/* Configuración */}
         <Accordion
-          open={open === 4}
+          open={open === 3}
           icon={
             <ChevronDownIcon
               strokeWidth={2.5}
-              className={`mx-auto h-4 w-4 transition-transform ${open === 4 ? "rotate-180" : ""}`}
+              className={`mx-auto h-4 w-4 transition-transform ${
+                open === 3 ? "rotate-180" : ""
+              }`}
             />
           }
         >
-          <ListItem className="p-0" selected={open === 4}>
-            <AccordionHeader onClick={() => handleOpen(4)} className="border-b-0 p-3">
+          <ListItem className="p-0" selected={open === 3}>
+            <AccordionHeader
+              onClick={() => handleOpen(3)}
+              className="p-3 border-b-0"
+            >
               <ListItemPrefix>
-              <UserCircleIcon className="h-5 w-5" />
+                <Cog6ToothIcon className="w-5 h-5 text-blue-500" />
               </ListItemPrefix>
-              <Typography color="blue-gray" className="mr-auto font-normal">
-              Perfil
+              <Typography color="blue-gray" className="mr-auto font-medium">
+                Configuración
               </Typography>
             </AccordionHeader>
           </ListItem>
           <AccordionBody className="py-1">
             <List className="p-0">
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Perfil
+              <ListItem className="hover:bg-blue-100">
+                <Link href="/configurations/office" className="flex w-full">
+                  <ListItemPrefix>
+                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
+                  </ListItemPrefix>
+                  Oficina
+                </Link>
               </ListItem>
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Organizacion
-              </ListItem>
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Configuracion
-              </ListItem>
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Logs
+              <ListItem className="hover:bg-blue-100">
+                <Link href="/configurations/roles" className="flex w-full">
+                  <ListItemPrefix>
+                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
+                  </ListItemPrefix>
+                  Roles y Permisos
+                </Link>
               </ListItem>
             </List>
           </AccordionBody>
         </Accordion>
-        <Accordion
-          open={open === 5}
-          icon={
-            <ChevronDownIcon
-              strokeWidth={2.5}
-              className={`mx-auto h-4 w-4 transition-transform ${open === 5 ? "rotate-180" : ""}`}
-            />
-          }
-        >
-          <ListItem className="p-0" selected={open === 5}>
-            <AccordionHeader onClick={() => handleOpen(5)} className="border-b-0 p-3">
-              <ListItemPrefix>
-              <Cog6ToothIcon className="h-5 w-5" />
-              </ListItemPrefix>
-              <Typography color="blue-gray" className="mr-auto font-normal">
-              Configuracion
-              </Typography>
-            </AccordionHeader>
-          </ListItem>
-          <AccordionBody className="py-1">
-            <List className="p-0">
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Perfil
-              </ListItem>
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Organizacion
-              </ListItem>
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Configuracion
-              </ListItem>
-              <ListItem>
-                <ListItemPrefix>
-                  <ChevronRightIcon strokeWidth={3} className="h-3 w-5" />
-                </ListItemPrefix>
-                Logs
-              </ListItem>
-            </List>
-          </AccordionBody>
-        </Accordion>
-        {/* <ListItem>
+
+        {/* Cerrar Sesión */}
+        <ListItem className="cursor-pointer hover:bg-red-50">
           <ListItemPrefix>
-            <Cog6ToothIcon className="h-5 w-5" />
+            <PowerIcon className="w-5 h-5 text-red-500" />
           </ListItemPrefix>
-          Configuracion
-        </ListItem> */}
-        <ListItem>
-          <ListItemPrefix>
-            <PowerIcon className="h-5 w-5" />
-          </ListItemPrefix>
-          Cerrar sesion
+          <Typography
+            color="red"
+            className="mr-auto font-medium"
+            onClick={() => console.log("Cerrando sesión...")}
+          >
+            Cerrar Sesión
+          </Typography>
         </ListItem>
       </List>
     </Card>
   );
 }
+
 export default MultiLevelSidebar;

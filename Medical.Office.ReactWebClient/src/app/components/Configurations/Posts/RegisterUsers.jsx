@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Input, Select, Option } from '@material-tailwind/react';
+import { Button, Input, Select, Option, Card, Typography } from '@material-tailwind/react';
 
 const RegisterUsersForm = () => {
   // Estados para los campos del formulario
@@ -35,71 +35,87 @@ const RegisterUsersForm = () => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log('User registered successfully:', result);
+        console.log('Usuario registrado con éxito:', result);
       } else {
-        console.error('Error registering user:', response.status);
+        console.error('Error al registrar el usuario:', response.status);
       }
     } catch (error) {
-      console.error('Error registering user:', error);
+      console.error('Error al registrar el usuario:', error);
     }
   };
 
   return (
-    <div className="max-w-lg p-6 mx-auto bg-white rounded-lg shadow-lg">
-      <h2 className="mb-4 text-2xl font-semibold">Register Users</h2>
+    <Card shadow={true} className="max-w-lg p-6 mx-auto bg-white rounded-lg">
+      <Typography variant="h4" color="blue-gray" className="mb-6 text-center">
+        Registro de Usuarios
+      </Typography>
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Input: Nombre de Usuario */}
         <Input
-          label="Username"
+          label="Nombre de Usuario"
           value={usr}
           onChange={(e) => setUsr(e.target.value)}
           className="mt-2"
         />
+
+        {/* Input: Contraseña */}
         <Input
-          label="Password"
+          label="Contraseña"
           type="password"
           value={psswd}
           onChange={(e) => setPsswd(e.target.value)}
           className="mt-2"
         />
+
+        {/* Input: Nombre */}
         <Input
-          label="Name"
+          label="Nombre"
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="mt-2"
         />
+
+        {/* Input: Apellido */}
         <Input
-          label="Lastname"
+          label="Apellido"
           value={lastname}
           onChange={(e) => setLastname(e.target.value)}
           className="mt-2"
         />
+
+        {/* Select: Rol */}
         <Select
-          label="Role"
+          label="Rol"
           value={role}
           onChange={(e) => setRole(e)}
           className="mt-2"
         >
           <Option value="Doctor">Doctor</Option>
-          <Option value="Programmer">Programmer</Option>
+          <Option value="Programmer">Programador</Option>
         </Select>
+
+        {/* Input: Puesto */}
         <Input
-          label="Position"
+          label="Puesto"
           value={position}
           onChange={(e) => setPosition(e.target.value)}
           className="mt-2"
         />
+
+        {/* Input: Especialidad */}
         <Input
-          label="Specialtie"
+          label="Especialidad"
           value={specialtie}
           onChange={(e) => setSpecialtie(e.target.value)}
           className="mt-2"
         />
 
-        <Button type="submit" className="w-full mt-4" color="teal">
-          Register User
+        {/* Botón de Registro */}
+        <Button type="submit" color="indigo" className="w-full text-lg font-semibold">
+          Registrar Usuario
         </Button>
       </form>
-    </div>
+    </Card>
   );
 };
 

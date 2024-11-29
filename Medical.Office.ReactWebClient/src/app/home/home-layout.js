@@ -1,32 +1,31 @@
+import React, { useState } from "react";
+import { MultiLevelSidebar } from "../components/sidebar";
+import { PatientsList } from "../components/Patients/PatientsList";
 
-// Importa el Sidebar
-import { MultiLevelSidebar } from "../components/sidebar"; // Ajusta la ruta de tu sidebar
-import { MembersTable } from "../components/Patients/PatientsList"; // Ajusta la ruta de tu archivo
+export default function HomeLayout() {
+  const [currentView, setCurrentView] = useState("default");
 
-// Este layout se aplicará solo a las páginas dentro de la carpeta 'home'
-export default function HomeLayout({ children }) {
+  const renderView = () => {
+    switch (currentView) {
+      case "patients":
+        return <PatientsList />;
+      default:
+        return (
+          <div className="p-6 bg-white rounded-lg shadow-md">
+            <h2 className="text-xl font-semibold">Bienvenido</h2>
+            <p>Selecciona una opción del menú lateral para empezar.</p>
+          </div>
+        );
+    }
+  };
+
   return (
-    <div className="grid grid-cols-12 grid-rows-[auto,1fr,auto] min-h-screen gap-0.5">
-      {/* Header (Se puede personalizar o dejar vacío) */}
-
-      <div className="col-span-12 col-start-1 bg-gray-100 p-4 shadow-md">
-        {/* Aquí puedes agregar tu contenido del header */}
-
-      </div>
-
-      {/* Sidebar */}
-      <div className="col-span-2 row-span-2 col-start-1 row-start-2 bg-gray-200 p-4 border-r border-gray-300 overflow-y-auto">
-        <MultiLevelSidebar />
-      </div>
-
-      {/* Main Content (Miembros) */}
-      <div className="col-span-10 row-span-2 col-start-3 row-start-2 bg-white p-4 overflow-y-auto">
-        <MembersTable />
-      </div>
-
-      {/* Footer */}
-      <div className="col-span-12 col-start-1 row-start-3 bg-gray-800 text-white p-4 text-center">
-
+    <div className="flex flex-col min-h-screen bg-gray-50">
+      <div className="flex flex-grow">
+        <aside className="w-64 bg-gray-200 border-r">
+          <MultiLevelSidebar setCurrentView={setCurrentView} />
+        </aside>
+        <main className="flex-grow p-6 bg-white">{renderView()}</main>
       </div>
     </div>
   );

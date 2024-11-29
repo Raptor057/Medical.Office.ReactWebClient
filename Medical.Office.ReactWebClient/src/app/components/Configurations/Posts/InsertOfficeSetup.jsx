@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input } from "@material-tailwind/react";
+import { Button, Input, Card, Typography } from "@material-tailwind/react";
 
 export default function InsertOfficeSetupForm({ onSubmit }) {
   const [formData, setFormData] = useState({
@@ -9,10 +9,10 @@ export default function InsertOfficeSetupForm({ onSubmit }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -21,40 +21,56 @@ export default function InsertOfficeSetupForm({ onSubmit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg p-6 mx-auto space-y-6 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-2xl font-semibold text-center text-gray-800">Office Setup</h2>
-      
-      <div className="space-y-4">
+    <Card shadow={true} className="max-w-lg p-6 mx-auto bg-white rounded-lg">
+      <Typography variant="h4" color="blue-gray" className="mb-6 text-center">
+        Configuración de Oficina
+      </Typography>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Input: Nombre de la Oficina */}
         <div>
-          <label htmlFor="nameOfOffice" className="block text-sm font-medium text-gray-700">Name of Office</label>
+          <label htmlFor="nameOfOffice" className="block mb-2 text-sm font-medium text-gray-700">
+            Nombre de la Oficina
+          </label>
           <Input
+            type="text"
             name="nameOfOffice"
+            id="nameOfOffice"
             value={formData.nameOfOffice}
             onChange={handleChange}
-            id="nameOfOffice"
-            placeholder="Enter the name of the office"
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Ingresa el nombre de la oficina"
+            size="md"
+            className="text-gray-800"
           />
         </div>
 
+        {/* Input: Dirección */}
         <div>
-          <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
+          <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-700">
+            Dirección
+          </label>
           <Input
+            type="text"
             name="address"
+            id="address"
             value={formData.address}
             onChange={handleChange}
-            id="address"
-            placeholder="Enter the address of the office"
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Ingresa la dirección de la oficina"
+            size="md"
+            className="text-gray-800"
           />
         </div>
-      </div>
 
-      <div className="flex justify-center">
-        <Button type="submit" className="w-full py-3 text-lg font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-          Submit Office Setup
-        </Button>
-      </div>
-    </form>
+        {/* Botón Enviar */}
+        <div className="flex justify-center">
+          <Button
+            type="submit"
+            color="indigo"
+            className="w-full text-lg font-semibold"
+          >
+            Guardar Configuración
+          </Button>
+        </div>
+      </form>
+    </Card>
   );
 }
