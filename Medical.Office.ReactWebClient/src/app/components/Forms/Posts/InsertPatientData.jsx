@@ -13,12 +13,16 @@ export default function InsertPatientDataForm({ onSubmit }) {
     city: "",
     state: "",
     zipCode: "",
+    outsideNumber: "",
+    insideNumber: "",
     phoneNumber: "",
     email: "",
     emergencyContactName: "",
     emergencyContactPhone: "",
     insuranceProvider: "",
     policyNumber: "",
+    bloodType: "",
+    photo: "",
     internalNotes: "",
   });
 
@@ -30,20 +34,9 @@ export default function InsertPatientDataForm({ onSubmit }) {
     }));
   };
 
-  const handleValidation = () => {
-    const requiredFields = ["name", "fathersSurname", "dateOfBirth", "gender"];
-    for (const field of requiredFields) {
-      if (!formData[field]) {
-        alert(`El campo "${field}" es obligatorio.`);
-        return false;
-      }
-    }
-    return true;
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (handleValidation() && onSubmit) {
+    if (onSubmit) {
       onSubmit(formData);
     }
   };
@@ -53,7 +46,6 @@ export default function InsertPatientDataForm({ onSubmit }) {
       onSubmit={handleSubmit}
       className="max-w-4xl p-6 mx-auto space-y-8 bg-white rounded-lg shadow-lg"
     >
-      {/* Título */}
       <Typography variant="h4" color="blue-gray" className="font-bold text-center">
         Registro de Paciente
       </Typography>
@@ -68,7 +60,6 @@ export default function InsertPatientDataForm({ onSubmit }) {
           name="name"
           value={formData.name}
           onChange={handleChange}
-          required
           placeholder="Ingresa el nombre del paciente"
         />
         <Input
@@ -76,7 +67,6 @@ export default function InsertPatientDataForm({ onSubmit }) {
           name="fathersSurname"
           value={formData.fathersSurname}
           onChange={handleChange}
-          required
           placeholder="Ingresa el apellido paterno"
         />
         <Input
@@ -92,60 +82,21 @@ export default function InsertPatientDataForm({ onSubmit }) {
           type="date"
           value={formData.dateOfBirth}
           onChange={handleChange}
-          required
         />
       </div>
 
       {/* Selección de género */}
-      <div>
-        <Select
-          label="Género"
-          name="gender"
-          value={formData.gender}
-          onChange={(value) => setFormData((prev) => ({ ...prev, gender: value }))}
-          required
-        >
-          <Option value="">Selecciona el género</Option>
-          <Option value="male">Masculino</Option>
-          <Option value="female">Femenino</Option>
-          <Option value="other">Otro</Option>
-        </Select>
-      </div>
-
-      {/* Información de contacto */}
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Input
-          label="Teléfono"
-          name="phoneNumber"
-          type="tel"
-          value={formData.phoneNumber}
-          onChange={handleChange}
-          placeholder="Ingresa el número de teléfono"
-        />
-        <Input
-          label="Correo Electrónico"
-          name="email"
-          type="email"
-          value={formData.email}
-          onChange={handleChange}
-          placeholder="Ingresa el correo electrónico"
-        />
-        <Input
-          label="Contacto de Emergencia"
-          name="emergencyContactName"
-          value={formData.emergencyContactName}
-          onChange={handleChange}
-          placeholder="Nombre del contacto de emergencia"
-        />
-        <Input
-          label="Teléfono del Contacto de Emergencia"
-          name="emergencyContactPhone"
-          type="tel"
-          value={formData.emergencyContactPhone}
-          onChange={handleChange}
-          placeholder="Teléfono del contacto de emergencia"
-        />
-      </div>
+      <Select
+        label="Género"
+        name="gender"
+        value={formData.gender}
+        onChange={(value) => setFormData((prev) => ({ ...prev, gender: value }))}
+      >
+        <Option value="">Selecciona el género</Option>
+        <Option value="male">Masculino</Option>
+        <Option value="female">Femenino</Option>
+        <Option value="other">Otro</Option>
+      </Select>
 
       {/* Dirección */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -155,6 +106,20 @@ export default function InsertPatientDataForm({ onSubmit }) {
           value={formData.address}
           onChange={handleChange}
           placeholder="Calle y número"
+        />
+        <Input
+          label="Número Exterior"
+          name="outsideNumber"
+          value={formData.outsideNumber}
+          onChange={handleChange}
+          placeholder="Número exterior"
+        />
+        <Input
+          label="Número Interior"
+          name="insideNumber"
+          value={formData.insideNumber}
+          onChange={handleChange}
+          placeholder="Número interior (opcional)"
         />
         <Input
           label="Ciudad"
@@ -186,6 +151,38 @@ export default function InsertPatientDataForm({ onSubmit }) {
         />
       </div>
 
+      {/* Información de contacto */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <Input
+          label="Teléfono"
+          name="phoneNumber"
+          value={formData.phoneNumber}
+          onChange={handleChange}
+          placeholder="Ingresa el número de teléfono"
+        />
+        <Input
+          label="Correo Electrónico"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="Ingresa el correo electrónico"
+        />
+        <Input
+          label="Contacto de Emergencia"
+          name="emergencyContactName"
+          value={formData.emergencyContactName}
+          onChange={handleChange}
+          placeholder="Nombre del contacto de emergencia"
+        />
+        <Input
+          label="Teléfono del Contacto de Emergencia"
+          name="emergencyContactPhone"
+          value={formData.emergencyContactPhone}
+          onChange={handleChange}
+          placeholder="Teléfono del contacto de emergencia"
+        />
+      </div>
+
       {/* Seguro médico */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <Input
@@ -204,7 +201,21 @@ export default function InsertPatientDataForm({ onSubmit }) {
         />
       </div>
 
-      {/* Notas internas */}
+      {/* Información adicional */}
+      <Input
+        label="Tipo de Sangre"
+        name="bloodType"
+        value={formData.bloodType}
+        onChange={handleChange}
+        placeholder="Ingresa el tipo de sangre"
+      />
+      <Input
+        label="Foto (URL)"
+        name="photo"
+        value={formData.photo}
+        onChange={handleChange}
+        placeholder="URL de la foto (opcional)"
+      />
       <Textarea
         label="Notas Internas"
         name="internalNotes"

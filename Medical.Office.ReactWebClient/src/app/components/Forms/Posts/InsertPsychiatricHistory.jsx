@@ -37,8 +37,8 @@ const InsertPsychiatricHistoryForm = ({ onSubmit }) => {
   };
 
   return (
-    <div className="max-w-4xl p-6 mx-auto bg-white rounded-lg shadow-lg">
-      <Typography variant="h4" className="mb-4 text-center" color="blue-gray">
+    <div className="max-w-4xl p-6 mx-auto bg-white rounded-lg shadow-md">
+      <Typography variant="h4" className="mb-6 text-center" color="black">
         Historial Psiquiátrico
       </Typography>
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -48,7 +48,7 @@ const InsertPsychiatricHistoryForm = ({ onSubmit }) => {
             label="Antecedentes Familiares"
             checked={formData.familyHistory}
             onChange={() => toggleSwitch("familyHistory")}
-            color="teal"
+            color="blue"
           />
           {formData.familyHistory && (
             <Textarea
@@ -57,7 +57,7 @@ const InsertPsychiatricHistoryForm = ({ onSubmit }) => {
               value={formData.familyHistoryData}
               onChange={handleChange}
               placeholder="Describe los antecedentes familiares"
-              className="mt-2"
+              className="mt-3"
             />
           )}
         </div>
@@ -86,7 +86,7 @@ const InsertPsychiatricHistoryForm = ({ onSubmit }) => {
             label="Soporte Social Familiar"
             checked={formData.familySocialSupport}
             onChange={() => toggleSwitch("familySocialSupport")}
-            color="teal"
+            color="blue"
           />
           {formData.familySocialSupport && (
             <Textarea
@@ -95,7 +95,7 @@ const InsertPsychiatricHistoryForm = ({ onSubmit }) => {
               value={formData.familySocialSupportData}
               onChange={handleChange}
               placeholder="Describe el soporte social familiar"
-              className="mt-2"
+              className="mt-3"
             />
           )}
         </div>
@@ -146,7 +146,7 @@ const InsertPsychiatricHistoryForm = ({ onSubmit }) => {
         />
 
         {/* Botón de Envío */}
-        <Button type="submit" color="teal" fullWidth>
+        <Button type="submit" color="blue" fullWidth>
           Guardar Historial Psiquiátrico
         </Button>
       </form>

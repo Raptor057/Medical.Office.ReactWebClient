@@ -1,38 +1,39 @@
+'use client';
+
 const handleRejectedResponse = async (error) => {
     console.error("HTTP Error:", error);
-
+  
     let message = error.message || `${error.status}: ${error.statusText}`;
-
-    const processJson = (json) => {
-        console.debug("JSON error from API", json);
-        if (json.hasOwnProperty('errors')) {
-            let message = json.title;
-            for (let index in json.errors) {
-                message += `\n- ${json.errors[index]}`;
-            }
-            return message;
-        }
-        return json.message || "Error desconocido en la respuesta de la API";
-    };
-
-    const processText = (text) => {
-        console.debug("Text error from API", text);
-        return text || "Error desconocido en la respuesta de la API";
-    };
-
-    if (typeof error.json === "function") {
-        const isJSON = error.headers.get('content-type')?.includes('application/json');
-        message = await (isJSON
-            ? error.json().then(processJson)
-            : error.text().then(processText)
-        ).catch((genericError) => {
-            console.debug("Generic error from API", genericError);
-            return `${error.status}: ${error.statusText}`;
-        });
+  
+    if (error.status === 401) {
+      message = "Sesión expirada. Por favor, inicia sesión nuevamente.";
+      localStorage.removeItem('authToken'); // Limpia el token si es inválido
+      window.location.href = '/'; // Redirige al login
     }
-
+  
+    const processJson = (json) => {
+      if (json?.errors) {
+        let message = json.title;
+        for (let index in json.errors) {
+          message += `\n- ${json.errors[index]}`;
+        }
+        return message;
+      }
+      return json.message || "Error desconocido en la respuesta de la API";
+    };
+  
+    const processText = (text) => text || "Error desconocido en la respuesta de la API";
+  
+    if (typeof error.json === "function") {
+      const isJSON = error.headers.get('content-type')?.includes('application/json');
+      message = await (isJSON
+        ? error.json().then(processJson)
+        : error.text().then(processText)
+      ).catch(() => `${error.status}: ${error.statusText}`);
+    }
+  
     return Promise.reject(message);
-};
+  };
 
 const handleResponse = async (response) => {
     if (!response.ok) {
@@ -41,195 +42,76 @@ const handleResponse = async (response) => {
 
     const json = await response.json();
 
-    // Manejar el GenericViewModel
     if (json.isSuccess) {
-        return json.data; // Retornar datos si es éxito
+        return json.data; // Retorna los datos si la respuesta fue exitosa
     } else {
         throw new Error(json.message || "Error desconocido en la API");
     }
 };
 
 const getOptions = (method, data = null) => {
-    const headers = { "Access-Control-Expose-Headers": "Content-Length", "Content-Type": "application/json" };
+    const token = localStorage.getItem('authToken'); // Obtén el token del localStorage
+    const headers = {
+      "Access-Control-Expose-Headers": "Content-Length",
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }), // Agrega el token si existe
+    };
+  
     const options = { method, headers, mode: 'cors' };
     return data ? { ...options, body: JSON.stringify(data) } : options;
-};
+  };
 
-const HttpRequest = (function () {
+const HttpRequest = (() => {
     const httpRequest = async (method, url, data = null) => {
         console.debug(`${method} Request to URL: ${url}`);
         return fetch(url, getOptions(method, data))
-            .then(handleResponse) // Procesar el GenericViewModel
-            .catch(handleRejectedResponse); // Manejar errores
+            .then(handleResponse)
+            .catch(handleRejectedResponse);
     };
 
     return {
         get: async (url) => httpRequest('GET', url),
-        put: async (url, data) => httpRequest('PUT', url, data),
         post: async (url, data) => httpRequest('POST', url, data),
+        put: async (url, data) => httpRequest('PUT', url, data),
         delete: async (url, data) => httpRequest('DELETE', url, data),
+        patch: async (url, data) => httpRequest('PATCH', url, data),
     };
 })();
 
-export const MedicalOfficeWebApi = (function (apiUrl) {
-    apiUrl = "http://localhost:5038";
-    //apiUrl = "http://192.168.1.101:8080";
+const MedicalOfficeWebApi = (() => {
+    const apiUrl = "http://localhost:5038";
 
     return {
-        //#region Post
-        Login: async (usr, psswd) =>
+        //#region Authentication
+        login: async (usr, psswd) =>
             HttpRequest.post(`${apiUrl}/api/login`, { Usr: usr, Psswd: psswd }),
-
-        registerUsers: async (usr, psswd, name, lastname, role, position, specialtie) =>
-            HttpRequest.post(`${apiUrl}/api/registerusers`, {
-                Usr: usr,
-                Psswd: psswd,
-                Name: name,
-                Lastname: lastname,
-                Role: role,
-                Position: position,
-                Specialtie: specialtie,
-            }),
-
-        insertActiveMedications: async (idPatient, activeMedicationsData) =>
-            HttpRequest.post(`${apiUrl}/api/insertactivemedications`, { idPatient, activeMedicationsData }),
-
-        insertFamilyHistory: async (idPatient, diabetes, cardiopathies, hypertension, thyroidDiseases, chronicKidneyDisease, others, othersData) =>
-            HttpRequest.post(`${apiUrl}/api/insertfamilyhistory`, {
-                idPatient,
-                diabetes,
-                cardiopathies,
-                hypertension,
-                thyroidDiseases,
-                chronicKidneyDisease,
-                others,
-                othersData,
-            }),
-
-        insertMedicalAppointmentCalendar: async (idPatient, idDoctor, appointmentDateTime, reasonForVisit, appointmentStatus, notes, typeOfAppointment) =>
-            HttpRequest.post(`${apiUrl}/api/InsertMedicalAppointmentCalendar`, {
-                idPatient,
-                idDoctor,
-                appointmentDateTime,
-                reasonForVisit,
-                appointmentStatus,
-                notes,
-                typeOfAppointment,
-            }),
-
-        insertMedicalHistoryNotes: async (idPatient, medicalHistoryNotesData) =>
-            HttpRequest.post(`${apiUrl}/api/InsertMedicalHistoryNotes`, { idPatient, medicalHistoryNotesData }),
-
-        insertNonPathologicalHistory: async (idPatient, physicalActivity, smoking, alcoholism, substanceAbuse, substanceAbuseData, recentVaccination, recentVaccinationData, others, othersData) =>
-            HttpRequest.post(`${apiUrl}/api/InsertNonPathologicalHistory`, {
-                idPatient,
-                physicalActivity,
-                smoking,
-                alcoholism,
-                substanceAbuse,
-                substanceAbuseData,
-                recentVaccination,
-                recentVaccinationData,
-                others,
-                othersData,
-            }),
-
-        insertOfficeSetup: async (nameOfOffice, address) =>
-            HttpRequest.post(`${apiUrl}/api/insertofficesetup`, { nameOfOffice, address }),
-
-        insertPathologicalBackground: async (idPatient, previousHospitalization, previousSurgeries, diabetes, thyroidDiseases, hypertension, cardiopathies, trauma, cancer, tuberculosis, transfusions, respiratoryDiseases, gastrointestinalDiseases, stDs, stDsData, chronicKidneyDisease, others) =>
-            HttpRequest.post(`${apiUrl}/api/InsertPathologicalBackground`, {
-                idPatient,
-                previousHospitalization,
-                previousSurgeries,
-                diabetes,
-                thyroidDiseases,
-                hypertension,
-                cardiopathies,
-                trauma,
-                cancer,
-                tuberculosis,
-                transfusions,
-                respiratoryDiseases,
-                gastrointestinalDiseases,
-                stDs,
-                stDsData,
-                chronicKidneyDisease,
-                others,
-            }),
-
-        insertPatientAllergies: async (idPatient, allergies) =>
-            HttpRequest.post(`${apiUrl}/api/InsertPatientAllergies`, { idPatient, allergies }),
-
-        insertPatientData: async (name, fathersSurname, mothersSurname, dateOfBirth, gender, address, country, city, state, zipCode, outsideNumber, insideNumber, phoneNumber, email, emergencyContactName, emergencyContactPhone, insuranceProvider, policyNumber, bloodType, photo, internalNotes) =>
-            HttpRequest.post(`${apiUrl}/api/insertpatient`, {
-                name,
-                fathersSurname,
-                mothersSurname,
-                dateOfBirth,
-                gender,
-                address,
-                country,
-                city,
-                state,
-                zipCode,
-                outsideNumber,
-                insideNumber,
-                phoneNumber,
-                email,
-                emergencyContactName,
-                emergencyContactPhone,
-                insuranceProvider,
-                policyNumber,
-                bloodType,
-                photo,
-                internalNotes,
-            }),
-
-        insertPositions: async (position) =>
-            HttpRequest.post(`${apiUrl}/api/insertposition/${position}`, {}),
-
-        insertPsychiatricHistory: async (
-            idPatient,
-            familyHistory,
-            familyHistoryData,
-            affectedAreas,
-            pastAndCurrentTreatments,
-            familySocialSupport,
-            familySocialSupportData,
-            workLifeAspects,
-            socialLifeAspects,
-            authorityRelationship,
-            impulseControl,
-            frustrationManagement
-        ) =>
-            HttpRequest.post(`${apiUrl}/api/insertpsychiatricHistory`, {
-                idPatient,
-                familyHistory,
-                familyHistoryData,
-                affectedAreas,
-                pastAndCurrentTreatments,
-                familySocialSupport,
-                familySocialSupportData,
-                workLifeAspects,
-                socialLifeAspects,
-                authorityRelationship,
-                impulseControl,
-                frustrationManagement,
-            }),
-
-        insertSpecialties: async (specialtie) =>
-            HttpRequest.post(`${apiUrl}/api/insertspecialties/${specialtie}`, {}),
-
         //#endregion
 
-        //#region Patch
-        updateLaboralDays: async (id, laboral, openingTime, closingTime) =>
-            HttpRequest.patch(`${apiUrl}/api/UpdateLaboralDays/${id}`, { laboral, openingTime, closingTime }),
+        //#region Patient Data
+        getPatientData: async (idPatient) =>
+            HttpRequest.get(`${apiUrl}/api/PatientData/${idPatient}`),
 
+        getPatientDataAndAntecedents: async (idPatient) =>
+            HttpRequest.get(`${apiUrl}/api/GetPatientDataAndAntecedents/${idPatient}`),
         //#endregion
 
-        //#region Get
+        //#region Insert Operations
+        insertPatientData: async (patientData) =>
+            HttpRequest.post(`${apiUrl}/api/insertpatient`, patientData),
+
+        insertFamilyHistory: async (familyHistoryData) =>
+            HttpRequest.post(`${apiUrl}/api/insertfamilyhistory`, familyHistoryData),
+
+        insertMedicalAppointmentCalendar: async (appointmentData) =>
+            HttpRequest.post(`${apiUrl}/api/InsertMedicalAppointmentCalendar`, appointmentData),
+        //#endregion
+
+        //#region Update Operations
+        updateLaboralDays: async (id, laboralDaysData) =>
+            HttpRequest.patch(`${apiUrl}/api/UpdateLaboralDays/${id}`, laboralDaysData),
+        //#endregion
+
+        //#region Get Operations
         getAllConfigurations: async () =>
             HttpRequest.get(`${apiUrl}/api/getallconfigurations`),
 
@@ -251,18 +133,13 @@ export const MedicalOfficeWebApi = (function (apiUrl) {
         getPatientAllergies: async (patientID) =>
             HttpRequest.get(`${apiUrl}/api/GetPatientAllergies/${patientID}`),
 
-        getPatientData: async (idPatient) =>
-            HttpRequest.get(`${apiUrl}/api/PatientData/${idPatient}`),
-
-        getPatientDataAndAntecedents: async (idPatient) =>
-            HttpRequest.get(`${apiUrl}/api/GetPatientDataAndAntecedents/${idPatient}`),
-
         getPsychiatricHistory: async (patientId) =>
             HttpRequest.get(`${apiUrl}/api/GetPsychiatricHistory/${patientId}`),
 
         getUsers: async (id = 0, usr = "") =>
             HttpRequest.get(`${apiUrl}/api/UsersData?id=${id}&usr=${usr}`),
-
         //#endregion
     };
 })();
+
+export default MedicalOfficeWebApi;

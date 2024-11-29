@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { MedicalOfficeWebApi } from "./utils/HttpRequests";
+import MedicalOfficeWebApi from '@/app/utils/HttpRequests';
 import { useRouter } from 'next/navigation';
 import CryptoLogin from '@/app/components/login';
 import Alert from '@/app/components/Alerts'; // Asegúrate de importar el componente Alert
@@ -15,12 +15,27 @@ export default function LoginPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const data = await MedicalOfficeWebApi.Login(usr, password);
-      setAlertData({ isSuccess: true, message: "" });
-      setTimeout(() => setAlertData(null), 3000);
-      router.push('/home');
+      // Llamada a la API
+      const data = await MedicalOfficeWebApi.login(usr, password);
+
+      // Manejo del token y redirección
+      const token = data?.userLoginResponseDto?.token;
+      if (token) {
+        localStorage.setItem('authToken', token);
+        setAlertData({ isSuccess: true, message: 'Inicio de sesión exitoso.' });
+        setTimeout(() => {
+          setAlertData(null);
+          router.push('/home'); // Redirige al home después del éxito
+        }, 2000);
+      } else {
+        throw new Error('No se pudo obtener el token de autenticación.');
+      }
     } catch (error) {
-      setAlertData({ isSuccess: false, message: error.message || "Error inesperado al iniciar sesión." });
+      // Manejo de errores
+      setAlertData({
+        isSuccess: false,
+        message: error.message || 'Error inesperado al iniciar sesión.',
+      });
     }
   };
 
@@ -43,12 +58,12 @@ export default function LoginPage() {
 
       {/* Componente de alerta para mensajes de éxito/error */}
       {alertData && (
-    <Alert
-      isSuccess={alertData.isSuccess}
-      message={alertData.message}
-      onClose={() => setAlertData(null)}
-    />
-  )}
+        <Alert
+          isSuccess={alertData.isSuccess}
+          message={alertData.message}
+          onClose={() => setAlertData(null)}
+        />
+      )}
     </div>
   );
 }

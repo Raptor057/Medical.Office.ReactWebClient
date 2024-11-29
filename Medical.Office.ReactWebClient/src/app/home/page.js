@@ -1,4 +1,3 @@
-
 'use client';
 
 import HomeLayout from './home-layout'; // Ajusta la ruta según la estructura de tu proyecto

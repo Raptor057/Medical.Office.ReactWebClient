@@ -1,6 +1,6 @@
 'use client';
 
-import InsertPatient from '@/app/components/Forms/Posts/InsertPatientData';
+import MedicalOfficeWebApi from '@/app/utils/HttpRequests';
 import InsertActiveMedicationsForm from '@/app/components/Forms/Posts/InsertActiveMedications';
 import InsertFamilyHistoryForm from '@/app/components/Forms/Posts/InsertFamilyHistory';
 import InsertMedicalHistoryNotesForm from '@/app/components/Forms/Posts/InsertMedicalHistoryNotes';
@@ -9,6 +9,8 @@ import InsertPathologicalBackgroundForm from '@/app/components/Forms/Posts/Inser
 import InsertPatientAllergiesForm from '@/app/components/Forms/Posts/InsertPatientAllergies';
 import InsertPatientDataForm from '@/app/components/Forms/Posts/InsertPatientData';
 import InsertPsychiatricHistoryForm from '@/app/components/Forms/Posts/InsertPsychiatricHistory';
+import { PatientsList } from '@/app/components/Patients/PatientsList';
+import PatientDataView from '@/app/components/Patients/PatientDataView';
 
 
 
@@ -24,6 +26,11 @@ export default function HomePage() {
         <InsertFamilyHistoryForm />
       </div>
       <br/>
+
+      <br/>
+      <div>
+        <InsertMedicalHistoryNotesForm />
+      </div>
 
       <div>
         <InsertPathologicalBackgroundForm />
@@ -47,6 +54,18 @@ export default function HomePage() {
       <div>
         <InsertPsychiatricHistoryForm />
       </div>
+
+      <br/>
+      <div>
+        <PatientsList />
+      </div>
+
+      <br/>
+      <div>
+        <PatientDataView />
+      </div>
+
+
 
     </div>
   );
