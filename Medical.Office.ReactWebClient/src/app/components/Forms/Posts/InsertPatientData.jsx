@@ -1,7 +1,15 @@
 import React, { useState } from "react";
-import { Button, Input, Select, Option, Textarea, Typography } from "@material-tailwind/react";
+import {
+  Button,
+  Input,
+  Select,
+  Option,
+  Textarea,
+  Typography,
+} from "@material-tailwind/react";
+import MedicalOfficeWebApi from "@/app/utils/HttpRequests";
 
-export default function InsertPatientDataForm({ onSubmit }) {
+export default function InsertPatientDataForm({ onSuccess }) {
   const [formData, setFormData] = useState({
     name: "",
     fathersSurname: "",
@@ -22,9 +30,12 @@ export default function InsertPatientDataForm({ onSubmit }) {
     insuranceProvider: "",
     policyNumber: "",
     bloodType: "",
-    photo: "",
+    photo: "", // Aquí se almacenará la imagen en formato Base64
     internalNotes: "",
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,10 +45,59 @@ export default function InsertPatientDataForm({ onSubmit }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  // Manejar la carga de archivos e incluir Base64 en el estado
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setFormData((prevData) => ({
+          ...prevData,
+          photo: reader.result.split(",")[1], // Guardamos solo la parte Base64
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (onSubmit) {
-      onSubmit(formData);
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      await MedicalOfficeWebApi.insertPatientData(formData);
+      if (onSuccess) {
+        onSuccess();
+      }
+      alert("Paciente registrado exitosamente.");
+      setFormData({
+        name: "",
+        fathersSurname: "",
+        mothersSurname: "",
+        dateOfBirth: "",
+        gender: "",
+        address: "",
+        country: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        outsideNumber: "",
+        insideNumber: "",
+        phoneNumber: "",
+        email: "",
+        emergencyContactName: "",
+        emergencyContactPhone: "",
+        insuranceProvider: "",
+        policyNumber: "",
+        bloodType: "",
+        photo: "",
+        internalNotes: "",
+      });
+    } catch (err) {
+      setError(err.message || "Error al registrar el paciente.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -46,7 +106,11 @@ export default function InsertPatientDataForm({ onSubmit }) {
       onSubmit={handleSubmit}
       className="max-w-4xl p-6 mx-auto space-y-8 bg-white rounded-lg shadow-lg"
     >
-      <Typography variant="h4" color="blue-gray" className="font-bold text-center">
+      <Typography
+        variant="h4"
+        color="blue-gray"
+        className="font-bold text-center"
+      >
         Registro de Paciente
       </Typography>
       <Typography color="gray" className="text-center">
@@ -61,6 +125,7 @@ export default function InsertPatientDataForm({ onSubmit }) {
           value={formData.name}
           onChange={handleChange}
           placeholder="Ingresa el nombre del paciente"
+          required
         />
         <Input
           label="Apellido Paterno"
@@ -68,6 +133,7 @@ export default function InsertPatientDataForm({ onSubmit }) {
           value={formData.fathersSurname}
           onChange={handleChange}
           placeholder="Ingresa el apellido paterno"
+          required
         />
         <Input
           label="Apellido Materno"
@@ -75,6 +141,7 @@ export default function InsertPatientDataForm({ onSubmit }) {
           value={formData.mothersSurname}
           onChange={handleChange}
           placeholder="Ingresa el apellido materno"
+          required
         />
         <Input
           label="Fecha de Nacimiento"
@@ -82,6 +149,7 @@ export default function InsertPatientDataForm({ onSubmit }) {
           type="date"
           value={formData.dateOfBirth}
           onChange={handleChange}
+          required
         />
       </div>
 
@@ -90,12 +158,14 @@ export default function InsertPatientDataForm({ onSubmit }) {
         label="Género"
         name="gender"
         value={formData.gender}
-        onChange={(value) => setFormData((prev) => ({ ...prev, gender: value }))}
+        onChange={(value) =>
+          setFormData((prev) => ({ ...prev, gender: value }))
+        }
+        required
       >
         <Option value="">Selecciona el género</Option>
         <Option value="male">Masculino</Option>
         <Option value="female">Femenino</Option>
-        <Option value="other">Otro</Option>
       </Select>
 
       {/* Dirección */}
@@ -105,21 +175,22 @@ export default function InsertPatientDataForm({ onSubmit }) {
           name="address"
           value={formData.address}
           onChange={handleChange}
-          placeholder="Calle y número"
+          placeholder="Ingresa la dirección"
+          required
         />
         <Input
           label="Número Exterior"
           name="outsideNumber"
           value={formData.outsideNumber}
           onChange={handleChange}
-          placeholder="Número exterior"
+          placeholder="Ingresa el número exterior"
         />
         <Input
           label="Número Interior"
           name="insideNumber"
           value={formData.insideNumber}
           onChange={handleChange}
-          placeholder="Número interior (opcional)"
+          placeholder="Ingresa el número interior (opcional)"
         />
         <Input
           label="Ciudad"
@@ -148,6 +219,7 @@ export default function InsertPatientDataForm({ onSubmit }) {
           value={formData.country}
           onChange={handleChange}
           placeholder="Ingresa el país"
+          required
         />
       </div>
 
@@ -159,6 +231,7 @@ export default function InsertPatientDataForm({ onSubmit }) {
           value={formData.phoneNumber}
           onChange={handleChange}
           placeholder="Ingresa el número de teléfono"
+          required
         />
         <Input
           label="Correo Electrónico"
@@ -166,6 +239,7 @@ export default function InsertPatientDataForm({ onSubmit }) {
           value={formData.email}
           onChange={handleChange}
           placeholder="Ingresa el correo electrónico"
+          required
         />
         <Input
           label="Contacto de Emergencia"
@@ -203,18 +277,12 @@ export default function InsertPatientDataForm({ onSubmit }) {
 
       {/* Información adicional */}
       <Input
-        label="Tipo de Sangre"
-        name="bloodType"
-        value={formData.bloodType}
-        onChange={handleChange}
-        placeholder="Ingresa el tipo de sangre"
-      />
-      <Input
-        label="Foto (URL)"
+        type="file"
+        label="Foto"
         name="photo"
-        value={formData.photo}
-        onChange={handleChange}
-        placeholder="URL de la foto (opcional)"
+        accept="image/*"
+        onChange={handleFileChange}
+        placeholder="Sube una imagen"
       />
       <Textarea
         label="Notas Internas"
@@ -226,9 +294,20 @@ export default function InsertPatientDataForm({ onSubmit }) {
       />
 
       {/* Botón de envío */}
-      <Button type="submit" fullWidth color="blue">
-        Guardar Paciente
+      <Button
+        type="submit"
+        fullWidth
+        color="blue"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Guardando..." : "Guardar Paciente"}
       </Button>
+
+      {error && (
+        <Typography color="red" className="mt-4 text-center">
+          {error}
+        </Typography>
+      )}
     </form>
   );
 }

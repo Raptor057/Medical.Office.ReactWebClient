@@ -189,7 +189,7 @@ export function MultiLevelSidebar() {
             className="mr-auto font-medium"
             onClick={() => console.log("Cerrando sesión...")}
           >
-            Cerrar Sesión
+          Cerrar Sesión
           </Typography>
         </ListItem>
       </List>

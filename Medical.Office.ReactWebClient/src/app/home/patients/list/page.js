@@ -20,7 +20,7 @@ export default function HomePage() {
       <div>
         <InsertActiveMedicationsForm />
       </div>
-      <br/> 
+      <br/>
 
       <div>
         <InsertFamilyHistoryForm />
