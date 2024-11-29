@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Checkbox, Button, Textarea } from "@material-tailwind/react";
+import { Checkbox, Button, Textarea, Typography } from "@material-tailwind/react";
 
 export default function InsertFamilyHistoryForm({ onSubmit }) {
   const [formData, setFormData] = useState({
@@ -26,54 +26,81 @@ export default function InsertFamilyHistoryForm({ onSubmit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <Checkbox
-        label="Diabetes"
-        name="diabetes"
-        checked={formData.diabetes}
-        onChange={handleChange}
-      />
-      <Checkbox
-        label="Cardiopathies"
-        name="cardiopathies"
-        checked={formData.cardiopathies}
-        onChange={handleChange}
-      />
-      <Checkbox
-        label="Hypertension"
-        name="hypertension"
-        checked={formData.hypertension}
-        onChange={handleChange}
-      />
-      <Checkbox
-        label="Thyroid Diseases"
-        name="thyroidDiseases"
-        checked={formData.thyroidDiseases}
-        onChange={handleChange}
-      />
-      <Checkbox
-        label="Chronic Kidney Disease"
-        name="chronicKidneyDisease"
-        checked={formData.chronicKidneyDisease}
-        onChange={handleChange}
-      />
-      <Checkbox
-        label="Others"
-        name="others"
-        checked={formData.others}
-        onChange={handleChange}
-      />
-      {formData.others && (
-        <Textarea
-          label="Other Details"
-          name="othersData"
-          value={formData.othersData}
+    <form
+      onSubmit={handleSubmit}
+      className="p-6 space-y-6 bg-white rounded-lg shadow-md"
+    >
+      {/* Título */}
+      <Typography
+        variant="h4"
+        color="blue-gray"
+        className="font-bold text-center"
+      >
+        Historial Familiar
+      </Typography>
+      <Typography
+        color="gray"
+        className="text-sm font-normal text-center"
+      >
+        Selecciona las condiciones médicas familiares conocidas.
+      </Typography>
+
+      {/* Opciones de historial familiar */}
+      <div className="space-y-4">
+        <Checkbox
+          label="Diabetes"
+          name="diabetes"
+          checked={formData.diabetes}
           onChange={handleChange}
         />
-      )}
-      <Button type="submit" color="blue" ripple="light" fullWidth>
-        Submit
-      </Button>
+        <Checkbox
+          label="Cardiopatías"
+          name="cardiopathies"
+          checked={formData.cardiopathies}
+          onChange={handleChange}
+        />
+        <Checkbox
+          label="Hipertensión"
+          name="hypertension"
+          checked={formData.hypertension}
+          onChange={handleChange}
+        />
+        <Checkbox
+          label="Enfermedades de Tiroides"
+          name="thyroidDiseases"
+          checked={formData.thyroidDiseases}
+          onChange={handleChange}
+        />
+        <Checkbox
+          label="Enfermedad Renal Crónica"
+          name="chronicKidneyDisease"
+          checked={formData.chronicKidneyDisease}
+          onChange={handleChange}
+        />
+        <Checkbox
+          label="Otras"
+          name="others"
+          checked={formData.others}
+          onChange={handleChange}
+        />
+        {/* Campo de texto para "Otras" */}
+        {formData.others && (
+          <Textarea
+            label="Detalles adicionales"
+            name="othersData"
+            value={formData.othersData}
+            onChange={handleChange}
+            placeholder="Escribe aquí otros antecedentes familiares..."
+          />
+        )}
+      </div>
+
+      {/* Botón de envío */}
+      <div className="flex justify-end">
+        <Button type="submit" color="blue">
+          Guardar Historial
+        </Button>
+      </div>
     </form>
   );
 }

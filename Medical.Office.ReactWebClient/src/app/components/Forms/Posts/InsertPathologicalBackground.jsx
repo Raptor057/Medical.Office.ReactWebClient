@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Checkbox, Input } from "@material-tailwind/react";
+import { Button, Checkbox, Input, Typography } from "@material-tailwind/react";
 
 export default function InsertPathologicalBackgroundForm({ onSubmit }) {
   const [formData, setFormData] = useState({
@@ -35,129 +35,134 @@ export default function InsertPathologicalBackgroundForm({ onSubmit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg p-6 mx-auto space-y-6 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-2xl font-semibold text-center text-gray-800">Pathological Background</h2>
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-lg p-6 mx-auto space-y-6 bg-white rounded-lg shadow-md"
+    >
+      {/* Título */}
+      <Typography variant="h4" color="blue-gray" className="font-bold text-center">
+        Antecedentes Patológicos
+      </Typography>
+      <Typography color="gray" className="text-sm font-normal text-center">
+        Complete la información sobre antecedentes patológicos del paciente.
+      </Typography>
 
+      {/* Checkboxes */}
       <div className="space-y-4">
-        <div className="space-y-2">
-          <Checkbox
-            name="previousHospitalization"
-            checked={formData.previousHospitalization}
-            onChange={handleChange}
-            label="Previous Hospitalization"
-          />
-          <Checkbox
-            name="previousSurgeries"
-            checked={formData.previousSurgeries}
-            onChange={handleChange}
-            label="Previous Surgeries"
-          />
-          <Checkbox
-            name="diabetes"
-            checked={formData.diabetes}
-            onChange={handleChange}
-            label="Diabetes"
-          />
-          <Checkbox
-            name="thyroidDiseases"
-            checked={formData.thyroidDiseases}
-            onChange={handleChange}
-            label="Thyroid Diseases"
-          />
-          <Checkbox
-            name="hypertension"
-            checked={formData.hypertension}
-            onChange={handleChange}
-            label="Hypertension"
-          />
-          <Checkbox
-            name="cardiopathies"
-            checked={formData.cardiopathies}
-            onChange={handleChange}
-            label="Cardiopathies"
-          />
-          <Checkbox
-            name="trauma"
-            checked={formData.trauma}
-            onChange={handleChange}
-            label="Trauma"
-          />
-          <Checkbox
-            name="cancer"
-            checked={formData.cancer}
-            onChange={handleChange}
-            label="Cancer"
-          />
-          <Checkbox
-            name="tuberculosis"
-            checked={formData.tuberculosis}
-            onChange={handleChange}
-            label="Tuberculosis"
-          />
-          <Checkbox
-            name="transfusions"
-            checked={formData.transfusions}
-            onChange={handleChange}
-            label="Transfusions"
-          />
-          <Checkbox
-            name="respiratoryDiseases"
-            checked={formData.respiratoryDiseases}
-            onChange={handleChange}
-            label="Respiratory Diseases"
-          />
-          <Checkbox
-            name="gastrointestinalDiseases"
-            checked={formData.gastrointestinalDiseases}
-            onChange={handleChange}
-            label="Gastrointestinal Diseases"
-          />
-          <Checkbox
-            name="stDs"
-            checked={formData.stDs}
-            onChange={handleChange}
-            label="Sexually Transmitted Diseases (STDs)"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="stDsData" className="block text-sm font-medium text-gray-700">STDs Details</label>
-          <Input
-            name="stDsData"
-            value={formData.stDsData}
-            onChange={handleChange}
-            id="stDsData"
-            placeholder="Details about STDs (if applicable)"
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="chronicKidneyDisease" className="block text-sm font-medium text-gray-700">Chronic Kidney Disease</label>
-          <Checkbox
-            name="chronicKidneyDisease"
-            checked={formData.chronicKidneyDisease}
-            onChange={handleChange}
-            label="Chronic Kidney Disease"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="others" className="block text-sm font-medium text-gray-700">Other Pathological Background</label>
-          <Input
-            name="others"
-            value={formData.others}
-            onChange={handleChange}
-            id="others"
-            placeholder="Other medical conditions"
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+        <Checkbox
+          name="previousHospitalization"
+          checked={formData.previousHospitalization}
+          onChange={handleChange}
+          label="Hospitalización previa"
+        />
+        <Checkbox
+          name="previousSurgeries"
+          checked={formData.previousSurgeries}
+          onChange={handleChange}
+          label="Cirugías previas"
+        />
+        <Checkbox
+          name="diabetes"
+          checked={formData.diabetes}
+          onChange={handleChange}
+          label="Diabetes"
+        />
+        <Checkbox
+          name="thyroidDiseases"
+          checked={formData.thyroidDiseases}
+          onChange={handleChange}
+          label="Enfermedades de la tiroides"
+        />
+        <Checkbox
+          name="hypertension"
+          checked={formData.hypertension}
+          onChange={handleChange}
+          label="Hipertensión"
+        />
+        <Checkbox
+          name="cardiopathies"
+          checked={formData.cardiopathies}
+          onChange={handleChange}
+          label="Cardiopatías"
+        />
+        <Checkbox
+          name="trauma"
+          checked={formData.trauma}
+          onChange={handleChange}
+          label="Traumas"
+        />
+        <Checkbox
+          name="cancer"
+          checked={formData.cancer}
+          onChange={handleChange}
+          label="Cáncer"
+        />
+        <Checkbox
+          name="tuberculosis"
+          checked={formData.tuberculosis}
+          onChange={handleChange}
+          label="Tuberculosis"
+        />
+        <Checkbox
+          name="transfusions"
+          checked={formData.transfusions}
+          onChange={handleChange}
+          label="Transfusiones"
+        />
+        <Checkbox
+          name="respiratoryDiseases"
+          checked={formData.respiratoryDiseases}
+          onChange={handleChange}
+          label="Enfermedades respiratorias"
+        />
+        <Checkbox
+          name="gastrointestinalDiseases"
+          checked={formData.gastrointestinalDiseases}
+          onChange={handleChange}
+          label="Enfermedades gastrointestinales"
+        />
+        <Checkbox
+          name="stDs"
+          checked={formData.stDs}
+          onChange={handleChange}
+          label="Enfermedades de transmisión sexual (ETS)"
+        />
       </div>
 
-      <div className="flex justify-center">
-        <Button type="submit" className="w-full py-3 text-lg font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-          Submit Pathological Background
+      {/* Detalles adicionales para ETS */}
+      {formData.stDs && (
+        <Input
+          label="Detalles de ETS"
+          name="stDsData"
+          value={formData.stDsData}
+          onChange={handleChange}
+          placeholder="Ingrese detalles sobre ETS"
+          className="mt-4"
+        />
+      )}
+
+      {/* Enfermedad renal crónica */}
+      <Checkbox
+        name="chronicKidneyDisease"
+        checked={formData.chronicKidneyDisease}
+        onChange={handleChange}
+        label="Enfermedad renal crónica"
+      />
+
+      {/* Otros */}
+      <Input
+        label="Otros antecedentes patológicos"
+        name="others"
+        value={formData.others}
+        onChange={handleChange}
+        placeholder="Ingrese otros antecedentes médicos"
+        className="mt-4"
+      />
+
+      {/* Botón de envío */}
+      <div className="flex justify-end">
+        <Button type="submit" color="blue" ripple="light">
+          Guardar Antecedentes Patológicos
         </Button>
       </div>
     </form>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input, Textarea } from "@material-tailwind/react";
+import { Button, Textarea, Typography } from "@material-tailwind/react";
 
 export default function InsertActiveMedicationsForm({ onSubmit }) {
   const [formData, setFormData] = useState({
@@ -20,26 +20,42 @@ export default function InsertActiveMedicationsForm({ onSubmit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-lg p-6 mx-auto space-y-6 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-2xl font-semibold text-center text-gray-800">Active Medications</h2>
-      
-      <div className="space-y-4">
-        <div>
-          <label htmlFor="activeMedicationsData" className="block text-sm font-medium text-gray-700">Active Medications</label>
-          <Textarea
-            name="activeMedicationsData"
-            value={formData.activeMedicationsData}
-            onChange={handleChange}
-            id="activeMedicationsData"
-            placeholder="Enter active medications data"
-            className="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+    <form
+      onSubmit={handleSubmit}
+      className="p-6 space-y-6 bg-white rounded-lg shadow-md"
+    >
+      {/* Título */}
+      <Typography
+        variant="h4"
+        color="blue-gray"
+        className="font-bold text-center"
+      >
+        Registrar Medicamentos Activos
+      </Typography>
+      <Typography
+        color="gray"
+        className="text-sm font-normal text-center"
+      >
+        Ingresa los datos correspondientes a los medicamentos activos del
+        paciente.
+      </Typography>
+
+      {/* Campo de texto para medicamentos activos */}
+      <div>
+        <Textarea
+          label="Medicamentos Activos"
+          name="activeMedicationsData"
+          value={formData.activeMedicationsData}
+          onChange={handleChange}
+          placeholder="Escribe aquí los medicamentos activos"
+          required
+        />
       </div>
 
-      <div className="flex justify-center">
-        <Button type="submit" className="w-full py-3 text-lg font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-          Submit Active Medications
+      {/* Botón de envío */}
+      <div className="flex justify-end">
+        <Button type="submit" color="blue">
+          Guardar Medicamentos
         </Button>
       </div>
     </form>

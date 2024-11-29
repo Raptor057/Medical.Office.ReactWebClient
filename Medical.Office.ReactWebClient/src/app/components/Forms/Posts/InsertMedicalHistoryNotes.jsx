@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input, Textarea } from "@material-tailwind/react";
+import { Button, Textarea, Typography } from "@material-tailwind/react";
 
 export default function InsertMedicalHistoryNotesForm({ onSubmit }) {
   const [formData, setFormData] = useState({
@@ -20,26 +20,40 @@ export default function InsertMedicalHistoryNotesForm({ onSubmit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 p-6 bg-white rounded-lg shadow-md max-w-lg mx-auto">
-      <h2 className="text-2xl font-semibold text-center text-gray-800 mb-4">Medical History Notes</h2>
-      
-      <div className="space-y-4">
-        <div>
-          <label htmlFor="medicalHistoryNotesData" className="block text-sm font-medium text-gray-700">Medical History Notes</label>
-          <Textarea
-            name="medicalHistoryNotesData"
-            value={formData.medicalHistoryNotesData}
-            onChange={handleChange}
-            id="medicalHistoryNotesData"
-            placeholder="Enter medical history notes"
-            className="mt-1 p-3 w-full border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          />
-        </div>
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-lg p-6 mx-auto space-y-6 bg-white rounded-lg shadow-md"
+    >
+      {/* Título del formulario */}
+      <Typography
+        variant="h4"
+        color="blue-gray"
+        className="font-bold text-center"
+      >
+        Notas del Historial Médico
+      </Typography>
+      <Typography color="gray" className="text-sm font-normal text-center">
+        Proporcione detalles importantes sobre el historial médico del paciente.
+      </Typography>
+
+      {/* Campo de texto para las notas */}
+      <div>
+        <Textarea
+          label="Notas del Historial Médico"
+          name="medicalHistoryNotesData"
+          value={formData.medicalHistoryNotesData}
+          onChange={handleChange}
+          id="medicalHistoryNotesData"
+          placeholder="Ingrese las notas del historial médico aquí..."
+          rows={5}
+          className="mt-4"
+        />
       </div>
 
-      <div className="flex justify-center">
-        <Button type="submit" className="w-full py-3 bg-indigo-600 text-white text-lg font-semibold rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-          Submit Medical History Notes
+      {/* Botón de envío */}
+      <div className="flex justify-end">
+        <Button type="submit" color="blue" ripple="light">
+          Guardar Notas
         </Button>
       </div>
     </form>

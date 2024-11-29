@@ -74,7 +74,7 @@ export function MultiLevelSidebar() {
                 </Link>
               </ListItem>
               <ListItem className="hover:bg-blue-100">
-                <Link href="/home/patients/insertpatient" className="flex w-full">
+                <Link href="/home/patients/list" className="flex w-full">
                   <ListItemPrefix>
                     <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
                   </ListItemPrefix>

@@ -1,142 +1,153 @@
-import React, { useState } from 'react';
-import { Button, Input, Switch, Textarea } from '@material-tailwind/react';
+import React, { useState } from "react";
+import { Button, Input, Switch, Textarea, Typography } from "@material-tailwind/react";
 
-const InsertPsychiatricHistoryForm = () => {
-  // Estado para los campos del formulario
-  const [familyHistory, setFamilyHistory] = useState(false);
-  const [familyHistoryData, setFamilyHistoryData] = useState('');
-  const [affectedAreas, setAffectedAreas] = useState('');
-  const [pastAndCurrentTreatments, setPastAndCurrentTreatments] = useState('');
-  const [familySocialSupport, setFamilySocialSupport] = useState(false);
-  const [familySocialSupportData, setFamilySocialSupportData] = useState('');
-  const [workLifeAspects, setWorkLifeAspects] = useState('');
-  const [socialLifeAspects, setSocialLifeAspects] = useState('');
-  const [authorityRelationship, setAuthorityRelationship] = useState('');
-  const [impulseControl, setImpulseControl] = useState('');
-  const [frustrationManagement, setFrustrationManagement] = useState('');
+const InsertPsychiatricHistoryForm = ({ onSubmit }) => {
+  const [formData, setFormData] = useState({
+    familyHistory: false,
+    familyHistoryData: "",
+    affectedAreas: "",
+    pastAndCurrentTreatments: "",
+    familySocialSupport: false,
+    familySocialSupportData: "",
+    workLifeAspects: "",
+    socialLifeAspects: "",
+    authorityRelationship: "",
+    impulseControl: "",
+    frustrationManagement: "",
+  });
 
-  const handleSubmit = async (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const toggleSwitch = (name) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: !prev[name],
+    }));
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    const data = {
-      idPatient: 0, // Este valor debe ser asignado según el contexto de la aplicación
-      familyHistory,
-      familyHistoryData,
-      affectedAreas,
-      pastAndCurrentTreatments,
-      familySocialSupport,
-      familySocialSupportData,
-      workLifeAspects,
-      socialLifeAspects,
-      authorityRelationship,
-      impulseControl,
-      frustrationManagement,
-    };
-
-    try {
-      const response = await fetch('/api/insertpsychiatricHistory', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Form submitted successfully:', result);
-      } else {
-        console.error('Error submitting form:', response.status);
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error);
-    }
+    if (onSubmit) onSubmit(formData);
   };
 
   return (
-    <div className="max-w-lg p-6 mx-auto bg-white rounded-lg shadow-lg">
-      <h2 className="mb-4 text-2xl font-semibold">Insert Psychiatric History</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-4xl p-6 mx-auto bg-white rounded-lg shadow-lg">
+      <Typography variant="h4" className="mb-4 text-center" color="blue-gray">
+        Historial Psiquiátrico
+      </Typography>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Antecedentes Familiares */}
         <div>
           <Switch
-            label="Family History"
-            checked={familyHistory}
-            onChange={() => setFamilyHistory(!familyHistory)}
+            label="Antecedentes Familiares"
+            checked={formData.familyHistory}
+            onChange={() => toggleSwitch("familyHistory")}
             color="teal"
           />
-          {familyHistory && (
+          {formData.familyHistory && (
             <Textarea
-              label="Family History Details"
-              value={familyHistoryData}
-              onChange={(e) => setFamilyHistoryData(e.target.value)}
+              label="Detalles de Antecedentes Familiares"
+              name="familyHistoryData"
+              value={formData.familyHistoryData}
+              onChange={handleChange}
+              placeholder="Describe los antecedentes familiares"
               className="mt-2"
             />
           )}
         </div>
 
+        {/* Áreas Afectadas */}
         <Input
-          label="Affected Areas"
-          value={affectedAreas}
-          onChange={(e) => setAffectedAreas(e.target.value)}
-          className="mt-2"
+          label="Áreas Afectadas"
+          name="affectedAreas"
+          value={formData.affectedAreas}
+          onChange={handleChange}
+          placeholder="Describe las áreas afectadas"
         />
+
+        {/* Tratamientos Pasados y Actuales */}
         <Textarea
-          label="Past and Current Treatments"
-          value={pastAndCurrentTreatments}
-          onChange={(e) => setPastAndCurrentTreatments(e.target.value)}
-          className="mt-2"
+          label="Tratamientos Pasados y Actuales"
+          name="pastAndCurrentTreatments"
+          value={formData.pastAndCurrentTreatments}
+          onChange={handleChange}
+          placeholder="Especifica los tratamientos recibidos"
         />
 
+        {/* Soporte Social Familiar */}
         <div>
           <Switch
-            label="Family Social Support"
-            checked={familySocialSupport}
-            onChange={() => setFamilySocialSupport(!familySocialSupport)}
+            label="Soporte Social Familiar"
+            checked={formData.familySocialSupport}
+            onChange={() => toggleSwitch("familySocialSupport")}
             color="teal"
           />
-          {familySocialSupport && (
+          {formData.familySocialSupport && (
             <Textarea
-              label="Family Social Support Details"
-              value={familySocialSupportData}
-              onChange={(e) => setFamilySocialSupportData(e.target.value)}
+              label="Detalles de Soporte Social Familiar"
+              name="familySocialSupportData"
+              value={formData.familySocialSupportData}
+              onChange={handleChange}
+              placeholder="Describe el soporte social familiar"
               className="mt-2"
             />
           )}
         </div>
 
+        {/* Aspectos de Vida Laboral */}
         <Input
-          label="Work Life Aspects"
-          value={workLifeAspects}
-          onChange={(e) => setWorkLifeAspects(e.target.value)}
-          className="mt-2"
-        />
-        <Input
-          label="Social Life Aspects"
-          value={socialLifeAspects}
-          onChange={(e) => setSocialLifeAspects(e.target.value)}
-          className="mt-2"
-        />
-        <Input
-          label="Authority Relationship"
-          value={authorityRelationship}
-          onChange={(e) => setAuthorityRelationship(e.target.value)}
-          className="mt-2"
-        />
-        <Input
-          label="Impulse Control"
-          value={impulseControl}
-          onChange={(e) => setImpulseControl(e.target.value)}
-          className="mt-2"
-        />
-        <Input
-          label="Frustration Management"
-          value={frustrationManagement}
-          onChange={(e) => setFrustrationManagement(e.target.value)}
-          className="mt-2"
+          label="Aspectos de Vida Laboral"
+          name="workLifeAspects"
+          value={formData.workLifeAspects}
+          onChange={handleChange}
+          placeholder="Describe los aspectos laborales relevantes"
         />
 
-        <Button type="submit" className="w-full mt-4" color="teal">
-          Submit
+        {/* Aspectos de Vida Social */}
+        <Input
+          label="Aspectos de Vida Social"
+          name="socialLifeAspects"
+          value={formData.socialLifeAspects}
+          onChange={handleChange}
+          placeholder="Describe los aspectos sociales relevantes"
+        />
+
+        {/* Relación con Autoridad */}
+        <Input
+          label="Relación con la Autoridad"
+          name="authorityRelationship"
+          value={formData.authorityRelationship}
+          onChange={handleChange}
+          placeholder="Describe cómo maneja la relación con autoridad"
+        />
+
+        {/* Control de Impulsos */}
+        <Input
+          label="Control de Impulsos"
+          name="impulseControl"
+          value={formData.impulseControl}
+          onChange={handleChange}
+          placeholder="Describe el control de impulsos del paciente"
+        />
+
+        {/* Manejo de Frustración */}
+        <Input
+          label="Manejo de Frustración"
+          name="frustrationManagement"
+          value={formData.frustrationManagement}
+          onChange={handleChange}
+          placeholder="Describe cómo maneja la frustración"
+        />
+
+        {/* Botón de Envío */}
+        <Button type="submit" color="teal" fullWidth>
+          Guardar Historial Psiquiátrico
         </Button>
       </form>
     </div>
