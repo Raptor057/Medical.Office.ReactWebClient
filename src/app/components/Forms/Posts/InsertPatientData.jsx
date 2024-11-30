@@ -6,8 +6,11 @@ import {
   Option,
   Textarea,
   Typography,
+  IconButton,
 } from "@material-tailwind/react";
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests";
+import { HomeIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
 
 export default function InsertPatientDataForm({ onSuccess }) {
   const [formData, setFormData] = useState({
@@ -164,8 +167,8 @@ export default function InsertPatientDataForm({ onSuccess }) {
         required
       >
         <Option value="">Selecciona el género</Option>
-        <Option value="male">Masculino</Option>
-        <Option value="female">Femenino</Option>
+        <Option value="Masculino">Masculino</Option>
+        <Option value="Femenino">Femenino</Option>
       </Select>
 
       {/* Dirección */}

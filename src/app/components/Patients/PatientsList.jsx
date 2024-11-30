@@ -1,6 +1,7 @@
 import React from "react";
+
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { PencilIcon, UserPlusIcon } from "@heroicons/react/24/solid";
+import { EyeIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
@@ -14,31 +15,11 @@ import {
   IconButton,
   Tooltip,
 } from "@material-tailwind/react";
+import Link from "next/link";
 
-const TABLE_HEAD = ["Nombre", "Rol", "Estado", "Fecha de Registro", ""];
+const TABLE_HEAD = ["Nombre Completo", "Correo Electrónico", "Estado", "Fecha de Nacimiento", ""];
 
-const TABLE_ROWS = [
-  {
-    img: "https://via.placeholder.com/150",
-    name: "Juan Pérez",
-    email: "juan.perez@example.com",
-    job: "Doctor",
-    org: "Hospital General",
-    online: true,
-    date: "23/04/18",
-  },
-  {
-    img: "https://via.placeholder.com/150",
-    name: "Ana López",
-    email: "ana.lopez@example.com",
-    job: "Enfermera",
-    org: "Clínica Familiar",
-    online: false,
-    date: "19/09/20",
-  },
-];
-
-export function PatientsList() {
+export function PatientsList({ patients = [] }) {
   return (
     <Card className="w-full">
       <CardHeader floated={false} shadow={false} className="rounded-none">
@@ -46,9 +27,11 @@ export function PatientsList() {
           <Typography variant="h5" color="blue-gray">
             Lista de Pacientes
           </Typography>
+          <Link href="/home/patients/insertpatient">
           <Button className="flex items-center gap-2">
             <UserPlusIcon className="w-5 h-5" /> Agregar Paciente
           </Button>
+          </Link>
         </div>
         <div className="flex items-center gap-4">
           <Input
@@ -78,60 +61,72 @@ export function PatientsList() {
             </tr>
           </thead>
           <tbody>
-            {TABLE_ROWS.map(
-              ({ img, name, email, job, org, online, date }, index) => {
-                const isLast = index === TABLE_ROWS.length - 1;
+            {patients.map(
+              (
+                {
+                  id,
+                  name,
+                  fathersSurname,
+                  mothersSurname,
+                  email,
+                  dateOfBirth,
+                  phoneNumber,
+                  photo,
+                },
+                index
+              ) => {
+                const isLast = index === patients.length - 1;
                 const classes = isLast
                   ? "p-4"
                   : "p-4 border-b border-blue-gray-50";
 
                 return (
-                  <tr key={name}>
+                  <tr key={id}>
                     <td className={classes}>
                       <div className="flex items-center gap-3">
-                        <Avatar src={img} alt={name} size="sm" />
+                        <Avatar
+                          src={
+                            photo
+                              ? `data:image/jpeg;base64,${photo}` // Mostrar imagen en Base64
+                              : "https://via.placeholder.com/150" // Imagen por defecto
+                          }
+                          alt={`${name} ${fathersSurname}`}
+                          size="sm"
+                          variant="circular"
+                        />
                         <div className="flex flex-col">
                           <Typography
                             variant="small"
                             color="blue-gray"
                             className="font-normal"
                           >
-                            {name}
+                            {`${name} ${fathersSurname} ${mothersSurname}`}
                           </Typography>
                           <Typography
                             variant="small"
                             color="blue-gray"
                             className="font-normal opacity-70"
                           >
-                            {email}
+                            {email || "Sin correo registrado"}
                           </Typography>
                         </div>
                       </div>
                     </td>
                     <td className={classes}>
-                      <div className="flex flex-col">
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {job}
-                        </Typography>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal opacity-70"
-                        >
-                          {org}
-                        </Typography>
-                      </div>
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-normal"
+                      >
+                        {phoneNumber || "Sin teléfono registrado"}
+                      </Typography>
                     </td>
                     <td className={classes}>
                       <Chip
                         variant="ghost"
                         size="sm"
-                        value={online ? "En línea" : "Desconectado"}
-                        color={online ? "green" : "blue-gray"}
+                        value="Activo"
+                        color="green"
                       />
                     </td>
                     <td className={classes}>
@@ -140,13 +135,17 @@ export function PatientsList() {
                         color="blue-gray"
                         className="font-normal"
                       >
-                        {date}
+                        {new Date(dateOfBirth).toLocaleDateString("es-MX", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                        })}
                       </Typography>
                     </td>
                     <td className={classes}>
-                      <Tooltip content="Editar Paciente">
+                      <Tooltip content="Ver Historial Del Paciente">
                         <IconButton variant="text">
-                          <PencilIcon className="w-4 h-4" />
+                          <EyeIcon className="w-4 h-4" />
                         </IconButton>
                       </Tooltip>
                     </td>
@@ -159,13 +158,13 @@ export function PatientsList() {
       </CardBody>
       <CardFooter className="flex items-center justify-between p-4 border-t border-blue-gray-50">
         <Typography variant="small" color="blue-gray" className="font-normal">
-          Página 1 de 5
+          Página 1 de 1
         </Typography>
         <div className="flex gap-2">
-          <Button variant="outlined" size="sm">
+          <Button variant="outlined" size="sm" disabled>
             Anterior
           </Button>
-          <Button variant="outlined" size="sm">
+          <Button variant="outlined" size="sm" disabled>
             Siguiente
           </Button>
         </div>
