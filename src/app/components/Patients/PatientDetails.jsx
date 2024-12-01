@@ -6,9 +6,12 @@ import {
   Typography,
   Avatar,
   Chip,
+  Button,
 } from "@material-tailwind/react";
+import Link from "next/link";
+import { HomeIcon } from "@heroicons/react/24/solid";
 
-export function PatientDetails({ patientData }) {
+export function PatientDetails({ patientData, onEdit, onInsert }) {
   if (!patientData) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -94,6 +97,26 @@ export function PatientDetails({ patientData }) {
         </div>
       </CardBody>
 
+      {/* Medicamentos Activos */}
+      <CardBody className="space-y-4">
+        <Typography variant="h5" color="blue-gray" className="font-semibold">
+          Medicamentos Activos
+        </Typography>
+        <Typography variant="small" color="gray">
+          {activeMedications?.activeMedicationsData || "Sin medicamentos reportados."}
+        </Typography>
+      </CardBody>
+
+      {/* Notas del Historial Médico */}
+      <CardBody className="space-y-4">
+        <Typography variant="h5" color="blue-gray" className="font-semibold">
+          Notas del Historial Médico
+        </Typography>
+        <Typography variant="small" color="gray">
+          {medicalHistoryNotes?.medicalHistoryNotesData || "Sin notas registradas."}
+        </Typography>
+      </CardBody>
+
       {/* Antecedentes Familiares */}
       <CardBody className="space-y-4">
         <Typography variant="h5" color="blue-gray" className="font-semibold">
@@ -136,6 +159,104 @@ export function PatientDetails({ patientData }) {
         </Typography>
       </CardBody>
 
+      {/* Antecedentes Patológicos */}
+<CardBody className="space-y-4">
+  <Typography variant="h5" color="blue-gray" className="font-semibold">
+    Antecedentes Patológicos
+  </Typography>
+  <div className="flex flex-wrap gap-2">
+    <Chip
+      value="Hospitalización Previa"
+      color={pathologicalBackground?.previousHospitalization ? "green" : "gray"}
+      variant="ghost"
+    />
+    <Chip
+      value="Cirugías Previas"
+      color={pathologicalBackground?.previousSurgeries ? "green" : "gray"}
+      variant="ghost"
+    />
+    <Chip
+      value="Diabetes"
+      color={pathologicalBackground?.diabetes ? "green" : "gray"}
+      variant="ghost"
+    />
+    <Chip
+      value="Hipertensión"
+      color={pathologicalBackground?.hypertension ? "green" : "gray"}
+      variant="ghost"
+    />
+    <Chip
+      value="Cardiopatías"
+      color={pathologicalBackground?.cardiopathies ? "green" : "gray"}
+      variant="ghost"
+    />
+    <Chip
+      value="Cáncer"
+      color={pathologicalBackground?.cancer ? "green" : "gray"}
+      variant="ghost"
+    />
+    <Chip
+      value="Tuberculosis"
+      color={pathologicalBackground?.tuberculosis ? "green" : "gray"}
+      variant="ghost"
+    />
+    <Chip
+      value="Enfermedad Renal Crónica"
+      color={pathologicalBackground?.chronicKidneyDisease ? "green" : "gray"}
+      variant="ghost"
+    />
+    <Chip
+      value="Enfermedades Respiratorias"
+      color={pathologicalBackground?.respiratoryDiseases ? "green" : "gray"}
+      variant="ghost"
+    />
+    <Chip
+      value="Enfermedades Gastrointestinales"
+      color={pathologicalBackground?.gastrointestinalDiseases ? "green" : "gray"}
+      variant="ghost"
+    />
+    <Chip
+      value="Enfermedades de Transmisión Sexual"
+      color={pathologicalBackground?.stDs ? "green" : "gray"}
+      variant="ghost"
+    />
+  </div>
+  <Typography variant="small" color="gray">
+    Detalles de ETS: {pathologicalBackground?.stDsData || "N/A"}
+  </Typography>
+  <Typography variant="small" color="gray">
+    Otros: {pathologicalBackground?.others || "N/A"}
+  </Typography>
+</CardBody>
+
+
+
+      {/* Historial No Patológico */}
+      <CardBody className="space-y-4">
+        <Typography variant="h5" color="blue-gray" className="font-semibold">
+          Historial No Patológico
+        </Typography>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <Typography variant="small" color="gray">
+            Actividad Física: {nonPathologicalHistory?.physicalActivity ? "Sí" : "No"}
+          </Typography>
+          <Typography variant="small" color="gray">
+            Fuma: {nonPathologicalHistory?.smoking ? "Sí" : "No"}
+          </Typography>
+          <Typography variant="small" color="gray">
+            Alcoholismo: {nonPathologicalHistory?.alcoholism ? "Sí" : "No"}
+          </Typography>
+          <Typography variant="small" color="gray">
+            Abuso de Sustancias:{" "}
+            {nonPathologicalHistory?.substanceAbuse ? "Sí" : "No"}
+          </Typography>
+        </div>
+        <Typography variant="small" color="gray">
+          Vacunación Reciente:{" "}
+          {nonPathologicalHistory?.recentVaccination ? "Sí" : "No"}
+        </Typography>
+      </CardBody>
+
       {/* Alergias */}
       <CardBody className="space-y-4">
         <Typography variant="h5" color="blue-gray" className="font-semibold">
@@ -146,24 +267,45 @@ export function PatientDetails({ patientData }) {
         </Typography>
       </CardBody>
 
-      {/* Medicamentos Activos */}
+      {/* Historial Psiquiátrico */}
       <CardBody className="space-y-4">
         <Typography variant="h5" color="blue-gray" className="font-semibold">
-          Medicamentos Activos
+          Historial Psiquiátrico
         </Typography>
         <Typography variant="small" color="gray">
-          {activeMedications?.activeMedicationsData || "Sin medicamentos reportados."}
+          Áreas Afectadas: {psychiatricHistory?.affectedAreas || "N/A"}
+        </Typography>
+        <Typography variant="small" color="gray">
+          Tratamientos Pasados y Actuales:{" "}
+          {psychiatricHistory?.pastAndCurrentTreatments || "N/A"}
+        </Typography>
+        <Typography variant="small" color="gray">
+          Apoyo Familiar y Social:{" "}
+          {psychiatricHistory?.familySocialSupport ? "Sí" : "No"}
         </Typography>
       </CardBody>
 
-      {/* Historia Psiquiátrica */}
-      <CardBody className="space-y-4">
-        <Typography variant="h5" color="blue-gray" className="font-semibold">
-          Historia Psiquiátrica
-        </Typography>
-        <Typography variant="small" color="gray">
-          {psychiatricHistory?.pastAndCurrentTreatments || "Sin historial psiquiátrico."}
-        </Typography>
+      {/* Botones de Acción */}
+      <CardBody className="flex justify-end gap-4">
+        <Link href={"/home/patients/list/patienthistory/insert"}>
+          <Button
+            color="green"
+            variant="filled"
+            onClick={onInsert}
+            className="w-32"
+          >
+            Insertar
+          </Button>
+        </Link>
+
+        <Button
+          color="blue"
+          variant="filled"
+          onClick={onEdit}
+          className="w-32"
+        >
+          Editar
+        </Button>
       </CardBody>
     </Card>
   );

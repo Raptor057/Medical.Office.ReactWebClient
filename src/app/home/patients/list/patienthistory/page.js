@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from "react";
-import { PatientDetails } from "@/app/components/Forms/Gets/PatientDetails";
+import { PatientDetails } from "@/app/components/Patients/PatientDetails";
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests";
 import { Typography } from "@material-tailwind/react";
 
