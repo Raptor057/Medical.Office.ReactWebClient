@@ -144,9 +144,11 @@ export function PatientsList({ patients = [] }) {
                     </td>
                     <td className={classes}>
                       <Tooltip content="Ver Historial Del Paciente">
-                        <IconButton variant="text">
-                          <EyeIcon className="w-4 h-4" />
-                        </IconButton>
+                        <Link href={"/home/patients/list/patienthistory"}>
+                          <IconButton variant="text">
+                            <EyeIcon className="w-4 h-4" />
+                          </IconButton>
+                        </Link>
                       </Tooltip>
                     </td>
                   </tr>
