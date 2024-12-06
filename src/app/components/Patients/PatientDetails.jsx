@@ -9,7 +9,6 @@ import {
   Button,
 } from "@material-tailwind/react";
 import Link from "next/link";
-import { HomeIcon } from "@heroicons/react/24/solid";
 
 export function PatientDetails({ patientData, onEdit, onInsert }) {
   if (!patientData) {

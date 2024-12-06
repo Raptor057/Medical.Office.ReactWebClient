@@ -13,6 +13,7 @@ import InsertNonPathologicalHistoryForm from "@/app/components/Forms/Posts/Inser
 import InsertPathologicalBackgroundForm from "@/app/components/Forms/Posts/InsertPathologicalBackground";
 import InsertPatientAllergiesForm from "@/app/components/Forms/Posts/InsertPatientAllergies";
 import InsertPsychiatricHistoryForm from "@/app/components/Forms/Posts/InsertPsychiatricHistory";
+import InsertLoadFile from "@/app/components/Forms/Posts/InsertLoadFile";
 
 
 export default function PatientInsertForms() {
