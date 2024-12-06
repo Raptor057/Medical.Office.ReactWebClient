@@ -1,5 +1,4 @@
-import React from "react";
-
+import React, { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { EyeIcon, UserPlusIcon } from "@heroicons/react/24/solid";
 import {
@@ -17,9 +16,25 @@ import {
 } from "@material-tailwind/react";
 import Link from "next/link";
 
-const TABLE_HEAD = ["Nombre Completo", "Correo Electrónico", "Estado", "Fecha de Nacimiento", ""];
+const TABLE_HEAD = ["Nombre Completo", "Correo Electrónico", "Estado", "Fecha de Nacimiento", "Ver Hisotrial"];
 
 export function PatientsList({ patients = [] }) {
+  const [query, setQuery] = useState(""); // Estado para manejar el texto de búsqueda
+  const [filteredPatients, setFilteredPatients] = useState(patients); // Pacientes filtrados
+
+  // Maneja el cambio en el input de búsqueda
+  const handleSearch = (event) => {
+    const searchQuery = event.target.value.toLowerCase();
+    setQuery(searchQuery);
+
+    const filtered = patients.filter(({ name, fathersSurname, mothersSurname, email }) =>
+      (`${name} ${fathersSurname} ${mothersSurname}`.toLowerCase().includes(searchQuery) || 
+      (email ? email.toLowerCase().includes(searchQuery) : false)) // Validación para email
+    );
+
+    setFilteredPatients(filtered);
+  };
+
   return (
     <Card className="w-full">
       <CardHeader floated={false} shadow={false} className="rounded-none">
@@ -28,15 +43,17 @@ export function PatientsList({ patients = [] }) {
             Lista de Pacientes
           </Typography>
           <Link href="/home/patients/insertpatient">
-          <Button className="flex items-center gap-2">
-            <UserPlusIcon className="w-5 h-5" /> Agregar Paciente
-          </Button>
+            <Button className="flex items-center gap-2">
+              <UserPlusIcon className="w-5 h-5" /> Agregar Paciente
+            </Button>
           </Link>
         </div>
         <div className="flex items-center gap-4">
           <Input
             label="Buscar"
             icon={<MagnifyingGlassIcon className="w-5 h-5" />}
+            value={query}
+            onChange={handleSearch} // Evento para actualizar búsqueda
           />
         </div>
       </CardHeader>
@@ -61,7 +78,7 @@ export function PatientsList({ patients = [] }) {
             </tr>
           </thead>
           <tbody>
-            {patients.map(
+            {filteredPatients.map(
               (
                 {
                   id,
@@ -75,7 +92,7 @@ export function PatientsList({ patients = [] }) {
                 },
                 index
               ) => {
-                const isLast = index === patients.length - 1;
+                const isLast = index === filteredPatients.length - 1;
                 const classes = isLast
                   ? "p-4"
                   : "p-4 border-b border-blue-gray-50";
@@ -144,7 +161,12 @@ export function PatientsList({ patients = [] }) {
                     </td>
                     <td className={classes}>
                       <Tooltip content="Ver Historial Del Paciente">
-                        <Link href={"/home/patients/list/patienthistory"}>
+                        <Link
+                          href={{
+                            pathname: "/home/patients/list/patienthistory",
+                            query: { id },
+                          }}
+                        >
                           <IconButton variant="text">
                             <EyeIcon className="w-4 h-4" />
                           </IconButton>
