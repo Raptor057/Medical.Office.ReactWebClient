@@ -16,24 +16,43 @@ import {
 } from "@material-tailwind/react";
 import Link from "next/link";
 
-const TABLE_HEAD = ["Nombre Completo", "Correo Electrónico", "Estado", "Fecha de Nacimiento", "Ver Hisotrial"];
+const TABLE_HEAD = [
+  "Nombre Completo",
+  "Correo Electrónico",
+  "Estado",
+  "Fecha de Nacimiento",
+  "Ver Historial",
+];
 
 export function PatientsList({ patients = [] }) {
-  const [query, setQuery] = useState(""); // Estado para manejar el texto de búsqueda
-  const [filteredPatients, setFilteredPatients] = useState(patients); // Pacientes filtrados
+  const [query, setQuery] = useState(""); // Texto del buscador
+  const [filteredPatients, setFilteredPatients] = useState(patients); // Lista filtrada
+  const [currentPage, setCurrentPage] = useState(1); // Página actual
+  const itemsPerPage = 50; // Elementos por página
 
-  // Maneja el cambio en el input de búsqueda
+  // Manejar búsqueda en todo el array
   const handleSearch = (event) => {
     const searchQuery = event.target.value.toLowerCase();
     setQuery(searchQuery);
 
     const filtered = patients.filter(({ name, fathersSurname, mothersSurname, email }) =>
-      (`${name} ${fathersSurname} ${mothersSurname}`.toLowerCase().includes(searchQuery) || 
-      (email ? email.toLowerCase().includes(searchQuery) : false)) // Validación para email
+      `${name || ""} ${fathersSurname || ""} ${mothersSurname || ""}`
+        .toLowerCase()
+        .includes(searchQuery) || (email ? email.toLowerCase().includes(searchQuery) : false)
     );
 
     setFilteredPatients(filtered);
+    setCurrentPage(1); // Reiniciar a la primera página después de buscar
   };
+
+  // Lógica de paginación
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedPatients = filteredPatients.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
+
+  const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
 
   return (
     <Card className="w-full">
@@ -53,7 +72,7 @@ export function PatientsList({ patients = [] }) {
             label="Buscar"
             icon={<MagnifyingGlassIcon className="w-5 h-5" />}
             value={query}
-            onChange={handleSearch} // Evento para actualizar búsqueda
+            onChange={handleSearch} // Actualizar búsqueda
           />
         </div>
       </CardHeader>
@@ -78,7 +97,7 @@ export function PatientsList({ patients = [] }) {
             </tr>
           </thead>
           <tbody>
-            {filteredPatients.map(
+            {paginatedPatients.map(
               (
                 {
                   id,
@@ -92,7 +111,7 @@ export function PatientsList({ patients = [] }) {
                 },
                 index
               ) => {
-                const isLast = index === filteredPatients.length - 1;
+                const isLast = index === paginatedPatients.length - 1;
                 const classes = isLast
                   ? "p-4"
                   : "p-4 border-b border-blue-gray-50";
@@ -117,7 +136,9 @@ export function PatientsList({ patients = [] }) {
                             color="blue-gray"
                             className="font-normal"
                           >
-                            {`${name} ${fathersSurname} ${mothersSurname}`}
+                            {`${name || ""} ${fathersSurname || ""} ${
+                              mothersSurname || ""
+                            }`}
                           </Typography>
                           <Typography
                             variant="small"
@@ -182,13 +203,23 @@ export function PatientsList({ patients = [] }) {
       </CardBody>
       <CardFooter className="flex items-center justify-between p-4 border-t border-blue-gray-50">
         <Typography variant="small" color="blue-gray" className="font-normal">
-          Página 1 de 1
+          Página {currentPage} de {totalPages}
         </Typography>
         <div className="flex gap-2">
-          <Button variant="outlined" size="sm" disabled>
+          <Button
+            variant="outlined"
+            size="sm"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => prev - 1)}
+          >
             Anterior
           </Button>
-          <Button variant="outlined" size="sm" disabled>
+          <Button
+            variant="outlined"
+            size="sm"
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((prev) => prev + 1)}
+          >
             Siguiente
           </Button>
         </div>
