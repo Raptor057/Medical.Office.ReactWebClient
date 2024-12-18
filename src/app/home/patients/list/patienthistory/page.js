@@ -1,14 +1,22 @@
+//Modifica el inicio de tu código y protege el useSearchParams con un chequeo de window.
+
 'use client'; // Necesario para habilitar el entorno cliente
 
 import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { Typography } from '@material-tailwind/react';
+import { useSearchParams } from 'next/navigation';
 import MedicalOfficeWebApi from '@/app/utils/HttpRequests';
 import { PatientDetails } from '@/app/components/Patients/PatientDetails';
 
 export default function PatientDetailsPage() {
-  const searchParams = useSearchParams();
-  const id = searchParams.get('id'); // Obtén el ID de los parámetros de consulta
+  const [id, setId] = useState(null);
+  const searchParams = typeof window !== 'undefined' ? useSearchParams() : null;
+
+  useEffect(() => {
+    if (searchParams) {
+      setId(searchParams.get('id'));
+    }
+  }, [searchParams]);
 
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -60,4 +68,3 @@ export default function PatientDetailsPage() {
     </div>
   );
 }
-
