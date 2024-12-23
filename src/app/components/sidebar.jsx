@@ -38,7 +38,7 @@ export function MultiLevelSidebar() {
       </div>
 
       <List>
-        {/* Pacientes */}
+        {/* Punto de Venta */}
         <Accordion
           open={open === 1}
           icon={
@@ -59,26 +59,55 @@ export function MultiLevelSidebar() {
                 <PresentationChartBarIcon className="w-5 h-5 text-blue-500" />
               </ListItemPrefix>
               <Typography color="blue-gray" className="mr-auto font-medium">
-                Pacientes
+                Punto de Venta
               </Typography>
             </AccordionHeader>
           </ListItem>
           <AccordionBody className="py-1">
             <List className="p-0">
+              {/* Gestión de Productos */}
               <ListItem className="hover:bg-blue-100">
-                <Link href="/home/patients/insertpatient" className="flex w-full">
+                <Link
+                  href="/home/pos/gestiondeproductos"
+                  className="flex w-full"
+                >
                   <ListItemPrefix>
                     <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
                   </ListItemPrefix>
-                  Agregar Paciente
+                  Gestión de Productos
                 </Link>
               </ListItem>
+              {/* Gestión de Ventas */}
               <ListItem className="hover:bg-blue-100">
-                <Link href="/home/patients/list" className="flex w-full">
+                <Link href="/home/pos/gestiondeventas" className="flex w-full">
                   <ListItemPrefix>
                     <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
                   </ListItemPrefix>
-                  Lista de Pacientes
+                  Gestión de Ventas
+                </Link>
+              </ListItem>
+              {/* Gestión de Cortes de Caja */}
+              <ListItem className="hover:bg-blue-100">
+                <Link
+                  href="/home/pos/gestiondecortesdecaja"
+                  className="flex w-full"
+                >
+                  <ListItemPrefix>
+                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
+                  </ListItemPrefix>
+                  Gestión de Cortes de Caja
+                </Link>
+              </ListItem>
+              {/* Generación de Reportes */}
+              <ListItem className="hover:bg-blue-100">
+                <Link
+                  href="/home/pos/generaciondereportes"
+                  className="flex w-full"
+                >
+                  <ListItemPrefix>
+                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
+                  </ListItemPrefix>
+                  Generación de Reportes
                 </Link>
               </ListItem>
             </List>
@@ -132,53 +161,6 @@ export function MultiLevelSidebar() {
           </AccordionBody>
         </Accordion>
 
-        {/* Configuración */}
-        <Accordion
-          open={open === 3}
-          icon={
-            <ChevronDownIcon
-              strokeWidth={2.5}
-              className={`mx-auto h-4 w-4 transition-transform ${
-                open === 3 ? "rotate-180" : ""
-              }`}
-            />
-          }
-        >
-          <ListItem className="p-0" selected={open === 3}>
-            <AccordionHeader
-              onClick={() => handleOpen(3)}
-              className="p-3 border-b-0"
-            >
-              <ListItemPrefix>
-                <Cog6ToothIcon className="w-5 h-5 text-blue-500" />
-              </ListItemPrefix>
-              <Typography color="blue-gray" className="mr-auto font-medium">
-                Configuración
-              </Typography>
-            </AccordionHeader>
-          </ListItem>
-          <AccordionBody className="py-1">
-            <List className="p-0">
-              <ListItem className="hover:bg-blue-100">
-                <Link href="/configurations/office" className="flex w-full">
-                  <ListItemPrefix>
-                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
-                  </ListItemPrefix>
-                  Oficina
-                </Link>
-              </ListItem>
-              <ListItem className="hover:bg-blue-100">
-                <Link href="/configurations/roles" className="flex w-full">
-                  <ListItemPrefix>
-                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
-                  </ListItemPrefix>
-                  Roles y Permisos
-                </Link>
-              </ListItem>
-            </List>
-          </AccordionBody>
-        </Accordion>
-
         {/* Cerrar Sesión */}
         <ListItem className="cursor-pointer hover:bg-red-50">
           <ListItemPrefix>
@@ -189,7 +171,7 @@ export function MultiLevelSidebar() {
             className="mr-auto font-medium"
             onClick={() => console.log("Cerrando sesión...")}
           >
-          Cerrar Sesión
+            Cerrar Sesión
           </Typography>
         </ListItem>
       </List>

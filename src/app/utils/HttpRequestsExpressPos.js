@@ -78,7 +78,7 @@ const HttpRequest = (() => {
     };
 })();
 
-const MedicalOfficeWebApi = (() => {
+const MedicalExpressPosWebApi = (() => {
     const apiUrl = "http://localhost:5038";
     //const apiUrl = "http://MedicalOfficeWebApi:8080";
 
@@ -214,4 +214,4 @@ const ExpressPos = (() => {
 })();
 
 
-export default MedicalOfficeWebApi;
+export default MedicalExpressPosWebApi;
