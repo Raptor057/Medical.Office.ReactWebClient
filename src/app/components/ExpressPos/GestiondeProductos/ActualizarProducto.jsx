@@ -1,121 +1,132 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import ExpressPos from '@/app/utils/HttpRequestsExpressPos';
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Button,
+  Input,
+  Typography,
+} from "@material-tailwind/react";
+import MedicalExpressPosWebApi from "@/app/utils/HttpRequestsExpressPos";
 
 const ActualizarProducto = ({ productoId, onUpdateSuccess }) => {
-    const [formData, setFormData] = useState({
-        nombre: '',
-        precio: '',
-        stock: '',
-    });
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({
+    nombre: "",
+    precio: "",
+    stock: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const fetchProducto = async () => {
-            try {
-                setLoading(true);
-                const producto = await ExpressPos.obtenerProductoPorId(productoId);
-                setFormData({
-                    nombre: producto.nombre,
-                    precio: producto.precio,
-                    stock: producto.stock,
-                });
-                setLoading(false);
-            } catch (err) {
-                setError('Error al cargar el producto.');
-                setLoading(false);
-            }
-        };
-
-        if (productoId) {
-            fetchProducto();
-        }
-    }, [productoId]);
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+  useEffect(() => {
+    const fetchProducto = async () => {
+      try {
+        setLoading(true);
+        const producto = await MedicalExpressPosWebApi.obtenerProductoPorId(productoId);
+        setFormData({
+          nombre: producto.nombre,
+          precio: producto.precio,
+          stock: producto.stock,
+        });
+        setLoading(false);
+      } catch (err) {
+        setError("Error al cargar el producto.");
+        setLoading(false);
+      }
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError(null);
+    if (productoId) {
+      fetchProducto();
+    }
+  }, [productoId]);
 
-        try {
-            setLoading(true);
-            await ExpressPos.actualizarProducto(productoId, {
-                nombre: formData.nombre,
-                precio: parseFloat(formData.precio),
-                stock: parseInt(formData.stock, 10),
-            });
-            setLoading(false);
-            if (onUpdateSuccess) onUpdateSuccess();
-        } catch (err) {
-            setError('Error al actualizar el producto.');
-            setLoading(false);
-        }
-    };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    return (
-        <div className="p-4 bg-white rounded shadow-md">
-            <h2 className="text-xl font-bold mb-4">Actualizar Producto</h2>
-            {loading && <p>Cargando...</p>}
-            {error && <p className="text-red-500">{error}</p>}
-            <form onSubmit={handleSubmit}>
-                <div className="mb-4">
-                    <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
-                        Nombre
-                    </label>
-                    <input
-                        type="text"
-                        id="nombre"
-                        name="nombre"
-                        value={formData.nombre}
-                        onChange={handleInputChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        required
-                    />
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="precio" className="block text-sm font-medium text-gray-700">
-                        Precio
-                    </label>
-                    <input
-                        type="number"
-                        id="precio"
-                        name="precio"
-                        value={formData.precio}
-                        onChange={handleInputChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        required
-                    />
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="stock" className="block text-sm font-medium text-gray-700">
-                        Stock
-                    </label>
-                    <input
-                        type="number"
-                        id="stock"
-                        name="stock"
-                        value={formData.stock}
-                        onChange={handleInputChange}
-                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                        required
-                    />
-                </div>
-                <button
-                    type="submit"
-                    className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    disabled={loading}
-                >
-                    {loading ? 'Actualizando...' : 'Actualizar Producto'}
-                </button>
-            </form>
-        </div>
-    );
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      setLoading(true);
+      await MedicalExpressPosWebApi.actualizarProducto(productoId, {
+        nombre: formData.nombre,
+        precio: parseFloat(formData.precio),
+        stock: parseInt(formData.stock, 10),
+      });
+      setLoading(false);
+      if (onUpdateSuccess) onUpdateSuccess();
+    } catch (err) {
+      setError("Error al actualizar el producto.");
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Card className="w-full max-w-xl mx-auto">
+      <CardHeader color="blue" className="text-center">
+        <Typography variant="h5" color="white">
+          Actualizar Producto
+        </Typography>
+      </CardHeader>
+      <CardBody className="space-y-6">
+        {loading && <Typography color="blue">Cargando...</Typography>}
+        {error && <Typography color="red">{error}</Typography>}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <Input
+              label="Nombre"
+              id="nombre"
+              name="nombre"
+              value={formData.nombre}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <Input
+              label="Precio"
+              type="number"
+              id="precio"
+              name="precio"
+              value={formData.precio}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <div>
+            <Input
+              label="Stock"
+              type="number"
+              id="stock"
+              name="stock"
+              value={formData.stock}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+          <Button
+            type="submit"
+            color="blue"
+            fullWidth
+            disabled={loading}
+          >
+            {loading ? "Actualizando..." : "Actualizar Producto"}
+          </Button>
+        </form>
+      </CardBody>
+      <CardFooter>
+        <Typography variant="small" color="gray" className="text-center">
+          Asegúrese de que los campos sean correctos antes de enviar.
+        </Typography>
+      </CardFooter>
+    </Card>
+  );
 };
 
 export default ActualizarProducto;

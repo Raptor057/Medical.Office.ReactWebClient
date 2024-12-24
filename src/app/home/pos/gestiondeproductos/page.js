@@ -5,52 +5,106 @@ import AgregarProducto from "@/app/components/ExpressPos/GestiondeProductos/Agre
 import ActualizarProducto from "@/app/components/ExpressPos/GestiondeProductos/ActualizarProducto";
 import EliminarProducto from "@/app/components/ExpressPos/GestiondeProductos/EliminarProducto";
 import ListarProductos from "@/app/components/ExpressPos/GestiondeProductos/ListarProductos";
+import { useRouter } from "next/navigation"; // Importa el hook para redirigir
 
 const GestionDeProductosPage = () => {
   const [activeComponent, setActiveComponent] = useState("listar");
+  const router = useRouter(); // Usa el hook para navegación
 
   const renderComponent = () => {
     switch (activeComponent) {
       case "agregar":
-        return <AgregarProducto />;
+        return (
+          <div className="relative p-6 bg-white rounded-lg shadow-lg border border-gray-200">
+            <button
+              onClick={() => setActiveComponent("listar")}
+              className="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-lg font-bold"
+            >
+              ✕
+            </button>
+            <AgregarProducto />
+          </div>
+        );
       case "actualizar":
-        return <ActualizarProducto />;
+        return (
+          <div className="relative p-6 bg-white rounded-lg shadow-lg border border-gray-200">
+            <button
+              onClick={() => setActiveComponent("listar")}
+              className="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-lg font-bold"
+            >
+              ✕
+            </button>
+            <ActualizarProducto />
+          </div>
+        );
       case "eliminar":
-        return <EliminarProducto />;
+        return (
+          <div className="p-6 bg-white rounded-lg shadow-lg border border-gray-200">
+            <EliminarProducto />
+          </div>
+        );
       default:
-        return <ListarProductos />;
+        return (
+          <div className="p-6 bg-white rounded-lg shadow-lg border border-gray-200">
+            <ListarProductos />
+          </div>
+        );
     }
   };
 
   return (
-    <div className="p-4">
-      <div className="flex space-x-4 mb-4">
+    <div className="p-4 bg-gradient-to-b from-gray-100 to-gray-200 min-h-screen">
+      <div className="flex justify-between items-center mb-6">
+        <div className="flex space-x-4">
+          <button
+            onClick={() => setActiveComponent("listar")}
+            className={`px-4 py-2 rounded-lg text-white font-semibold ${
+              activeComponent === "listar"
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-blue-500 hover:bg-blue-600"
+            }`}
+          >
+            Listar Productos
+          </button>
+          <button
+            onClick={() => setActiveComponent("agregar")}
+            className={`px-4 py-2 rounded-lg text-white font-semibold ${
+              activeComponent === "agregar"
+                ? "bg-green-600 hover:bg-green-700"
+                : "bg-green-500 hover:bg-green-600"
+            }`}
+          >
+            Agregar Producto
+          </button>
+          <button
+            onClick={() => setActiveComponent("actualizar")}
+            className={`px-4 py-2 rounded-lg text-white font-semibold ${
+              activeComponent === "actualizar"
+                ? "bg-yellow-600 hover:bg-yellow-700"
+                : "bg-yellow-500 hover:bg-yellow-600"
+            }`}
+          >
+            Actualizar Producto
+          </button>
+          <button
+            onClick={() => setActiveComponent("eliminar")}
+            className={`px-4 py-2 rounded-lg text-white font-semibold ${
+              activeComponent === "eliminar"
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-red-500 hover:bg-red-600"
+            }`}
+          >
+            Eliminar Producto
+          </button>
+        </div>
         <button
-          onClick={() => setActiveComponent("listar")}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+          onClick={() => router.push("/home")} // Redirige al home
+          className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800"
         >
-          Listar Productos
-        </button>
-        <button
-          onClick={() => setActiveComponent("agregar")}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
-        >
-          Agregar Producto
-        </button>
-        <button
-          onClick={() => setActiveComponent("actualizar")}
-          className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-700"
-        >
-          Actualizar Producto
-        </button>
-        <button
-          onClick={() => setActiveComponent("eliminar")}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700"
-        >
-          Eliminar Producto
+          Volver a Home
         </button>
       </div>
-      <div>{renderComponent()}</div>
+      <div className="max-w-4xl mx-auto">{renderComponent()}</div>
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import Link from "next/link"; // Para enrutamiento interno
+import Link from "next/link";
 import {
   Card,
   Typography,
@@ -27,7 +27,6 @@ export function MultiLevelSidebar() {
 
   return (
     <Card className="h-screen w-full max-w-[18rem] p-4 shadow-xl bg-gradient-to-b from-blue-50 to-white">
-      {/* Logo y encabezado */}
       <div className="p-4 mb-6 text-center border-b border-gray-200">
         <Typography variant="h5" color="blue-gray" className="font-bold">
           Medical Office
@@ -38,7 +37,7 @@ export function MultiLevelSidebar() {
       </div>
 
       <List>
-        {/* Punto de Venta */}
+        {/* Pacientes */}
         <Accordion
           open={open === 1}
           icon={
@@ -59,62 +58,33 @@ export function MultiLevelSidebar() {
                 <PresentationChartBarIcon className="w-5 h-5 text-blue-500" />
               </ListItemPrefix>
               <Typography color="blue-gray" className="mr-auto font-medium">
-                Punto de Venta
+                Pacientes
               </Typography>
             </AccordionHeader>
           </ListItem>
           <AccordionBody className="py-1">
             <List className="p-0">
-              {/* Gestión de Productos */}
               <ListItem className="hover:bg-blue-100">
-                <Link
-                  href="/home/pos/gestiondeproductos"
-                  className="flex w-full"
-                >
+                <Link href="/home/patients/insertpatient" className="flex w-full">
                   <ListItemPrefix>
                     <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
                   </ListItemPrefix>
-                  Gestión de Productos
+                  Agregar Paciente
                 </Link>
               </ListItem>
-              {/* Gestión de Ventas */}
               <ListItem className="hover:bg-blue-100">
-                <Link href="/home/pos/gestiondeventas" className="flex w-full">
+                <Link href="/home/patients/list" className="flex w-full">
                   <ListItemPrefix>
                     <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
                   </ListItemPrefix>
-                  Gestión de Ventas
-                </Link>
-              </ListItem>
-              {/* Gestión de Cortes de Caja */}
-              <ListItem className="hover:bg-blue-100">
-                <Link
-                  href="/home/pos/gestiondecortesdecaja"
-                  className="flex w-full"
-                >
-                  <ListItemPrefix>
-                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
-                  </ListItemPrefix>
-                  Gestión de Cortes de Caja
-                </Link>
-              </ListItem>
-              {/* Generación de Reportes */}
-              <ListItem className="hover:bg-blue-100">
-                <Link
-                  href="/home/pos/generaciondereportes"
-                  className="flex w-full"
-                >
-                  <ListItemPrefix>
-                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
-                  </ListItemPrefix>
-                  Generación de Reportes
+                  Lista de Pacientes
                 </Link>
               </ListItem>
             </List>
           </AccordionBody>
         </Accordion>
 
-        {/* Perfil */}
+        {/* Punto de Venta */}
         <Accordion
           open={open === 2}
           icon={
@@ -132,29 +102,102 @@ export function MultiLevelSidebar() {
               className="p-3 border-b-0"
             >
               <ListItemPrefix>
-                <UserCircleIcon className="w-5 h-5 text-blue-500" />
+                <PresentationChartBarIcon className="w-5 h-5 text-blue-500" />
               </ListItemPrefix>
               <Typography color="blue-gray" className="mr-auto font-medium">
-                Perfil
+                Punto de Venta
               </Typography>
             </AccordionHeader>
           </ListItem>
           <AccordionBody className="py-1">
             <List className="p-0">
               <ListItem className="hover:bg-blue-100">
-                <Link href="/profile" className="flex w-full">
+                <Link href="/home/pos/gestiondeproductos" className="flex w-full">
                   <ListItemPrefix>
                     <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
                   </ListItemPrefix>
-                  Ver Perfil
+                  Gestión de Productos
                 </Link>
               </ListItem>
               <ListItem className="hover:bg-blue-100">
-                <Link href="/settings" className="flex w-full">
+                <Link href="/home/pos/gestiondeventas" className="flex w-full">
                   <ListItemPrefix>
                     <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
                   </ListItemPrefix>
-                  Configuración
+                  Gestión de Ventas
+                </Link>
+              </ListItem>
+              <ListItem className="hover:bg-blue-100">
+                <Link href="/home/pos/gestiondecortesdecaja" className="flex w-full">
+                  <ListItemPrefix>
+                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
+                  </ListItemPrefix>
+                  Gestión de Cortes
+                </Link>
+              </ListItem>
+              <ListItem className="hover:bg-blue-100">
+                <Link href="/home/pos/generaciondereportes" className="flex w-full">
+                  <ListItemPrefix>
+                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
+                  </ListItemPrefix>
+                  Reportes
+                </Link>
+              </ListItem>
+            </List>
+          </AccordionBody>
+        </Accordion>
+
+        {/* Perfil */}
+        <ListItem className="hover:bg-blue-100">
+          <Link href="/profile" className="flex w-full">
+            <ListItemPrefix>
+              <UserCircleIcon className="w-5 h-5 text-blue-500" />
+            </ListItemPrefix>
+            Ver Perfil
+          </Link>
+        </ListItem>
+
+        {/* Configuración */}
+        <Accordion
+          open={open === 3}
+          icon={
+            <ChevronDownIcon
+              strokeWidth={2.5}
+              className={`mx-auto h-4 w-4 transition-transform ${
+                open === 3 ? "rotate-180" : ""
+              }`}
+            />
+          }
+        >
+          <ListItem className="p-0" selected={open === 3}>
+            <AccordionHeader
+              onClick={() => handleOpen(3)}
+              className="p-3 border-b-0"
+            >
+              <ListItemPrefix>
+                <Cog6ToothIcon className="w-5 h-5 text-blue-500" />
+              </ListItemPrefix>
+              <Typography color="blue-gray" className="mr-auto font-medium">
+                Configuración
+              </Typography>
+            </AccordionHeader>
+          </ListItem>
+          <AccordionBody className="py-1">
+            <List className="p-0">
+              <ListItem className="hover:bg-blue-100">
+                <Link href="/configurations/office" className="flex w-full">
+                  <ListItemPrefix>
+                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
+                  </ListItemPrefix>
+                  Oficina
+                </Link>
+              </ListItem>
+              <ListItem className="hover:bg-blue-100">
+                <Link href="/configurations/roles" className="flex w-full">
+                  <ListItemPrefix>
+                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
+                  </ListItemPrefix>
+                  Roles y Permisos
                 </Link>
               </ListItem>
             </List>

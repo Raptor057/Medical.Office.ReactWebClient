@@ -35,19 +35,40 @@ const handleRejectedResponse = async (error) => {
     return Promise.reject(message);
   };
 
+// const handleResponse = async (response) => {
+//     if (!response.ok) {
+//         throw response;
+//     }
+
+//     const json = await response.json();
+
+//     if (json.isSuccess) {
+//         return json.data; // Retorna los datos si la respuesta fue exitosa
+//     } else {
+//         throw new Error(json.message || "Error desconocido en la API");
+//     }
+// };
+
 const handleResponse = async (response) => {
     if (!response.ok) {
-        throw response;
+      // Si la respuesta no tiene éxito, extrae un mensaje claro
+      const errorText = await response.text();
+      throw new Error(
+        `HTTP Error: ${response.status} ${response.statusText} - ${errorText}`
+      );
     }
-
-    const json = await response.json();
-
-    if (json.isSuccess) {
-        return json.data; // Retorna los datos si la respuesta fue exitosa
-    } else {
-        throw new Error(json.message || "Error desconocido en la API");
+  
+    try {
+      const json = await response.json();
+  
+      // Si el formato de respuesta tiene 'data', devuélvelo directamente
+      return json.data || json;
+    } catch (error) {
+      throw new Error("Error al parsear la respuesta JSON.");
     }
-};
+  };
+  
+  
 
 const getOptions = (method, data = null) => {
     const token = localStorage.getItem('authToken'); // Obtén el token del localStorage
@@ -80,70 +101,6 @@ const HttpRequest = (() => {
 
 const MedicalExpressPosWebApi = (() => {
     const apiUrl = "http://localhost:5038";
-    //const apiUrl = "http://MedicalOfficeWebApi:8080";
-
-    return {
-        //#region Authentication
-        login: async (usr, psswd) =>
-            HttpRequest.post(`${apiUrl}/api/login`, { Usr: usr, Psswd: psswd }),
-        //#endregion
-
-        //#region Patient Data
-        getPatientData: async (idPatient) =>
-            HttpRequest.get(`${apiUrl}/api/PatientData/${idPatient}`),
-
-        getPatientDataAndAntecedents: async (idPatient) =>
-            HttpRequest.get(`${apiUrl}/api/GetPatientDataAndAntecedents/${idPatient}`),
-        //#endregion
-
-        //#region Insert Operations
-        insertPatientData: async (patientData) =>
-            HttpRequest.post(`${apiUrl}/api/insertpatient`, patientData),
-
-        insertFamilyHistory: async (familyHistoryData) =>
-            HttpRequest.post(`${apiUrl}/api/insertfamilyhistory`, familyHistoryData),
-
-        insertMedicalAppointmentCalendar: async (appointmentData) =>
-            HttpRequest.post(`${apiUrl}/api/InsertMedicalAppointmentCalendar`, appointmentData),
-        //#endregion
-
-        //#region Update Operations
-        updateLaboralDays: async (id, laboralDaysData) =>
-            HttpRequest.patch(`${apiUrl}/api/UpdateLaboralDays/${id}`, laboralDaysData),
-        //#endregion
-
-        //#region Get Operations
-        getAllConfigurations: async () =>
-            HttpRequest.get(`${apiUrl}/api/getallconfigurations`),
-
-        getActiveMedications: async (patientId) =>
-            HttpRequest.get(`${apiUrl}/api/getactivemedications/${patientId}`),
-
-        getFamilyHistory: async (patientID) =>
-            HttpRequest.get(`${apiUrl}/api/getfamilyhistory/${patientID}`),
-
-        getMedicalHistoryNotes: async (patientID) =>
-            HttpRequest.get(`${apiUrl}/api/getmedicalhistorynotes/${patientID}`),
-
-        getNonPathologicalHistory: async (patientID) =>
-            HttpRequest.get(`${apiUrl}/api/GetNonPathologicalHistory/${patientID}`),
-
-        getPathologicalBackground: async (patientID) =>
-            HttpRequest.get(`${apiUrl}/api/GetPathologicalBackground/${patientID}`),
-
-        getPatientAllergies: async (patientID) =>
-            HttpRequest.get(`${apiUrl}/api/GetPatientAllergies/${patientID}`),
-
-        getPsychiatricHistory: async (patientId) =>
-            HttpRequest.get(`${apiUrl}/api/GetPsychiatricHistory/${patientId}`),
-
-        getUsers: async (id = 0, usr = "") =>
-            HttpRequest.get(`${apiUrl}/api/UsersData?id=${id}&usr=${usr}`),
-        //#endregion
-    };
-})();
-const ExpressPos = (() => {
-    const apiUrl = "http://localhost:5038";
 
     return {
         //#region Gestión de Productos
@@ -171,16 +128,25 @@ const ExpressPos = (() => {
 
         //#region Gestión de Ventas
         registrarVenta: async (ventaData) =>
-            HttpRequest.post(`${apiUrl}/api/RegistrarVenta`, ventaData),
-
+            HttpRequest.post(`${apiUrl}/api/registrarventa/RegistrarVenta`, ventaData),
+    
         eliminarVenta: async (ventaID) =>
             HttpRequest.delete(`${apiUrl}/api/EliminarVenta/${ventaID}`),
-
+    
         obtenerVentaPorId: async (ventaID) =>
             HttpRequest.get(`${apiUrl}/api/ObtenerVentaPorId/${ventaID}`),
-
+    
         obtenerVentasPorRango: async (fechaInicio, fechaFin) =>
             HttpRequest.get(`${apiUrl}/api/ObtenerVentasPorRango?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
+    
+        listarTodasLasVentas: async () =>
+            HttpRequest.get(`${apiUrl}/api/ListarTodasLasVentas`),
+    
+        obtenerVentasPorDia: async (fechaInicio, fechaFin) =>
+            HttpRequest.get(`${apiUrl}/api/ObtenerVentasPorDia?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`),
+    
+        actualizarVenta: async (ventaID, ventaData) =>
+            HttpRequest.put(`${apiUrl}/api/ActualizarVenta/${ventaID}`, ventaData),
         //#endregion
 
         //#region Gestión de Cortes de Caja

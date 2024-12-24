@@ -1,87 +1,98 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import ExpressPos from '../../utils/ExpressPos'; // Asegúrate de que la ruta sea correcta
-import { toast } from 'react-toastify';
+import React, { useState, useEffect } from "react";
+import MedicalExpressPosWebApi from "@/app/utils/HttpRequestsExpressPos";
 
 const DetalleDeVenta = () => {
-    const [ventaID, setVentaID] = useState('');
-    const [detalleVenta, setDetalleVenta] = useState(null);
-    const [loading, setLoading] = useState(false);
+  const [ventas, setVentas] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-    const buscarDetalleVenta = async () => {
-        if (!ventaID) {
-            toast.error("Por favor, ingresa un ID de venta.");
-            return;
-        }
+  const cargarVentas = async () => {
+    setLoading(true);
+    setError("");
 
-        setLoading(true);
-        try {
-            const data = await ExpressPos.getVentaPorId(ventaID);
-            setDetalleVenta(data);
-            if (!data) {
-                toast.info("No se encontró el detalle de la venta.");
-            }
-        } catch (error) {
-            toast.error("Error al buscar el detalle de la venta: " + error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const fechaInicio = "2024-12-23T00:00:00"; // Ajusta la fecha según tu necesidad
+    const fechaFin = "2024-12-23T23:59:59";
 
-    return (
-        <div className="p-4 bg-white shadow-md rounded">
-            <h2 className="text-xl font-bold mb-4">Detalle de Venta</h2>
-            <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">
-                    ID de Venta:
-                    <input
-                        type="text"
-                        className="border border-gray-300 p-2 rounded w-full"
-                        value={ventaID}
-                        onChange={(e) => setVentaID(e.target.value)}
-                    />
-                </label>
-                <button
-                    onClick={buscarDetalleVenta}
-                    className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded"
-                >
-                    Buscar
-                </button>
-            </div>
-            {loading ? (
-                <p>Cargando detalle de la venta...</p>
-            ) : detalleVenta ? (
-                <div className="mt-4">
-                    <h3 className="text-lg font-semibold">Información de la Venta</h3>
-                    <p><strong>ID:</strong> {detalleVenta.ventaID}</p>
-                    <p><strong>Fecha:</strong> {new Date(detalleVenta.fechaHora).toLocaleString()}</p>
-                    <p><strong>Total:</strong> {detalleVenta.total}</p>
-                    <h3 className="text-lg font-semibold mt-4">Productos</h3>
-                    <table className="min-w-full table-auto border-collapse border border-gray-300">
-                        <thead>
-                            <tr>
-                                <th className="border border-gray-300 px-4 py-2">Producto</th>
-                                <th className="border border-gray-300 px-4 py-2">Cantidad</th>
-                                <th className="border border-gray-300 px-4 py-2">Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {detalleVenta.productos.map((producto, index) => (
-                                <tr key={index}>
-                                    <td className="border border-gray-300 px-4 py-2">{producto.nombre}</td>
-                                    <td className="border border-gray-300 px-4 py-2">{producto.cantidad}</td>
-                                    <td className="border border-gray-300 px-4 py-2">{producto.subtotal}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            ) : (
-                <p>No hay información para mostrar.</p>
-            )}
+    try {
+      const response = await MedicalExpressPosWebApi.obtenerVentasPorRango(
+        fechaInicio,
+        fechaFin
+      );
+
+      if (response && response.ventas) {
+        setVentas(response.ventas); // Accedemos directamente a la propiedad `ventas`
+      } else {
+        setError("No se encontraron ventas.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Error al cargar las ventas.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    cargarVentas();
+  }, []);
+
+  return (
+    <div className="container mx-auto px-4 py-6">
+      <div className="bg-blue-500 text-white text-center py-3 rounded">
+        <h1 className="text-xl font-bold">Detalle de Ventas</h1>
+      </div>
+      {loading && (
+        <div className="mt-4 text-center">
+          <p className="text-gray-700">Cargando ventas...</p>
         </div>
-    );
+      )}
+      {error && (
+        <div className="mt-4 bg-red-100 text-red-700 text-center py-2 rounded">
+          <p>{error}</p>
+        </div>
+      )}
+      {!loading && ventas.length > 0 && (
+        <div className="mt-6 bg-white p-4 shadow-md rounded border border-gray-200">
+          <table className="min-w-full bg-white border border-gray-300 rounded-md">
+            <thead>
+              <tr className="bg-gray-100 border-b">
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                  ID Venta
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                  Fecha
+                </th>
+                <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
+                  Total
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {ventas.map((venta) => (
+                <tr
+                  key={venta.ventaID}
+                  className="border-b hover:bg-gray-50 text-gray-700"
+                >
+                  <td className="px-4 py-2">{venta.ventaID}</td>
+                  <td className="px-4 py-2">
+                    {new Date(venta.fechaHora).toLocaleString()}
+                  </td>
+                  <td className="px-4 py-2">${venta.total.toFixed(2)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+      {!loading && ventas.length === 0 && !error && (
+        <div className="mt-4 text-center">
+          <p className="text-gray-700">No hay ventas disponibles.</p>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default DetalleDeVenta;
