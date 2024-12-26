@@ -154,11 +154,11 @@ export default function InsertNonPathologicalHistoryForm({ onSubmit }) {
       )}
 
       {/* Botón de Envío */}
-      <div className="flex justify-end">
+      {/* <div className="flex justify-end">
         <Button type="submit" color="blue" ripple="light">
           Guardar Historial No Patológico
         </Button>
-      </div>
+      </div> */}
     </form>
   );
 }

@@ -160,11 +160,11 @@ export default function InsertPathologicalBackgroundForm({ onSubmit }) {
       />
 
       {/* Botón de envío */}
-      <div className="flex justify-end">
+      {/* <div className="flex justify-end">
         <Button type="submit" color="blue" ripple="light">
           Guardar Antecedentes Patológicos
         </Button>
-      </div>
+      </div> */}
     </form>
   );
 }

@@ -96,11 +96,11 @@ export default function InsertFamilyHistoryForm({ onSubmit }) {
       </div>
 
       {/* Botón de envío */}
-      <div className="flex justify-end">
+      {/* <div className="flex justify-end">
         <Button type="submit" color="blue">
           Guardar Historial
         </Button>
-      </div>
+      </div> */}
     </form>
   );
 }

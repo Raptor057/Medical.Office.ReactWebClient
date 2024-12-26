@@ -26,13 +26,16 @@ export default function AutoCorteCaja() {
   const verificarCorteDelDia = async () => {
     setLoading(true);
     try {
-      const fechaInicio = obtenerFechaHoyUTC(true); // Inicio del día en UTC
-      const fechaFin = obtenerFechaHoyUTC(false); // Fin del día en UTC
+      const fechaInicio = obtenerFechaHoyUTC(true);
+      const fechaFin = obtenerFechaHoyUTC(false);
+
+      console.log("Verificando corte con fechas (UTC):", { fechaInicio, fechaFin });
 
       const response = await MedicalExpressPosWebApi.obtenerCortesPorRango(
         fechaInicio,
         fechaFin
       );
+
       if (response.isSuccess && response.data && response.data.length > 0) {
         setCorteExistente(true);
       } else {
@@ -49,21 +52,33 @@ export default function AutoCorteCaja() {
   const obtenerVentasDelDia = async () => {
     setLoading(true);
     try {
-      const fechaInicio = obtenerFechaHoyUTC(true); // Inicio del día en UTC
-      const fechaFin = obtenerFechaHoyUTC(false); // Fin del día en UTC
+      const fechaInicio = obtenerFechaHoyUTC(true);
+      const fechaFin = obtenerFechaHoyUTC(false);
+
+      console.log("Buscando ventas con fechas (UTC):", { fechaInicio, fechaFin });
 
       const response = await MedicalExpressPosWebApi.obtenerVentasPorRango(
         fechaInicio,
         fechaFin
       );
-      if (response.isSuccess && response.data) {
-        const ventas = response.data;
-        setVentasDia(ventas);
+
+      console.log("Respuesta de ventas:", response);
+
+      if (response.isSuccess && response.ventas) {
+        const ventas = response.ventas;
+
+        if (ventas.length === 0) {
+          console.log("No se encontraron ventas.");
+        }
 
         // Cálculo del total vendido y total de ventas
         const total = ventas.reduce((acumulado, venta) => acumulado + venta.total, 0);
+
+        setVentasDia(ventas);
         setTotalVendido(total);
         setTotalVentas(ventas.length);
+
+        console.log("Ventas procesadas:", { total, ventas });
       } else {
         setVentasDia([]);
         setTotalVendido(0);

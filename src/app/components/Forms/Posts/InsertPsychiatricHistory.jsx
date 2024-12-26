@@ -146,9 +146,9 @@ const InsertPsychiatricHistoryForm = ({ onSubmit }) => {
         />
 
         {/* Botón de Envío */}
-        <Button type="submit" color="blue" fullWidth>
+        {/* <Button type="submit" color="blue" fullWidth>
           Guardar Historial Psiquiátrico
-        </Button>
+        </Button> */}
       </form>
     </div>
   );

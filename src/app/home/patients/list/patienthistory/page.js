@@ -1,9 +1,8 @@
-//Modifica el inicio de tu código y protege el useSearchParams con un chequeo de window.
-
 'use client'; // Necesario para habilitar el entorno cliente
 
 import React, { useEffect, useState } from 'react';
-import { Typography } from '@material-tailwind/react';
+import { Typography, Button } from '@material-tailwind/react';
+import { useRouter } from 'next/navigation';  // Importamos useRouter para redirigir
 import { useSearchParams } from 'next/navigation';
 import MedicalOfficeWebApi from '@/app/utils/HttpRequests';
 import { PatientDetails } from '@/app/components/Patients/PatientDetails';
@@ -11,6 +10,7 @@ import { PatientDetails } from '@/app/components/Patients/PatientDetails';
 export default function PatientDetailsPage() {
   const [id, setId] = useState(null);
   const searchParams = typeof window !== 'undefined' ? useSearchParams() : null;
+  const router = useRouter();  // Inicializamos el router para la redirección
 
   useEffect(() => {
     if (searchParams) {
@@ -42,6 +42,16 @@ export default function PatientDetailsPage() {
     fetchPatientDetails();
   }, [id]);
 
+  // Función para manejar la redirección a la página de "Insert"
+  const handleInsertButtonClick = () => {
+    router.push(`/home/patients/list/patienthistory/insert?id=${id}`);
+  };
+
+  // Función para manejar la redirección a la página de "Update"
+  const handleUpdateButtonClick = () => {
+    router.push(`/home/patients/list/patienthistory/update?id=${id}`);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -65,6 +75,15 @@ export default function PatientDetailsPage() {
   return (
     <div className="min-h-screen p-6 bg-gray-100">
       <PatientDetails patientData={patientData} />
+      {/* Botones para redirigir a Insertar o Actualizar paciente */}
+      <div className="mt-6 flex gap-4 justify-center">
+        <Button color="blue" onClick={handleInsertButtonClick}>
+          Insertar Datos del Paciente
+        </Button>
+        <Button color="yellow" onClick={handleUpdateButtonClick}>
+          Actualizar Datos del Paciente
+        </Button>
+      </div>
     </div>
   );
 }

@@ -45,11 +45,11 @@ export default function InsertPatientAllergiesForm({ onSubmit }) {
       </div>
 
       {/* Botón de Envío */}
-      <div className="flex justify-end">
+      {/* <div className="flex justify-end">
         <Button type="submit" color="blue" ripple="light">
           Guardar Alergias
         </Button>
-      </div>
+      </div> */}
     </form>
   );
 }

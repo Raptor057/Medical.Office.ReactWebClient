@@ -285,7 +285,7 @@ export function PatientDetails({ patientData, onEdit, onInsert }) {
       </CardBody>
 
       {/* Botones de Acción */}
-      <CardBody className="flex justify-end gap-4">
+      {/* <CardBody className="flex justify-end gap-4">
         <Link href={"/home/patients/list/patienthistory/insert"}>
           <Button
             color="green"
@@ -305,7 +305,7 @@ export function PatientDetails({ patientData, onEdit, onInsert }) {
         >
           Editar
         </Button>
-      </CardBody>
+      </CardBody> */}
     </Card>
   );
 }

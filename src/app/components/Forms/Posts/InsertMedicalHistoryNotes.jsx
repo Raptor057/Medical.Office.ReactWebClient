@@ -51,11 +51,11 @@ export default function InsertMedicalHistoryNotesForm({ onSubmit }) {
       </div>
 
       {/* Botón de envío */}
-      <div className="flex justify-end">
+      {/* <div className="flex justify-end">
         <Button type="submit" color="blue" ripple="light">
           Guardar Notas
         </Button>
-      </div>
+      </div> */}
     </form>
   );
 }
