@@ -1,26 +1,31 @@
 'use client';
 
 import { useState } from 'react';
-import ExpressPos from '@/app/utils/ExpressPos';
+import MedicalExpressPosWebApi from "@/app/utils/HttpRequestsExpressPos";
 
 export default function EliminarCorte() {
   const [corteID, setCorteID] = useState('');
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const eliminarCorte = async () => {
+    if (!corteID || isNaN(corteID)) {
+      setError('Debes ingresar un ID de corte válido.');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setMensaje('');
     try {
-      if (!corteID) {
-        setError('Debes ingresar un ID de corte válido.');
-        return;
-      }
-      await ExpressPos.eliminarCorte(corteID);
+      await MedicalExpressPosWebApi.eliminarCorte(corteID);
       setMensaje(`El corte con ID ${corteID} se eliminó correctamente.`);
-      setError(null);
       setCorteID('');
     } catch (err) {
-      setError(`Error al eliminar el corte: ${err}`);
-      setMensaje('');
+      setError(`Error al eliminar el corte: ${err.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -39,9 +44,12 @@ export default function EliminarCorte() {
       </div>
       <button
         onClick={eliminarCorte}
-        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        className={`bg-red-500 text-white px-4 py-2 rounded ${
+          loading ? 'cursor-not-allowed opacity-50' : 'hover:bg-red-600'
+        }`}
+        disabled={loading}
       >
-        Eliminar
+        {loading ? 'Eliminando...' : 'Eliminar'}
       </button>
       {mensaje && <div className="text-green-500 mt-4">{mensaje}</div>}
       {error && <div className="text-red-500 mt-4">{error}</div>}

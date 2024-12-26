@@ -80,7 +80,7 @@ const HttpRequest = (() => {
 
 const MedicalOfficeWebApi = (() => {
     const apiUrl = "http://localhost:5038";
-    //const apiUrl = "http://MedicalOfficeWebApi:8080";
+    //const apiUrl = "http://localhost:55002";
 
     return {
         //#region Authentication

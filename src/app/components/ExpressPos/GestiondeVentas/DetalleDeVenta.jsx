@@ -8,12 +8,20 @@ const DetalleDeVenta = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const obtenerFechaHoyUTC = (inicioDelDia = true) => {
+    const now = new Date();
+    if (inicioDelDia) {
+      return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0)).toISOString();
+    }
+    return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59)).toISOString();
+  };
+
   const cargarVentas = async () => {
     setLoading(true);
     setError("");
 
-    const fechaInicio = "2024-12-23T00:00:00"; // Ajusta la fecha según tu necesidad
-    const fechaFin = "2024-12-23T23:59:59";
+    const fechaInicio = obtenerFechaHoyUTC(true); // Inicio del día en UTC
+    const fechaFin = obtenerFechaHoyUTC(false); // Fin del día en UTC
 
     try {
       const response = await MedicalExpressPosWebApi.obtenerVentasPorRango(

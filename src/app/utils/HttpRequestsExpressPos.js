@@ -101,7 +101,7 @@ const HttpRequest = (() => {
 
 const MedicalExpressPosWebApi = (() => {
     const apiUrl = "http://localhost:5038";
-
+    //const apiUrl = "http://localhost:55002";
     return {
         //#region Gestión de Productos
         agregarProducto: async (productoData) =>
@@ -128,7 +128,7 @@ const MedicalExpressPosWebApi = (() => {
 
         //#region Gestión de Ventas
         registrarVenta: async (ventaData) =>
-            HttpRequest.post(`${apiUrl}/api/registrarventa/RegistrarVenta`, ventaData),
+            HttpRequest.post(`${apiUrl}/api/RegistrarVenta`, ventaData),
     
         eliminarVenta: async (ventaID) =>
             HttpRequest.delete(`${apiUrl}/api/EliminarVenta/${ventaID}`),

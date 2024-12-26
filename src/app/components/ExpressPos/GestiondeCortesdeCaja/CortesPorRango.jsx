@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import ExpressPos from '@/app/utils/ExpressPos';
+import MedicalExpressPosWebApi from "@/app/utils/HttpRequestsExpressPos";
 import DatePicker from 'react-datepicker'; // Necesita instalación: npm install react-datepicker
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -10,19 +10,39 @@ export default function CortesPorRango() {
   const [fechaFin, setFechaFin] = useState(null);
   const [cortes, setCortes] = useState([]);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // Formatear fechas a ISO sin milisegundos
+  const formatearFecha = (fecha) => {
+    const date = new Date(fecha);
+    return date.toISOString().split('.')[0];
+  };
 
   const buscarCortes = async () => {
+    if (!fechaInicio || !fechaFin) {
+      setError('Debes seleccionar un rango de fechas válido.');
+      return;
+    }
+
+    setError(null);
+    setLoading(true);
     try {
-      if (!fechaInicio || !fechaFin) {
-        setError('Debes seleccionar un rango de fechas válido.');
-        return;
+      const cortesEncontrados = await MedicalExpressPosWebApi.obtenerCortesPorRango(
+        formatearFecha(fechaInicio),
+        formatearFecha(fechaFin)
+      );
+
+      if (Array.isArray(cortesEncontrados) && cortesEncontrados.length > 0) {
+        setCortes(cortesEncontrados);
+      } else {
+        setCortes([]);
+        setError('No se encontraron cortes en el rango seleccionado.');
       }
-      const cortesEncontrados = await ExpressPos.obtenerCortesPorRango(fechaInicio.toISOString(), fechaFin.toISOString());
-      setCortes(cortesEncontrados);
-      setError(null);
     } catch (err) {
-      setError(`Error al buscar los cortes: ${err}`);
+      setError(`Error al buscar los cortes: ${err.message}`);
       setCortes([]);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -51,11 +71,12 @@ export default function CortesPorRango() {
         <button
           onClick={buscarCortes}
           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          disabled={loading}
         >
-          Buscar
+          {loading ? 'Buscando...' : 'Buscar'}
         </button>
       </div>
-      {error && <div className="text-red-500">{error}</div>}
+      {error && <div className="text-red-500 mt-4">{error}</div>}
       <div className="mt-6">
         {cortes.length > 0 ? (
           <table className="table-auto w-full border-collapse border border-gray-300">
@@ -71,15 +92,19 @@ export default function CortesPorRango() {
               {cortes.map((corte) => (
                 <tr key={corte.corteID}>
                   <td className="border border-gray-300 px-4 py-2">{corte.corteID}</td>
-                  <td className="border border-gray-300 px-4 py-2">{new Date(corte.fechaHora).toLocaleDateString()}</td>
-                  <td className="border border-gray-300 px-4 py-2">${corte.totalVendido.toFixed(2)}</td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    {new Date(corte.fechaHora).toLocaleDateString()}
+                  </td>
+                  <td className="border border-gray-300 px-4 py-2">
+                    ${corte.totalVendido?.toFixed(2)}
+                  </td>
                   <td className="border border-gray-300 px-4 py-2">{corte.totalVentas}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         ) : (
-          <div>No se encontraron cortes en el rango seleccionado.</div>
+          !loading && <div>No se encontraron cortes en el rango seleccionado.</div>
         )}
       </div>
     </div>

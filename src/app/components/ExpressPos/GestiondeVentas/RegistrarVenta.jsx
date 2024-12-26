@@ -7,7 +7,7 @@ const RegistrarVenta = () => {
   const [productos, setProductos] = useState([]);
   const [productosSeleccionados, setProductosSeleccionados] = useState([]);
   const [total, setTotal] = useState(0);
-  const [fechaHora, setFechaHora] = useState(new Date().toISOString());
+  const [fechaHora, setFechaHora] = useState(null); // Inicialmente null para evitar errores de hidratación
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -20,6 +20,19 @@ const RegistrarVenta = () => {
     };
 
     fetchProductos();
+
+    // Configurar la fecha/hora actual al montar el componente en UTC
+    const ahoraUTC = new Date();
+    setFechaHora(
+      new Date(Date.UTC(
+        ahoraUTC.getUTCFullYear(),
+        ahoraUTC.getUTCMonth(),
+        ahoraUTC.getUTCDate(),
+        ahoraUTC.getUTCHours(),
+        ahoraUTC.getUTCMinutes(),
+        ahoraUTC.getUTCSeconds()
+      ))
+    );
   }, []);
 
   const handleAgregarProducto = (productoID, cantidad) => {
@@ -73,7 +86,7 @@ const RegistrarVenta = () => {
 
     try {
       await MedicalExpressPosWebApi.registrarVenta({
-        fechaHora,
+        fechaHora: fechaHora.toISOString(), // Enviar la fecha en formato ISO UTC
         total,
         productos,
       });
@@ -94,12 +107,15 @@ const RegistrarVenta = () => {
       <div className="mt-4">
         <label className="block font-medium mb-2">
           Fecha y Hora:
-          <input
-            type="datetime-local"
-            value={new Date(fechaHora).toISOString().slice(0, 16)}
-            onChange={(e) => setFechaHora(new Date(e.target.value).toISOString())}
-            className="block w-full mt-1 p-2 border rounded"
-          />
+          {fechaHora ? ( // Renderiza la fecha solo después de que esté disponible
+            <span className="block w-full mt-1 p-2 border rounded bg-gray-100 text-gray-700">
+              {fechaHora.toUTCString()} {/* Mostrar la fecha en formato UTC */}
+            </span>
+          ) : (
+            <span className="block w-full mt-1 p-2 border rounded bg-gray-100 text-gray-700">
+              Cargando...
+            </span>
+          )}
         </label>
       </div>
       <div className="mt-4">

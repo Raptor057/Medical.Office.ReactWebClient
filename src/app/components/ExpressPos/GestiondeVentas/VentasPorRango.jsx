@@ -10,31 +10,37 @@ const VentasPorRango = () => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Formatear fechas en formato correcto para el endpoint
-  const formatearFecha = (fecha) => {
+  const formatearFecha = (fecha, esFechaInicio) => {
     const date = new Date(fecha);
-    return date.toISOString().split(".")[0]; // Formato: YYYY-MM-DDTHH:mm:ss
+    if (esFechaInicio) {
+      return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0)).toISOString();
+    } else {
+      return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 23, 59, 59)).toISOString();
+    }
   };
 
   const buscarVentasPorRango = async () => {
-    if (!fechaInicio || !fechaFin) {
-      setErrorMessage("Por favor, selecciona ambas fechas.");
-      return;
-    }
-
-    const fechaInicioFormateada = formatearFecha(fechaInicio);
-    const fechaFinFormateada = formatearFecha(fechaFin);
-
-    setErrorMessage("");
     setLoading(true);
+    setErrorMessage("");
 
     try {
+      if (!fechaInicio || !fechaFin) {
+        setErrorMessage("Por favor, selecciona ambas fechas.");
+        return;
+      }
+
+      const fechaInicioFormateada = formatearFecha(fechaInicio, true);
+      const fechaFinFormateada = formatearFecha(fechaFin, false);
+
+      console.log("Fecha Inicio UTC:", fechaInicioFormateada);
+      console.log("Fecha Fin UTC:", fechaFinFormateada);
+
       const response = await MedicalExpressPosWebApi.obtenerVentasPorRango(
         fechaInicioFormateada,
         fechaFinFormateada
       );
 
-      if (response?.ventas && response.ventas.length > 0) {
+      if (response?.ventas?.length > 0) {
         setVentas(response.ventas);
       } else {
         setVentas([]);
