@@ -1,3 +1,4 @@
+'use client';
 import React from "react";
 import {
   Card,
@@ -8,7 +9,6 @@ import {
   Chip,
   Button,
 } from "@material-tailwind/react";
-import Link from "next/link";
 
 export function PatientDetails({ patientData, onEdit, onInsert }) {
   if (!patientData) {
@@ -284,28 +284,6 @@ export function PatientDetails({ patientData, onEdit, onInsert }) {
         </Typography>
       </CardBody>
 
-      {/* Botones de Acción */}
-      {/* <CardBody className="flex justify-end gap-4">
-        <Link href={"/home/patients/list/patienthistory/insert"}>
-          <Button
-            color="green"
-            variant="filled"
-            onClick={onInsert}
-            className="w-32"
-          >
-            Insertar
-          </Button>
-        </Link>
-
-        <Button
-          color="blue"
-          variant="filled"
-          onClick={onEdit}
-          className="w-32"
-        >
-          Editar
-        </Button>
-      </CardBody> */}
     </Card>
   );
 }

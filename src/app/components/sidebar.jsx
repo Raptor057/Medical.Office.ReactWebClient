@@ -185,7 +185,7 @@ export function MultiLevelSidebar() {
           <AccordionBody className="py-1">
             <List className="p-0">
               <ListItem className="hover:bg-blue-100">
-                <Link href="/configurations/office" className="flex w-full">
+                <Link href="/home/configuration/office" className="flex w-full">
                   <ListItemPrefix>
                     <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
                   </ListItemPrefix>
@@ -193,11 +193,19 @@ export function MultiLevelSidebar() {
                 </Link>
               </ListItem>
               <ListItem className="hover:bg-blue-100">
-                <Link href="/configurations/roles" className="flex w-full">
+                <Link href="/home/configuration/doctor" className="flex w-full">
                   <ListItemPrefix>
                     <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
                   </ListItemPrefix>
-                  Roles y Permisos
+                  Doctores
+                </Link>
+              </ListItem>
+              <ListItem className="hover:bg-blue-100">
+                <Link href="/home/configuration/users" className="flex w-full">
+                  <ListItemPrefix>
+                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
+                  </ListItemPrefix>
+                  Usuarios
                 </Link>
               </ListItem>
             </List>

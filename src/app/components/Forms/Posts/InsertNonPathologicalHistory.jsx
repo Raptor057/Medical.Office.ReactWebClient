@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Button, Checkbox, Textarea, Typography } from "@material-tailwind/react";
+import MedicalOfficeWebApi from "@/app/utils/HttpRequests"; // Ruta correcta para la API
 
-export default function InsertNonPathologicalHistoryForm({ onSubmit }) {
+export default function InsertNonPathologicalHistoryForm({ patientId }) {
   const [formData, setFormData] = useState({
+    idPatient: patientId || 0,
     physicalActivity: false,
     smoking: false,
     alcoholism: false,
@@ -14,151 +16,123 @@ export default function InsertNonPathologicalHistoryForm({ onSubmit }) {
     othersData: "",
   });
 
+  const [loading, setLoading] = useState(false); // Estado de carga
+  const [error, setError] = useState(null); // Estado para errores
+  const [success, setSuccess] = useState(false); // Estado para éxito
+
+  // Manejo de cambios en los campos del formulario
   const handleChange = (e) => {
-    const { name, type, value, checked } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
     });
   };
 
-  const handleSubmit = (e) => {
+  // Manejo del envío del formulario
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (onSubmit) onSubmit(formData);
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      // Llamada al endpoint
+      await MedicalOfficeWebApi.insertNonPathologicalHistory(formData);
+      setSuccess(true); // Mostrar mensaje de éxito
+    } catch (err) {
+      setError(err); // Mostrar el error capturado
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-lg p-6 mx-auto space-y-6 bg-white rounded-lg shadow-md"
-    >
-      {/* Título del formulario */}
-      <Typography
-        variant="h4"
-        color="blue-gray"
-        className="font-bold text-center"
-      >
-        Historial No Patológico
+    <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-white rounded-lg shadow-md">
+      <Typography variant="h4" color="blue-gray" className="font-bold text-center">
+        Registrar Antecedentes No Patológicos
       </Typography>
       <Typography color="gray" className="text-sm font-normal text-center">
-        Registre información importante sobre hábitos y antecedentes no
-        patológicos del paciente.
+        Completa los antecedentes no patológicos del paciente.
       </Typography>
 
-      {/* Actividad Física */}
-      <div className="flex items-center">
+      {/* Campos de antecedentes no patológicos */}
+      <div className="space-y-4">
         <Checkbox
+          label="Actividad Física"
           name="physicalActivity"
           checked={formData.physicalActivity}
           onChange={handleChange}
-          className="mr-2"
         />
-        <Typography className="text-sm font-medium text-gray-700">
-          Actividad Física
-        </Typography>
-      </div>
-
-      {/* Tabaquismo */}
-      <div className="flex items-center">
         <Checkbox
+          label="Tabaquismo"
           name="smoking"
           checked={formData.smoking}
           onChange={handleChange}
-          className="mr-2"
         />
-        <Typography className="text-sm font-medium text-gray-700">
-          Tabaquismo
-        </Typography>
-      </div>
-
-      {/* Alcoholismo */}
-      <div className="flex items-center">
         <Checkbox
+          label="Alcoholismo"
           name="alcoholism"
           checked={formData.alcoholism}
           onChange={handleChange}
-          className="mr-2"
         />
-        <Typography className="text-sm font-medium text-gray-700">
-          Alcoholismo
-        </Typography>
-      </div>
-
-      {/* Consumo de Sustancias */}
-      <div className="flex items-center">
         <Checkbox
+          label="Consumo de Sustancias"
           name="substanceAbuse"
           checked={formData.substanceAbuse}
           onChange={handleChange}
-          className="mr-2"
         />
-        <Typography className="text-sm font-medium text-gray-700">
-          Consumo de Sustancias
-        </Typography>
-      </div>
-      {formData.substanceAbuse && (
-        <Textarea
-          label="Detalles del Consumo de Sustancias"
-          name="substanceAbuseData"
-          value={formData.substanceAbuseData}
-          onChange={handleChange}
-          placeholder="Ingrese detalles del consumo de sustancias"
-          className="mt-2"
-        />
-      )}
-
-      {/* Vacunación Reciente */}
-      <div className="flex items-center">
+        {formData.substanceAbuse && (
+          <Textarea
+            label="Detalles del Consumo de Sustancias"
+            name="substanceAbuseData"
+            value={formData.substanceAbuseData}
+            onChange={handleChange}
+            placeholder="Escribe aquí los detalles del consumo de sustancias..."
+          />
+        )}
         <Checkbox
+          label="Vacunación Reciente"
           name="recentVaccination"
           checked={formData.recentVaccination}
           onChange={handleChange}
-          className="mr-2"
         />
-        <Typography className="text-sm font-medium text-gray-700">
-          Vacunación Reciente
-        </Typography>
-      </div>
-      {formData.recentVaccination && (
-        <Textarea
-          label="Detalles de Vacunación Reciente"
-          name="recentVaccinationData"
-          value={formData.recentVaccinationData}
-          onChange={handleChange}
-          placeholder="Ingrese detalles de vacunación reciente"
-          className="mt-2"
-        />
-      )}
-
-      {/* Otros */}
-      <div className="flex items-center">
+        {formData.recentVaccination && (
+          <Textarea
+            label="Detalles de la Vacunación Reciente"
+            name="recentVaccinationData"
+            value={formData.recentVaccinationData}
+            onChange={handleChange}
+            placeholder="Escribe aquí los detalles de la vacunación reciente..."
+          />
+        )}
         <Checkbox
+          label="Otros"
           name="others"
           checked={formData.others}
           onChange={handleChange}
-          className="mr-2"
         />
-        <Typography className="text-sm font-medium text-gray-700">
-          Otros
-        </Typography>
+        {formData.others && (
+          <Textarea
+            label="Detalles Adicionales"
+            name="othersData"
+            value={formData.othersData}
+            onChange={handleChange}
+            placeholder="Escribe aquí otros antecedentes no patológicos..."
+          />
+        )}
       </div>
-      {formData.others && (
-        <Textarea
-          label="Detalles Adicionales"
-          name="othersData"
-          value={formData.othersData}
-          onChange={handleChange}
-          placeholder="Ingrese otros detalles relevantes"
-          className="mt-2"
-        />
-      )}
 
-      {/* Botón de Envío */}
-      {/* <div className="flex justify-end">
-        <Button type="submit" color="blue" ripple="light">
-          Guardar Historial No Patológico
+      {/* Botón de envío */}
+      <div className="flex justify-end">
+        <Button type="submit" color="blue" disabled={loading}>
+          {loading ? "Enviando..." : "Guardar Antecedentes"}
         </Button>
-      </div> */}
+      </div>
+
+      {/* Mensajes de éxito o error */}
+      {success && <Typography color="green" className="mt-2">¡Antecedentes guardados con éxito!</Typography>}
+      {error && <Typography color="red" className="mt-2">{error}</Typography>}
     </form>
   );
 }

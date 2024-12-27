@@ -1,25 +1,4 @@
-// // src/app/components/Patients/PatientDataComponent.jsx
-
-// import React, { useEffect } from 'react';
-// import { fetchAllPatientData } from '../../utils/PatientDataFetcher'; // Ajusta la ruta según tu estructura de carpetas
-
-// const PatientDataComponent = () => {
-//     useEffect(() => {
-//         fetchAllPatientData()
-//             .then((data) => {
-//                 console.log("All patient data:", data);
-//             })
-//             .catch((error) => {
-//                 console.error("Error:", error);
-//             });
-//     }, []);
-
-//     return <div>Fetching patient data...</div>;
-// };
-
-// export default PatientDataComponent;
-// src/app/components/Patients/PatientDataComponent.jsx
-
+'use client';
 import React, { useEffect, useState } from 'react';
 import { fetchAllPatientData } from '../../utils/PatientDataFetcher'; // Ajusta la ruta según tu estructura de carpetas
 

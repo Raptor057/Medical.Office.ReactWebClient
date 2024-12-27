@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Checkbox, Button, Textarea, Typography } from "@material-tailwind/react";
+import { useSearchParams } from "next/navigation"; // Hook de Next.js para obtener parámetros de la URL
+import MedicalOfficeWebApi from "@/app/utils/HttpRequests"; // Importa la instancia de API
 
-export default function InsertFamilyHistoryForm({ onSubmit }) {
+export default function InsertFamilyHistoryForm() {
+  const searchParams = useSearchParams(); // Hook para obtener los parámetros de la URL
+  const patientId = parseInt(searchParams.get("id")) || 0; // Obtiene el parámetro `id` y lo convierte a entero
+
   const [formData, setFormData] = useState({
+    idPatient: patientId,
     diabetes: false,
     cardiopathies: false,
     hypertension: false,
@@ -12,6 +18,16 @@ export default function InsertFamilyHistoryForm({ onSubmit }) {
     othersData: "",
   });
 
+  const [loading, setLoading] = useState(false); // Estado de carga
+  const [error, setError] = useState(null); // Estado para errores
+  const [success, setSuccess] = useState(false); // Estado para éxito
+
+  // Actualiza `idPatient` en el estado cuando cambia el valor de `patientId`
+  useEffect(() => {
+    setFormData((prev) => ({ ...prev, idPatient: patientId }));
+  }, [patientId]);
+
+  // Manejo de cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -20,32 +36,34 @@ export default function InsertFamilyHistoryForm({ onSubmit }) {
     });
   };
 
-  const handleSubmit = (e) => {
+  // Manejo del envío del formulario
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (onSubmit) onSubmit(formData);
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      // Llamada al endpoint
+      await MedicalOfficeWebApi.insertFamilyHistory(formData);
+      setSuccess(true); // Mostrar mensaje de éxito
+    } catch (err) {
+      setError(err); // Mostrar el error capturado
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-6 space-y-6 bg-white rounded-lg shadow-md"
-    >
-      {/* Título */}
-      <Typography
-        variant="h4"
-        color="blue-gray"
-        className="font-bold text-center"
-      >
+    <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-white rounded-lg shadow-md">
+      <Typography variant="h4" color="blue-gray" className="font-bold text-center">
         Historial Familiar
       </Typography>
-      <Typography
-        color="gray"
-        className="text-sm font-normal text-center"
-      >
-        Selecciona las condiciones médicas familiares conocidas.
+      <Typography color="gray" className="text-sm font-normal text-center">
+        Completa los antecedentes médicos familiares del paciente.
       </Typography>
 
-      {/* Opciones de historial familiar */}
+      {/* Opciones del historial familiar */}
       <div className="space-y-4">
         <Checkbox
           label="Diabetes"
@@ -83,7 +101,6 @@ export default function InsertFamilyHistoryForm({ onSubmit }) {
           checked={formData.others}
           onChange={handleChange}
         />
-        {/* Campo de texto para "Otras" */}
         {formData.others && (
           <Textarea
             label="Detalles adicionales"
@@ -96,11 +113,15 @@ export default function InsertFamilyHistoryForm({ onSubmit }) {
       </div>
 
       {/* Botón de envío */}
-      {/* <div className="flex justify-end">
-        <Button type="submit" color="blue">
-          Guardar Historial
+      <div className="flex justify-end">
+        <Button type="submit" color="blue" disabled={loading}>
+          {loading ? "Enviando..." : "Guardar Historial"}
         </Button>
-      </div> */}
+      </div>
+
+      {/* Mensajes de éxito o error */}
+      {success && <Typography color="green" className="mt-2">¡Historial guardado con éxito!</Typography>}
+      {error && <Typography color="red" className="mt-2">{error}</Typography>}
     </form>
   );
 }

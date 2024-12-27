@@ -1,353 +1,191 @@
-// 'use client';
-
-// const handleRejectedResponse = async (error) => {
-//     console.error("HTTP Error:", error);
-  
-//     let message = error.message || `${error.status}: ${error.statusText}`;
-  
-//     if (error.status === 401) {
-//       message = "Sesión expirada. Por favor, inicia sesión nuevamente.";
-//       localStorage.removeItem('authToken'); // Limpia el token si es inválido
-//       window.location.href = '/'; // Redirige al login
-//     }
-  
-//     const processJson = (json) => {
-//       if (json?.errors) {
-//         let message = json.title;
-//         for (let index in json.errors) {
-//           message += `\n- ${json.errors[index]}`;
-//         }
-//         return message;
-//       }
-//       return json.message || "Error desconocido en la respuesta de la API";
-//     };
-  
-//     const processText = (text) => text || "Error desconocido en la respuesta de la API";
-  
-//     if (typeof error.json === "function") {
-//       const isJSON = error.headers.get('content-type')?.includes('application/json');
-//       message = await (isJSON
-//         ? error.json().then(processJson)
-//         : error.text().then(processText)
-//       ).catch(() => `${error.status}: ${error.statusText}`);
-//     }
-  
-//     return Promise.reject(message);
-//   };
-
-// const handleResponse = async (response) => {
-//     if (!response.ok) {
-//         throw response;
-//     }
-
-//     const json = await response.json();
-
-//     if (json.isSuccess) {
-//         return json.data; // Retorna los datos si la respuesta fue exitosa
-//     } else {
-//         throw new Error(json.message || "Error desconocido en la API");
-//     }
-// };
-
-// const getOptions = (method, data = null) => {
-//     const token = localStorage.getItem('authToken'); // Obtén el token del localStorage
-//     const headers = {
-//       "Access-Control-Expose-Headers": "Content-Length",
-//       "Content-Type": "application/json",
-//       ...(token && { Authorization: `Bearer ${token}` }), // Agrega el token si existe
-//     };
-  
-//     const options = { method, headers, mode: 'cors' };
-//     return data ? { ...options, body: JSON.stringify(data) } : options;
-//   };
-
-// const HttpRequest = (() => {
-//     const httpRequest = async (method, url, data = null) => {
-//         console.debug(`${method} Request to URL: ${url}`);
-//         return fetch(url, getOptions(method, data))
-//             .then(handleResponse)
-//             .catch(handleRejectedResponse);
-//     };
-
-//     return {
-//         get: async (url) => httpRequest('GET', url),
-//         post: async (url, data) => httpRequest('POST', url, data),
-//         put: async (url, data) => httpRequest('PUT', url, data),
-//         delete: async (url, data) => httpRequest('DELETE', url, data),
-//         patch: async (url, data) => httpRequest('PATCH', url, data),
-//     };
-// })();
-
-// const MedicalOfficeWebApi = (() => {
-//      const apiUrl = "http://localhost:5038";
-//     //const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-//     return {
-//         //#region Authentication
-//         login: async (usr, psswd) =>
-//             HttpRequest.post(`${apiUrl}/api/login`, { Usr: usr, Psswd: psswd }),
-//         //#endregion
-
-//         //#region Patient Data
-//         getPatientData: async (idPatient) =>
-//             HttpRequest.get(`${apiUrl}/api/PatientData/${idPatient}`),
-
-//         getPatientDataAndAntecedents: async (idPatient) =>
-//             HttpRequest.get(`${apiUrl}/api/GetPatientDataAndAntecedents/${idPatient}`),
-//         //#endregion
-
-//         //#region Insert Operations
-//         insertPatientData: async (patientData) =>
-//             HttpRequest.post(`${apiUrl}/api/insertpatient`, patientData),
-
-//         insertFamilyHistory: async (familyHistoryData) =>
-//             HttpRequest.post(`${apiUrl}/api/insertfamilyhistory`, familyHistoryData),
-
-//         insertMedicalAppointmentCalendar: async (appointmentData) =>
-//             HttpRequest.post(`${apiUrl}/api/InsertMedicalAppointmentCalendar`, appointmentData),
-//         //#endregion
-
-//         //#region Update Operations
-//         updateActiveMedications: async (idPatient, medicationsData) =>
-//             HttpRequest.patch(`${apiUrl}/api/UpdateActiveMedications/${idPatient}`, medicationsData),
-
-//         updateDoctor: async (idDoctor, doctorData) =>
-//             HttpRequest.patch(`${apiUrl}/api/updateDoctor/${idDoctor}`, doctorData),
-
-//         updateFamilyHistory: async (idPatient, familyHistoryData) =>
-//             HttpRequest.patch(`${apiUrl}/api/UpdateFamilyHistory/${idPatient}`, familyHistoryData),
-
-//         updateLaboralDays: async (id, laboralDaysData) =>
-//             HttpRequest.patch(`${apiUrl}/api/UpdateLaboralDays/${id}`, laboralDaysData),
-
-//         updateMedicalHistoryNotes: async (idPatient, notesData) =>
-//             HttpRequest.patch(`${apiUrl}/api/UpdateMedicalHistoryNotes/${idPatient}`, notesData),
-
-//         updateNonPathologicalHistory: async (idPatient, nonPathologicalData) =>
-//             HttpRequest.patch(`${apiUrl}/api/UpdateNonPathologicalHistory/${idPatient}`, nonPathologicalData),
-
-//         updateOfficeSetup: async (officeData) =>
-//             HttpRequest.patch(`${apiUrl}/api/UpdateOfficeSetup`, officeData),
-
-//         updatePathologicalBackground: async (idPatient, pathologicalData) =>
-//             HttpRequest.patch(`${apiUrl}/api/UpdatePathologicalBackground/${idPatient}`, pathologicalData),
-
-//         updatePatientAllergies: async (idPatient, allergiesData) =>
-//             HttpRequest.patch(`${apiUrl}/api/UpdatePatientAllergies/${idPatient}`, allergiesData),
-
-//         updatePsychiatricHistory: async (idPatient, psychiatricData) =>
-//             HttpRequest.patch(`${apiUrl}/api/UpdatePsychiatricHistory/${idPatient}`, psychiatricData),
-//         //#endregion
-
-//         //#region Get Operations
-//         getAllConfigurations: async () =>
-//             HttpRequest.get(`${apiUrl}/api/getallconfigurations`),
-
-//         getActiveMedications: async (patientId) =>
-//             HttpRequest.get(`${apiUrl}/api/getactivemedications/${patientId}`),
-
-//         getFamilyHistory: async (patientID) =>
-//             HttpRequest.get(`${apiUrl}/api/getfamilyhistory/${patientID}`),
-
-//         getMedicalHistoryNotes: async (patientID) =>
-//             HttpRequest.get(`${apiUrl}/api/getmedicalhistorynotes/${patientID}`),
-
-//         getNonPathologicalHistory: async (patientID) =>
-//             HttpRequest.get(`${apiUrl}/api/GetNonPathologicalHistory/${patientID}`),
-
-//         getPathologicalBackground: async (patientID) =>
-//             HttpRequest.get(`${apiUrl}/api/GetPathologicalBackground/${patientID}`),
-
-//         getPatientAllergies: async (patientID) =>
-//             HttpRequest.get(`${apiUrl}/api/GetPatientAllergies/${patientID}`),
-
-//         getPsychiatricHistory: async (patientId) =>
-//             HttpRequest.get(`${apiUrl}/api/GetPsychiatricHistory/${patientId}`),
-
-//         getUsers: async (id = 0, usr = "") =>
-//             HttpRequest.get(`${apiUrl}/api/UsersData?id=${id}&usr=${usr}`),
-//         //#endregion
-//     };
-// })();
-
-// export default MedicalOfficeWebApi;
-
 'use client';
+import axios from 'axios';
 
-const handleRejectedResponse = async (error) => {
-    console.error("HTTP Error:", error);
-  
-    let message = error.message || `${error.status}: ${error.statusText}`;
-  
-    if (error.status === 401) {
-      message = "Sesión expirada. Por favor, inicia sesión nuevamente.";
-      localStorage.removeItem('authToken'); // Limpia el token si es inválido
-      window.location.href = '/'; // Redirige al login
+// Crear una instancia de Axios con configuración predeterminada
+const axiosInstance = axios.create({
+    baseURL: 'http://localhost:5038', // Cambia esto según tu API
+    headers: {
+        "Access-Control-Expose-Headers": "Content-Length",
+        "Content-Type": "application/json",
+    },
+});
+
+// Interceptor para incluir el token en cada solicitud
+axiosInstance.interceptors.request.use((config) => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
     }
-  
-    const processJson = (json) => {
-      if (json?.errors) {
-        let message = json.title;
-        for (let index in json.errors) {
-          message += `\n- ${json.errors[index]}`;
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
+
+// Interceptor para manejar respuestas y errores
+axiosInstance.interceptors.response.use(
+    (response) => {
+        const result = response.data;
+
+        // Validamos si sigue la estructura de GenericViewModel<T>
+        if (result && typeof result.isSuccess !== 'undefined') {
+            if (result.isSuccess) {
+                return result.data; // Retornar solo los datos si la operación fue exitosa
+            } else {
+                // Capturamos el mensaje de error del servidor
+                return Promise.reject(result.message || "Operación fallida en el servidor");
+            }
         }
-        return message;
-      }
-      return json.message || "Error desconocido en la respuesta de la API";
-    };
-  
-    const processText = (text) => text || "Error desconocido en la respuesta de la API";
-  
-    if (typeof error.json === "function") {
-      const isJSON = error.headers.get('content-type')?.includes('application/json');
-      message = await (isJSON
-        ? error.json().then(processJson)
-        : error.text().then(processText)
-      ).catch(() => `${error.status}: ${error.statusText}`);
+
+        return result; // Si no es GenericViewModel<T>, retornamos el resultado completo
+    },
+    (error) => {
+        const { response } = error;
+
+        if (response) {
+            const { status, data } = response;
+            let message = data?.message || "Error desconocido";
+
+            if (status === 401) {
+                message = "Sesión expirada. Por favor, inicia sesión nuevamente.";
+                localStorage.removeItem('authToken');
+                window.location.href = '/';
+            }
+
+            return Promise.reject(message); // Pasamos el mensaje de error capturado
+        }
+
+        return Promise.reject(error.message || "Error de red");
     }
-  
-    return Promise.reject(message);
-  };
+);
 
-const handleResponse = async (response) => {
-    if (!response.ok) {
-        throw response;
-    }
 
-    const json = await response.json();
-
-    if (json.isSuccess) {
-        return json.data; // Retorna los datos si la respuesta fue exitosa
-    } else {
-        throw new Error(json.message || "Error desconocido en la API");
-    }
-};
-
-const getOptions = (method, data = null) => {
-    const token = localStorage.getItem('authToken'); // Obtén el token del localStorage
-    const headers = {
-      "Access-Control-Expose-Headers": "Content-Length",
-      "Content-Type": "application/json",
-      ...(token && { Authorization: `Bearer ${token}` }), // Agrega el token si existe
-    };
-  
-    const options = { method, headers, mode: 'cors' };
-    return data ? { ...options, body: JSON.stringify(data) } : options;
-  };
-
-const HttpRequest = (() => {
-    const httpRequest = async (method, url, data = null) => {
-        console.debug(`${method} Request to URL: ${url}`);
-        return fetch(url, getOptions(method, data))
-            .then(handleResponse)
-            .catch(handleRejectedResponse);
-    };
-
-    return {
-        get: async (url) => httpRequest('GET', url),
-        post: async (url, data) => httpRequest('POST', url, data),
-        put: async (url, data) => httpRequest('PUT', url, data),
-        delete: async (url, data) => httpRequest('DELETE', url, data),
-        patch: async (url, data) => httpRequest('PATCH', url, data),
-    };
-})();
-
+// Clase para gestionar la API
 const MedicalOfficeWebApi = (() => {
-    const apiUrl = "http://localhost:5038"; // Cambia esto si tu URL es diferente
+    const apiUrl = '/api'; // Base para las rutas específicas
 
     return {
         //#region Authentication
         login: async (usr, psswd) =>
-            HttpRequest.post(`${apiUrl}/api/login`, { Usr: usr, Psswd: psswd }),
+            axiosInstance.post(`${apiUrl}/login`, { Usr: usr, Psswd: psswd }),
         //#endregion
 
         //#region Patient Data
         getPatientData: async (idPatient) =>
-            HttpRequest.get(`${apiUrl}/api/PatientData/${idPatient}`),
+            axiosInstance.get(`${apiUrl}/PatientData/${idPatient}`),
 
         getPatientDataAndAntecedents: async (idPatient) =>
-            HttpRequest.get(`${apiUrl}/api/GetPatientDataAndAntecedents/${idPatient}`),
+            axiosInstance.get(`${apiUrl}/GetPatientDataAndAntecedents/${idPatient}`),
         //#endregion
 
         //#region Insert Operations
         insertPatientData: async (patientData) =>
-            HttpRequest.post(`${apiUrl}/api/insertpatient`, patientData),
+            axiosInstance.post(`${apiUrl}/insertpatient`, patientData),
 
         insertFamilyHistory: async (familyHistoryData) =>
-            HttpRequest.post(`${apiUrl}/api/insertfamilyhistory`, familyHistoryData),
+            axiosInstance.post(`${apiUrl}/insertfamilyhistory`, familyHistoryData),
 
         insertMedicalHistoryNotes: async (medicalHistoryNotesData) =>
-            HttpRequest.post(`${apiUrl}/api/InsertMedicalHistoryNotes`, medicalHistoryNotesData),
+            axiosInstance.post(`${apiUrl}/InsertMedicalHistoryNotes`, medicalHistoryNotesData),
 
         insertActiveMedications: async (activeMedicationsData) =>
-            HttpRequest.post(`${apiUrl}/api/insertactivemedications`, activeMedicationsData),
+            axiosInstance.post(`${apiUrl}/insertactivemedications`, activeMedicationsData),
 
         insertNonPathologicalHistory: async (nonPathologicalData) =>
-            HttpRequest.post(`${apiUrl}/api/InsertNonPathologicalHistory`, nonPathologicalData),
+            axiosInstance.post(`${apiUrl}/InsertNonPathologicalHistory`, nonPathologicalData),
 
         insertPathologicalBackground: async (pathologicalData) =>
-            HttpRequest.post(`${apiUrl}/api/InsertPathologicalBackground`, pathologicalData),
+            axiosInstance.post(`${apiUrl}/InsertPathologicalBackground`, pathologicalData),
 
         insertPatientAllergies: async (allergiesData) =>
-            HttpRequest.post(`${apiUrl}/api/InsertPatientAllergies`, allergiesData),
+            axiosInstance.post(`${apiUrl}/InsertPatientAllergies`, allergiesData),
 
         insertPsychiatricHistory: async (psychiatricData) =>
-            HttpRequest.post(`${apiUrl}/api/insertpsychiatricHistory`, psychiatricData),
+            axiosInstance.post(`${apiUrl}/insertpsychiatricHistory`, psychiatricData),
 
-        insertLoadFile: async (fileData) =>
-            HttpRequest.post(`${apiUrl}/api/UploadPatientFile`, fileData),
+        uploadPatientFile: async (fileData) =>
+            axiosInstance.post(`${apiUrl}/UploadPatientFile`, fileData),
+
+        insertOfficeSetup: async (officeSetupData) =>
+            axiosInstance.post(`${apiUrl}/insertofficesetup`, officeSetupData),
+
+        insertMedicalAppointmentCalendar: async (appointmentData) =>
+            axiosInstance.post(`${apiUrl}/InsertMedicalAppointmentCalendar`, appointmentData),
+
+        insertPosition: async (position) =>
+            axiosInstance.post(`${apiUrl}/insertposition/${position}`),
+
+        insertSpecialties: async (specialty) =>
+            axiosInstance.post(`${apiUrl}/insertspecialties/${specialty}`),
+
+        registerUser: async (userData) =>
+            axiosInstance.post(`${apiUrl}/registerusers`, userData),
+
+        insertDoctor: async (doctorData) => // Nuevo faltante
+            axiosInstance.post(`${apiUrl}/InsertDoctor`, doctorData),
         //#endregion
 
         //#region Update Operations
         updateActiveMedications: async (idPatient, medicationsData) =>
-            HttpRequest.patch(`${apiUrl}/api/UpdateActiveMedications/${idPatient}`, medicationsData),
+            axiosInstance.patch(`${apiUrl}/UpdateActiveMedications/${idPatient}`, medicationsData),
 
         updateFamilyHistory: async (idPatient, familyHistoryData) =>
-            HttpRequest.patch(`${apiUrl}/api/UpdateFamilyHistory/${idPatient}`, familyHistoryData),
+            axiosInstance.patch(`${apiUrl}/UpdateFamilyHistory/${idPatient}`, familyHistoryData),
 
         updateMedicalHistoryNotes: async (idPatient, notesData) =>
-            HttpRequest.patch(`${apiUrl}/api/UpdateMedicalHistoryNotes/${idPatient}`, notesData),
+            axiosInstance.patch(`${apiUrl}/UpdateMedicalHistoryNotes/${idPatient}`, notesData),
 
         updateNonPathologicalHistory: async (idPatient, nonPathologicalData) =>
-            HttpRequest.patch(`${apiUrl}/api/UpdateNonPathologicalHistory/${idPatient}`, nonPathologicalData),
+            axiosInstance.patch(`${apiUrl}/UpdateNonPathologicalHistory/${idPatient}`, nonPathologicalData),
 
         updatePathologicalBackground: async (idPatient, pathologicalData) =>
-            HttpRequest.patch(`${apiUrl}/api/UpdatePathologicalBackground/${idPatient}`, pathologicalData),
+            axiosInstance.patch(`${apiUrl}/UpdatePathologicalBackground/${idPatient}`, pathologicalData),
 
         updatePatientAllergies: async (idPatient, allergiesData) =>
-            HttpRequest.patch(`${apiUrl}/api/UpdatePatientAllergies/${idPatient}`, allergiesData),
+            axiosInstance.patch(`${apiUrl}/UpdatePatientAllergies/${idPatient}`, allergiesData),
 
         updatePsychiatricHistory: async (idPatient, psychiatricData) =>
-            HttpRequest.patch(`${apiUrl}/api/UpdatePsychiatricHistory/${idPatient}`, psychiatricData),
+            axiosInstance.patch(`${apiUrl}/UpdatePsychiatricHistory/${idPatient}`, psychiatricData),
+
+        updateOfficeSetup: async (officeSetupData) =>
+            axiosInstance.patch(`${apiUrl}/UpdateOfficeSetup`, officeSetupData),
+
+        updateLaboralDays: async (id, laboralDaysData) =>
+            axiosInstance.patch(`${apiUrl}/UpdateLaboralDays/${id}`, laboralDaysData),
+
+        updateDoctor: async (id, doctorData) =>
+            axiosInstance.patch(`${apiUrl}/updateDoctor/${id}`, doctorData),
         //#endregion
 
         //#region Get Operations
         getAllConfigurations: async () =>
-            HttpRequest.get(`${apiUrl}/api/getallconfigurations`),
+            axiosInstance.get(`${apiUrl}/getallconfigurations`),
+
+        getDoctors: async (id = 0) =>
+            axiosInstance.get(`${apiUrl}/GetDoctors/${id}`),
 
         getActiveMedications: async (patientId) =>
-            HttpRequest.get(`${apiUrl}/api/getactivemedications/${patientId}`),
+            axiosInstance.get(`${apiUrl}/getactivemedications/${patientId}`),
 
         getFamilyHistory: async (patientID) =>
-            HttpRequest.get(`${apiUrl}/api/getfamilyhistory/${patientID}`),
+            axiosInstance.get(`${apiUrl}/getfamilyhistory/${patientID}`),
 
         getMedicalHistoryNotes: async (patientID) =>
-            HttpRequest.get(`${apiUrl}/api/getmedicalhistorynotes/${patientID}`),
+            axiosInstance.get(`${apiUrl}/getmedicalhistorynotes/${patientID}`),
 
         getNonPathologicalHistory: async (patientID) =>
-            HttpRequest.get(`${apiUrl}/api/GetNonPathologicalHistory/${patientID}`),
+            axiosInstance.get(`${apiUrl}/GetNonPathologicalHistory/${patientID}`),
 
         getPathologicalBackground: async (patientID) =>
-            HttpRequest.get(`${apiUrl}/api/GetPathologicalBackground/${patientID}`),
+            axiosInstance.get(`${apiUrl}/GetPathologicalBackground/${patientID}`),
 
         getPatientAllergies: async (patientID) =>
-            HttpRequest.get(`${apiUrl}/api/GetPatientAllergies/${patientID}`),
+            axiosInstance.get(`${apiUrl}/GetPatientAllergies/${patientID}`),
 
         getPsychiatricHistory: async (patientId) =>
-            HttpRequest.get(`${apiUrl}/api/GetPsychiatricHistory/${patientId}`),
+            axiosInstance.get(`${apiUrl}/GetPsychiatricHistory/${patientId}`),
 
         getUsers: async (id = 0, usr = "") =>
-            HttpRequest.get(`${apiUrl}/api/UsersData?id=${id}&usr=${usr}`),
+            axiosInstance.get(`${apiUrl}/UsersData`, { params: { id, usr } }),
         //#endregion
     };
 })();
