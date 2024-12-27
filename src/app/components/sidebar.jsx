@@ -208,6 +208,14 @@ export function MultiLevelSidebar() {
                   Usuarios
                 </Link>
               </ListItem>
+              <ListItem className="hover:bg-blue-100">
+                <Link href="/home/configuration/others" className="flex w-full">
+                  <ListItemPrefix>
+                    <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
+                  </ListItemPrefix>
+                  Otras Configuraciones
+                </Link>
+              </ListItem>
             </List>
           </AccordionBody>
         </Accordion>

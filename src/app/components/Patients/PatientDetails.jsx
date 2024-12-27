@@ -1,5 +1,8 @@
 'use client';
-import React from "react";
+
+import React, { useState } from "react";
+import InsertMedicalAppointment from '@/app/components/Forms/Posts/InsertMedicalAppointment';
+
 import {
   Card,
   CardHeader,
@@ -8,9 +11,14 @@ import {
   Avatar,
   Chip,
   Button,
+  Dialog,
+  DialogBody,
+  DialogHeader,
 } from "@material-tailwind/react";
 
 export function PatientDetails({ patientData, onEdit, onInsert }) {
+  const [openModal, setOpenModal] = useState(false);
+
   if (!patientData) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -31,6 +39,11 @@ export function PatientDetails({ patientData, onEdit, onInsert }) {
     patientAllergies,
     psychiatricHistory,
   } = patientData || {};
+
+  const handleOpenModal = () => {
+    setOpenModal(!openModal);
+  };
+
 
   return (
     <Card className="w-full p-6 space-y-6 bg-gray-50">
@@ -283,6 +296,26 @@ export function PatientDetails({ patientData, onEdit, onInsert }) {
           {psychiatricHistory?.familySocialSupport ? "Sí" : "No"}
         </Typography>
       </CardBody>
+
+
+       {/* Botón para agendar cita */}
+       <CardBody className="flex justify-end">
+        <Button
+          color="green"
+          onClick={handleOpenModal}
+          className="w-full md:w-auto"
+        >
+          Agendar Cita
+        </Button>
+      </CardBody>
+
+      {/* Modal para agendar cita */}
+      <Dialog open={openModal} handler={handleOpenModal} size="lg">
+        <DialogHeader>Agendar Cita Médica</DialogHeader>
+        <DialogBody divider>
+          <InsertMedicalAppointment />
+        </DialogBody>
+      </Dialog>
 
     </Card>
   );

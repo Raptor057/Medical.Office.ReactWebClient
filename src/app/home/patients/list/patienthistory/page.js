@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import MedicalOfficeWebApi from '@/app/utils/HttpRequests';
 import { PatientDetails } from '@/app/components/Patients/PatientDetails';
 
+
 export default function PatientDetailsPage() {
   const [id, setId] = useState(null);
   const searchParams = typeof window !== 'undefined' ? useSearchParams() : null;
@@ -75,15 +76,6 @@ export default function PatientDetailsPage() {
   return (
     <div className="min-h-screen p-6 bg-gray-100">
       <PatientDetails patientData={patientData} />
-      {/* Botones para redirigir a Insertar o Actualizar paciente */}
-      <div className="mt-6 flex gap-4 justify-center">
-        <Button color="blue" onClick={handleInsertButtonClick}>
-          Insertar Datos del Paciente
-        </Button>
-        <Button color="yellow" onClick={handleUpdateButtonClick}>
-          Actualizar Datos del Paciente
-        </Button>
-      </div>
     </div>
   );
 }

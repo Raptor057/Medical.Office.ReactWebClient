@@ -19,10 +19,9 @@ import Link from "next/link";
 
 const TABLE_HEAD = [
   "Nombre Completo",
-  "Correo Electrónico",
-  "Estado",
+  "Numero de Telefono",
   "Fecha de Nacimiento",
-  "Ver Historial",
+  "Ver Historial"
 ];
 
 export function PatientsList({ patients = [] }) {
@@ -159,14 +158,6 @@ export function PatientsList({ patients = [] }) {
                       >
                         {phoneNumber || "Sin teléfono registrado"}
                       </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Chip
-                        variant="ghost"
-                        size="sm"
-                        value="Activo"
-                        color="green"
-                      />
                     </td>
                     <td className={classes}>
                       <Typography

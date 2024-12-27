@@ -4,15 +4,15 @@ import React, { useState } from "react";
 import { Button, Input, Typography } from "@material-tailwind/react";
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests";
 
-export default function InsertPositionsForm() {
-  const [position, setPosition] = useState(""); // Estado para la posición
+export default function InsertSpecialtiesForm() {
+  const [specialty, setSpecialty] = useState(""); // Estado para la especialidad
   const [loading, setLoading] = useState(false); // Estado de carga
   const [error, setError] = useState(null); // Estado para errores
   const [success, setSuccess] = useState(false); // Estado de éxito
 
   // Manejo de cambios en el input
   const handleChange = (e) => {
-    setPosition(e.target.value);
+    setSpecialty(e.target.value);
   };
 
   // Manejo del envío del formulario
@@ -23,12 +23,11 @@ export default function InsertPositionsForm() {
     setSuccess(false);
 
     try {
-      // Llamada al endpoint
-      await MedicalOfficeWebApi.insertPosition(position);
+      await MedicalOfficeWebApi.insertSpecialties(specialty);
       setSuccess(true); // Mostrar mensaje de éxito
-      setPosition(""); // Limpiar formulario
+      setSpecialty(""); // Limpiar formulario
     } catch (err) {
-      setError(err); // Mostrar el error capturado
+      setError(err); // Capturar mensaje legible
     } finally {
       setLoading(false);
     }
@@ -37,37 +36,37 @@ export default function InsertPositionsForm() {
   return (
     <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-white rounded-lg shadow-md">
       <Typography variant="h4" color="blue-gray" className="font-bold text-center">
-        Registrar Posición
+        Registrar Especialidad
       </Typography>
       <Typography color="gray" className="text-sm font-normal text-center">
-        Completa el campo para agregar una nueva posición.
+        Completa el campo para agregar una nueva especialidad.
       </Typography>
 
       {/* Campo del formulario */}
       <Input
-        label="Posición"
-        value={position}
+        label="Especialidad"
+        value={specialty}
         onChange={handleChange}
         required
-        placeholder="Ejemplo: Médico General"
+        placeholder="Ejemplo: Cardiología"
       />
 
       {/* Botón de envío */}
       <div className="flex justify-end">
         <Button type="submit" color="blue" disabled={loading}>
-          {loading ? "Enviando..." : "Registrar Posición"}
+          {loading ? "Enviando..." : "Registrar Especialidad"}
         </Button>
       </div>
 
       {/* Mensajes de éxito o error */}
       {success && (
         <Typography color="green" className="mt-2">
-          ¡Posición registrada con éxito!
+          ¡Especialidad registrada con éxito!
         </Typography>
       )}
       {error && (
         <Typography color="red" className="mt-2">
-          {error}
+          {typeof error === "string" ? error : "Ocurrió un error inesperado."}
         </Typography>
       )}
     </form>
