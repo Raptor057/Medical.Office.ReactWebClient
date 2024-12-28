@@ -1,9 +1,17 @@
 'use client';
+
 import axios from 'axios';
+
+// Cargar las variables de entorno desde el archivo .env
+require('dotenv').config();
+console.log(process.env.NEXT_PUBLIC_API_URL);
+// Obtener la baseURL desde las variables de entorno
+const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 // Crear una instancia de Axios con configuración predeterminada
 const axiosInstance = axios.create({
-    baseURL: 'http://localhost:5038', // Cambia esto según tu API
+    //baseURL: 'http://localhost:5038', // Cambia esto según tu API
+    baseURL, // Asigna la baseURL dinámica
     headers: {
         "Access-Control-Expose-Headers": "Content-Length",
         "Content-Type": "application/json",
@@ -14,7 +22,15 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use((config) => {
     const token = localStorage.getItem('authToken');
     if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+        // Validar que el token tenga la estructura de un JWT
+        const isValidJWT = token.split('.').length === 3;
+        if (isValidJWT) {
+            config.headers.Authorization = `Bearer ${token}`;
+        } else {
+            console.warn("Token no válido detectado, eliminando.");
+            localStorage.removeItem('authToken'); // Remover token inválido
+            window.location.href = '/'; // Redirigir al login
+        }
     }
     return config;
 }, (error) => {
@@ -38,7 +54,7 @@ axiosInstance.interceptors.response.use(
 
         return result; // Si no es GenericViewModel<T>, retornamos el resultado completo
     },
-    (error) => {
+    async (error) => {
         const { response } = error;
 
         if (response) {
@@ -47,6 +63,21 @@ axiosInstance.interceptors.response.use(
 
             if (status === 401) {
                 message = "Sesión expirada. Por favor, inicia sesión nuevamente.";
+
+                // Opcional: Manejo de refresh token si está implementado en tu API
+                const refreshToken = localStorage.getItem('refreshToken');
+                if (refreshToken) {
+                    try {
+                        const { data } = await axios.post('/auth/refresh', { refreshToken });
+                        localStorage.setItem('authToken', data.newAuthToken);
+                        error.config.headers.Authorization = `Bearer ${data.newAuthToken}`;
+                        return axiosInstance(error.config); // Reintentar la solicitud original
+                    } catch (refreshError) {
+                        console.error("No se pudo refrescar el token.", refreshError);
+                    }
+                }
+
+                // Eliminar tokens y redirigir al login si no se puede renovar el token
                 localStorage.removeItem('authToken');
                 window.location.href = '/';
             }
@@ -57,7 +88,6 @@ axiosInstance.interceptors.response.use(
         return Promise.reject(error.message || "Error de red");
     }
 );
-
 
 // Clase para gestionar la API
 const MedicalOfficeWebApi = (() => {

@@ -220,19 +220,30 @@ export function MultiLevelSidebar() {
           </AccordionBody>
         </Accordion>
 
-        {/* Cerrar Sesión */}
-        <ListItem className="cursor-pointer hover:bg-red-50">
-          <ListItemPrefix>
-            <PowerIcon className="w-5 h-5 text-red-500" />
-          </ListItemPrefix>
+      {/* Cerrar Sesión */}
+      <ListItem
+        className="cursor-pointer hover:bg-red-50"
+        onClick={() => {
+        // Eliminar información de la sesión
+        localStorage.removeItem('authToken'); // Elimina el token de autenticación
+        localStorage.removeItem('refreshToken'); // Opcional: elimina el refresh token si lo usas
+        sessionStorage.clear(); // Limpia el sessionStorage por completo (si es necesario)
+
+        // Redirigir al login
+        window.location.href = '/'; // Asegúrate de que "/" sea tu página de inicio de sesión
+        }}
+        >
+        <ListItemPrefix>
+        <PowerIcon className="w-5 h-5 text-red-500" />
+        </ListItemPrefix>
           <Typography
-            color="red"
-            className="mr-auto font-medium"
-            onClick={() => console.log("Cerrando sesión...")}
+          color="red"
+          className="mr-auto font-medium"
           >
-            Cerrar Sesión
+          Cerrar Sesión
           </Typography>
-        </ListItem>
+      </ListItem>
+
       </List>
     </Card>
   );
