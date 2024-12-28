@@ -112,7 +112,7 @@ export default function DoctorsList() {
 
       setIsModalOpen(false); // Cerrar el modal
     } catch (err) {
-      setError(err?.message || "Error desconocido al actualizar el doctor."); // Capturar mensaje legible
+      setError(err|| "Error desconocido al actualizar el doctor."); // Capturar mensaje legible
     } finally {
       setLoading(false);
     }

@@ -44,24 +44,9 @@ export default function PatientDetailsPage() {
   }, [id]);
 
   // Función para manejar la redirección a la página de "Insert"
-  const handleInsertButtonClick = () => {
+  const handleInsertUpdateButtonClick = () => {
     router.push(`/home/patients/list/patienthistory/insert?id=${id}`);
   };
-
-  // Función para manejar la redirección a la página de "Update"
-  const handleUpdateButtonClick = () => {
-    router.push(`/home/patients/list/patienthistory/update?id=${id}`);
-  };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Typography variant="h6" color="blue-gray">
-          Cargando detalles del paciente...
-        </Typography>
-      </div>
-    );
-  }
 
   if (error) {
     return (
@@ -76,6 +61,12 @@ export default function PatientDetailsPage() {
   return (
     <div className="min-h-screen p-6 bg-gray-100">
       <PatientDetails patientData={patientData} />
+            {/* Botones para redirigir a Insertar o Actualizar paciente */}
+            <div className="mt-6 flex gap-4 justify-center">
+        <Button color="blue" onClick={handleInsertUpdateButtonClick}>
+          Insertar / Actualizar Datos del Paciente
+        </Button>
+      </div>
     </div>
   );
 }

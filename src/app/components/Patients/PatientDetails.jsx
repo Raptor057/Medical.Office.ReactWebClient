@@ -2,6 +2,9 @@
 
 import React, { useState } from "react";
 import InsertMedicalAppointment from '@/app/components/Forms/Posts/InsertMedicalAppointment';
+import { useSearchParams } from "next/navigation";
+import InsertLoadFile from '@/app/components/Forms/Posts/InsertLoadFile';
+import PatientFilesList from '@/app/components/Forms/Gets/PatientFilesList';
 
 import {
   Card,
@@ -13,10 +16,18 @@ import {
   Button,
   Dialog,
   DialogBody,
-  DialogHeader,
+  DialogHeader, 
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
 } from "@material-tailwind/react";
 
 export function PatientDetails({ patientData, onEdit, onInsert }) {
+  const searchParams = useSearchParams(); // Hook siempre al inicio
+  const patientId = parseInt(searchParams.get("id")) || 0;
+
   const [openModal, setOpenModal] = useState(false);
 
   if (!patientData) {
@@ -29,16 +40,19 @@ export function PatientDetails({ patientData, onEdit, onInsert }) {
     );
   }
 
-  const {
-    patientsData,
-    activeMedications,
-    familyHistory,
-    medicalHistoryNotes,
-    nonPathologicalHistory,
-    pathologicalBackground,
-    patientAllergies,
-    psychiatricHistory,
-  } = patientData || {};
+const {
+  patientsData, // Información general del paciente
+  activeMedications, // Medicamentos activos
+  familyHistory, // Antecedentes familiares
+  medicalHistoryNotes, // Notas del historial médico
+  nonPathologicalHistory, // Antecedentes no patológicos
+  pathologicalBackground, // Antecedentes patológicos
+  patientAllergies, // Alergias del paciente
+  psychiatricHistory, // Historial psiquiátrico
+  patientsFilesList, // Lista de archivos del paciente
+  medicalAppointmentsActive, // Citas activas
+  medicalAppointmentsHistory, // Historial de citas
+} = patientData?.patientDataAndAntecedents || {};
 
   const handleOpenModal = () => {
     setOpenModal(!openModal);
@@ -298,6 +312,31 @@ export function PatientDetails({ patientData, onEdit, onInsert }) {
       </CardBody>
 
 
+      {/* Subir Archivos */}
+      <Card className="shadow-lg">
+          <CardHeader className="bg-blue-500 text-white p-4">
+            <Typography variant="h6" color="white">
+              Subir Archivos
+            </Typography>
+          </CardHeader>
+          <CardBody>
+            <InsertLoadFile patientId={patientId} />
+          </CardBody>
+        </Card>
+
+              {/* Subir Archivos */}
+      <Card className="shadow-lg">
+          <CardHeader className="bg-blue-500 text-white p-4">
+            <Typography variant="h6" color="white">
+              Subir Archivos
+            </Typography>
+          </CardHeader>
+          <CardBody>
+            <PatientFilesList patientId={patientId} />
+          </CardBody>
+        </Card>
+
+
        {/* Botón para agendar cita */}
        <CardBody className="flex justify-end">
         <Button
@@ -308,6 +347,8 @@ export function PatientDetails({ patientData, onEdit, onInsert }) {
           Agendar Cita
         </Button>
       </CardBody>
+
+      
 
       {/* Modal para agendar cita */}
       <Dialog open={openModal} handler={handleOpenModal} size="lg">

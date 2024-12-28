@@ -103,17 +103,6 @@ export default function PatientFormsDashboard() {
             <InsertPsychiatricHistoryForm patientId={patientId} />
           </CardBody>
         </Card>
-
-        <Card className="shadow-lg">
-          <CardHeader className="bg-blue-500 text-white p-4">
-            <Typography variant="h6" color="white">
-              Subir Archivos
-            </Typography>
-          </CardHeader>
-          <CardBody>
-            <InsertLoadFile patientId={patientId} />
-          </CardBody>
-        </Card>
       </div>
     </div>
   );

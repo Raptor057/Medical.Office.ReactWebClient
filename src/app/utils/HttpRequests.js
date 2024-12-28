@@ -193,6 +193,9 @@ const MedicalOfficeWebApi = (() => {
         //#endregion
 
         //#region Get Operations
+        getPatientFiles: async (patientId,idfile) =>
+            axiosInstance.get(`${apiUrl}/GetPatientFile/${patientId}/${idfile}`),
+
         getAllConfigurations: async () =>
             axiosInstance.get(`${apiUrl}/getallconfigurations`),
 

@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Checkbox, Textarea, Typography } from "@material-tailwind/react";
+import { useSearchParams } from "next/navigation"; // Hook para obtener parámetros de la URL
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests"; // Ruta correcta para la API
 
-export default function InsertNonPathologicalHistoryForm({ patientId }) {
+export default function InsertUpdateNonPathologicalHistoryForm() {
+  const searchParams = useSearchParams(); // Hook para obtener los parámetros de la URL
+  const patientId = parseInt(searchParams.get("id")) || 0; // Obtiene el parámetro `id` y lo convierte a entero
+
   const [formData, setFormData] = useState({
-    idPatient: patientId || 0,
+    idPatient: patientId,
     physicalActivity: false,
     smoking: false,
     alcoholism: false,
@@ -19,6 +23,42 @@ export default function InsertNonPathologicalHistoryForm({ patientId }) {
   const [loading, setLoading] = useState(false); // Estado de carga
   const [error, setError] = useState(null); // Estado para errores
   const [success, setSuccess] = useState(false); // Estado para éxito
+  const [isDataLoaded, setIsDataLoaded] = useState(false); // Estado para controlar si los datos están cargados
+
+  // Obtener antecedentes no patológicos al cargar el componente
+  useEffect(() => {
+    const fetchNonPathologicalHistory = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await MedicalOfficeWebApi.getNonPathologicalHistory(patientId);
+        if (response && response.nonPathologicalHistory) {
+          const { nonPathologicalHistory } = response;
+          setFormData({
+            idPatient: patientId,
+            physicalActivity: nonPathologicalHistory.physicalActivity || false,
+            smoking: nonPathologicalHistory.smoking || false,
+            alcoholism: nonPathologicalHistory.alcoholism || false,
+            substanceAbuse: nonPathologicalHistory.substanceAbuse || false,
+            substanceAbuseData: nonPathologicalHistory.substanceAbuseData || "",
+            recentVaccination: nonPathologicalHistory.recentVaccination || false,
+            recentVaccinationData: nonPathologicalHistory.recentVaccinationData || "",
+            others: nonPathologicalHistory.others || false,
+            othersData: nonPathologicalHistory.othersData || "",
+          });
+          setIsDataLoaded(true);
+        }
+      } catch (err) {
+        setError(err || "Error al obtener los antecedentes no patológicos.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (patientId) {
+      fetchNonPathologicalHistory();
+    }
+  }, [patientId]);
 
   // Manejo de cambios en los campos del formulario
   const handleChange = (e) => {
@@ -29,7 +69,7 @@ export default function InsertNonPathologicalHistoryForm({ patientId }) {
     });
   };
 
-  // Manejo del envío del formulario
+  // Manejo del envío del formulario para insertar
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -37,7 +77,7 @@ export default function InsertNonPathologicalHistoryForm({ patientId }) {
     setSuccess(false);
 
     try {
-      // Llamada al endpoint
+      // Llamada al endpoint para insertar
       await MedicalOfficeWebApi.insertNonPathologicalHistory(formData);
       setSuccess(true); // Mostrar mensaje de éxito
     } catch (err) {
@@ -47,92 +87,126 @@ export default function InsertNonPathologicalHistoryForm({ patientId }) {
     }
   };
 
+  // Manejo del envío del formulario para actualizar
+  const handleUpdateSubmit = async () => {
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      // Llamada al endpoint para actualizar
+      const updateData = {
+        physicalActivity: formData.physicalActivity,
+        smoking: formData.smoking,
+        alcoholism: formData.alcoholism,
+        substanceAbuse: formData.substanceAbuse,
+        substanceAbuseData: formData.substanceAbuseData,
+        recentVaccination: formData.recentVaccination,
+        recentVaccinationData: formData.recentVaccinationData,
+        others: formData.others,
+        othersData: formData.othersData,
+      };
+      await MedicalOfficeWebApi.updateNonPathologicalHistory(patientId, updateData);
+      setSuccess(true); // Mostrar mensaje de éxito
+    } catch (err) {
+      setError(err); // Mostrar el error capturado
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-white rounded-lg shadow-md">
-      <Typography variant="h4" color="blue-gray" className="font-bold text-center">
-        Registrar Antecedentes No Patológicos
-      </Typography>
-      <Typography color="gray" className="text-sm font-normal text-center">
-        Completa los antecedentes no patológicos del paciente.
-      </Typography>
+    <div>
+      {/* Formulario de Inserción */}
+      <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-white rounded-lg shadow-md">
+        <Typography variant="h4" color="blue-gray" className="font-bold text-center">
+          Antecedentes No Patológicos
+        </Typography>
+        <Typography color="gray" className="text-sm font-normal text-center">
+          Completa o actualiza los antecedentes no patológicos del paciente.
+        </Typography>
 
-      {/* Campos de antecedentes no patológicos */}
-      <div className="space-y-4">
-        <Checkbox
-          label="Actividad Física"
-          name="physicalActivity"
-          checked={formData.physicalActivity}
-          onChange={handleChange}
-        />
-        <Checkbox
-          label="Tabaquismo"
-          name="smoking"
-          checked={formData.smoking}
-          onChange={handleChange}
-        />
-        <Checkbox
-          label="Alcoholismo"
-          name="alcoholism"
-          checked={formData.alcoholism}
-          onChange={handleChange}
-        />
-        <Checkbox
-          label="Consumo de Sustancias"
-          name="substanceAbuse"
-          checked={formData.substanceAbuse}
-          onChange={handleChange}
-        />
-        {formData.substanceAbuse && (
-          <Textarea
-            label="Detalles del Consumo de Sustancias"
-            name="substanceAbuseData"
-            value={formData.substanceAbuseData}
+        {/* Campos de antecedentes no patológicos */}
+        <div className="space-y-4">
+          <Checkbox
+            label="Actividad Física"
+            name="physicalActivity"
+            checked={formData.physicalActivity}
             onChange={handleChange}
-            placeholder="Escribe aquí los detalles del consumo de sustancias..."
           />
-        )}
-        <Checkbox
-          label="Vacunación Reciente"
-          name="recentVaccination"
-          checked={formData.recentVaccination}
-          onChange={handleChange}
-        />
-        {formData.recentVaccination && (
-          <Textarea
-            label="Detalles de la Vacunación Reciente"
-            name="recentVaccinationData"
-            value={formData.recentVaccinationData}
+          <Checkbox
+            label="Tabaquismo"
+            name="smoking"
+            checked={formData.smoking}
             onChange={handleChange}
-            placeholder="Escribe aquí los detalles de la vacunación reciente..."
           />
-        )}
-        <Checkbox
-          label="Otros"
-          name="others"
-          checked={formData.others}
-          onChange={handleChange}
-        />
-        {formData.others && (
-          <Textarea
-            label="Detalles Adicionales"
-            name="othersData"
-            value={formData.othersData}
+          <Checkbox
+            label="Alcoholismo"
+            name="alcoholism"
+            checked={formData.alcoholism}
             onChange={handleChange}
-            placeholder="Escribe aquí otros antecedentes no patológicos..."
           />
-        )}
-      </div>
+          <Checkbox
+            label="Consumo de Sustancias"
+            name="substanceAbuse"
+            checked={formData.substanceAbuse}
+            onChange={handleChange}
+          />
+          {formData.substanceAbuse && (
+            <Textarea
+              label="Detalles del Consumo de Sustancias"
+              name="substanceAbuseData"
+              value={formData.substanceAbuseData}
+              onChange={handleChange}
+              placeholder="Escribe aquí los detalles del consumo de sustancias..."
+            />
+          )}
+          <Checkbox
+            label="Vacunación Reciente"
+            name="recentVaccination"
+            checked={formData.recentVaccination}
+            onChange={handleChange}
+          />
+          {formData.recentVaccination && (
+            <Textarea
+              label="Detalles de la Vacunación Reciente"
+              name="recentVaccinationData"
+              value={formData.recentVaccinationData}
+              onChange={handleChange}
+              placeholder="Escribe aquí los detalles de la vacunación reciente..."
+            />
+          )}
+          <Checkbox
+            label="Otros"
+            name="others"
+            checked={formData.others}
+            onChange={handleChange}
+          />
+          {formData.others && (
+            <Textarea
+              label="Detalles Adicionales"
+              name="othersData"
+              value={formData.othersData}
+              onChange={handleChange}
+              placeholder="Escribe aquí otros antecedentes no patológicos..."
+            />
+          )}
+        </div>
 
-      {/* Botón de envío */}
-      <div className="flex justify-end">
-        <Button type="submit" color="blue" disabled={loading}>
-          {loading ? "Enviando..." : "Guardar Antecedentes"}
-        </Button>
-      </div>
+        {/* Botones de envío */}
+        <div className="flex justify-between">
+          <Button type="submit" color="blue" disabled={loading || isDataLoaded}>
+            {loading ? "Enviando..." : "Guardar Antecedentes"}
+          </Button>
+          <Button type="button" color="green" onClick={handleUpdateSubmit}>
+            {loading ? "Actualizando..." : "Actualizar Antecedentes"}
+          </Button>
+        </div>
 
-      {/* Mensajes de éxito o error */}
-      {success && <Typography color="green" className="mt-2">¡Antecedentes guardados con éxito!</Typography>}
-      {error && <Typography color="red" className="mt-2">{error}</Typography>}
-    </form>
+        {/* Mensajes de éxito o error */}
+        {success && <Typography color="green" className="mt-2">¡Operación realizada con éxito!</Typography>}
+        {error && <Typography color="red" className="mt-2">{error}</Typography>}
+      </form>
+    </div>
   );
 }
