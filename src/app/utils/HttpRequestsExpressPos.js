@@ -1,16 +1,15 @@
 'use client';
+
 import axios from 'axios';
 
-// Cargar las variables de entorno desde el archivo .env
-require('dotenv').config();
-console.log(process.env.NEXT_PUBLIC_API_URL);
 // Obtener la baseURL desde las variables de entorno
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
+//const baseURL = 'http://localhost:8080';
+
 // Crear una instancia de Axios con configuración predeterminada
 const axiosInstance = axios.create({
-    //baseURL: 'http://localhost:5038', // Cambia esto según tu API
-    baseURL, // Asigna la baseURL dinámica
+    baseURL, 
     headers: {
         "Access-Control-Expose-Headers": "Content-Length",
         "Content-Type": "application/json",
@@ -21,14 +20,21 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use((config) => {
     const token = localStorage.getItem('authToken');
     if (token) {
-        // Validar que el token tenga la estructura de un JWT
         const isValidJWT = token.split('.').length === 3;
         if (isValidJWT) {
-            config.headers.Authorization = `Bearer ${token}`;
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            const isExpired = payload.exp && Date.now() / 1000 > payload.exp;
+            if (isExpired) {
+                console.warn("El token ha expirado.");
+                localStorage.removeItem('authToken');
+                window.location.href = '/';
+            } else {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
         } else {
             console.warn("Token no válido detectado, eliminando.");
-            localStorage.removeItem('authToken'); // Remover token inválido
-            window.location.href = '/'; // Redirigir al login
+            localStorage.removeItem('authToken');
+            window.location.href = '/';
         }
     }
     return config;
@@ -41,17 +47,16 @@ axiosInstance.interceptors.response.use(
     (response) => {
         const result = response.data;
 
-        // Validamos si sigue la estructura de GenericViewModel<T>
+        // Validar si sigue la estructura de GenericViewModel<T>
         if (result && typeof result.isSuccess !== 'undefined') {
             if (result.isSuccess) {
-                return result.data; // Retornar solo los datos si la operación fue exitosa
+                return result.data;
             } else {
-                // Capturamos el mensaje de error del servidor
                 return Promise.reject(result.message || "Operación fallida en el servidor");
             }
         }
 
-        return result; // Si no es GenericViewModel<T>, retornamos el resultado completo
+        return result;
     },
     async (error) => {
         const { response } = error;
@@ -62,26 +67,28 @@ axiosInstance.interceptors.response.use(
 
             if (status === 401) {
                 message = "Sesión expirada. Por favor, inicia sesión nuevamente.";
-
-                // Opcional: Manejo de refresh token si está implementado en tu API
                 const refreshToken = localStorage.getItem('refreshToken');
                 if (refreshToken) {
                     try {
                         const { data } = await axios.post('/auth/refresh', { refreshToken });
                         localStorage.setItem('authToken', data.newAuthToken);
                         error.config.headers.Authorization = `Bearer ${data.newAuthToken}`;
-                        return axiosInstance(error.config); // Reintentar la solicitud original
+                        return axiosInstance(error.config);
                     } catch (refreshError) {
                         console.error("No se pudo refrescar el token.", refreshError);
                     }
                 }
-
-                // Eliminar tokens y redirigir al login si no se puede renovar el token
                 localStorage.removeItem('authToken');
-                window.location.href = '/';
+                if (!window.location.href.includes('/login')) {
+                    window.location.href = '/';
+                }
+            } else if (status === 403) {
+                message = "Acceso denegado. No tienes permisos para realizar esta acción.";
+            } else if (status >= 500) {
+                message = `Error en el servidor: ${message}.`;
             }
 
-            return Promise.reject(message); // Pasamos el mensaje de error capturado
+            return Promise.reject(message);
         }
 
         return Promise.reject(error.message || "Error de red");
