@@ -22,7 +22,11 @@ export default function PatientsPage() {
         setPatients(patientList);
       } catch (err) {
         console.error("Error al cargar pacientes:", err); // Log de errores
-        setError(err.message || "Error al cargar los datos de pacientes.");
+        setError(
+          err.response?.data?.message ||
+          err.message ||
+          "Error desconocido al cargar los datos de pacientes."
+        );
       } finally {
         setLoading(false);
       }

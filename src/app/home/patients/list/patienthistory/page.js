@@ -3,21 +3,20 @@
 import React, { useEffect, useState } from 'react';
 import { Typography, Button } from '@material-tailwind/react';
 import { useRouter } from 'next/navigation';  // Importamos useRouter para redirigir
-import { useSearchParams } from 'next/navigation';
 import MedicalOfficeWebApi from '@/app/utils/HttpRequests';
 import { PatientDetails } from '@/app/components/Patients/PatientDetails';
 
-
 export default function PatientDetailsPage() {
   const [id, setId] = useState(null);
-  const searchParams = typeof window !== 'undefined' ? useSearchParams() : null;
   const router = useRouter();  // Inicializamos el router para la redirección
 
   useEffect(() => {
-    if (searchParams) {
-      setId(searchParams.get('id'));
+    // Extraer el parámetro de búsqueda directamente desde la URL del cliente
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      setId(params.get('id'));
     }
-  }, [searchParams]);
+  }, []);
 
   const [patientData, setPatientData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -60,13 +59,21 @@ export default function PatientDetailsPage() {
 
   return (
     <div className="min-h-screen p-6 bg-gray-100">
-      <PatientDetails patientData={patientData} />
-            {/* Botones para redirigir a Insertar o Actualizar paciente */}
-            <div className="mt-6 flex gap-4 justify-center">
-        <Button color="blue" onClick={handleInsertUpdateButtonClick}>
-          Insertar / Actualizar Datos del Paciente
-        </Button>
-      </div>
+      {loading ? (
+        <Typography variant="h6" color="blue-gray">
+          Cargando detalles del paciente...
+        </Typography>
+      ) : (
+        <>
+          <PatientDetails patientData={patientData} />
+          {/* Botones para redirigir a Insertar o Actualizar paciente */}
+          <div className="mt-6 flex gap-4 justify-center">
+            <Button color="blue" onClick={handleInsertUpdateButtonClick}>
+              Insertar / Actualizar Datos del Paciente
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
