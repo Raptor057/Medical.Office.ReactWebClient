@@ -22,7 +22,7 @@ export default function LoginPage() {
       const token = data?.userLoginResponseDto?.token;
       if (token) {
         localStorage.setItem('authToken', token);
-        setAlertData({ isSuccess: true, message: 'Inicio de sesión exitoso.' });
+        setAlertData({ isSuccess: true, message: data?.userLoginResponseDto.welcomeMessageIsSuccess});
         setTimeout(() => {
           setAlertData(null);
           router.push('/home'); // Redirige al home después del éxito
@@ -34,36 +34,43 @@ export default function LoginPage() {
       // Manejo de errores
       setAlertData({
         isSuccess: false,
-        message: error.message || 'Error inesperado al iniciar sesión.',
+        message: error || 'Error inesperado al iniciar sesión.',
       });
     }
   };
 
-  const handleSubmitNewUser = () => {
-    router.push('/signup'); // Redirige a la página de registro de nuevos usuarios
-  };
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-sm p-6 bg-white rounded-lg shadow-md">
-        <CryptoLogin
-          usr={usr}
-          password={password}
-          setUsr={setUsr}
-          setPassword={setPassword}
-          handleSubmit={handleSubmit}
-          handleSubmitNewUser={handleSubmitNewUser}
-        />
-      </div>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-indigo-600">
+      <h2 className="text-3xl font-bold text-white mb-4">
+        Bienvenido de nuevo
+      </h2>
+      <p className="text-sm text-white mb-8">
+        Por favor, ingresa tus credenciales para continuar.
+      </p>
+
+      {/* Componente de login */}
+      <CryptoLogin
+        usr={usr}
+        password={password}
+        setUsr={setUsr}
+        setPassword={setPassword}
+        handleSubmit={handleSubmit}
+      />
 
       {/* Componente de alerta para mensajes de éxito/error */}
       {alertData && (
-        <Alert
-          isSuccess={alertData.isSuccess}
-          message={alertData.message}
-          onClose={() => setAlertData(null)}
-        />
+        <div className="fixed bottom-4 left-4 right-4 flex justify-center">
+          <Alert
+            isSuccess={alertData.isSuccess}
+            message={alertData.message}
+            onClose={() => setAlertData(null)}
+          />
+        </div>
       )}
+
+      <footer className="absolute bottom-4 text-sm text-gray-200">
+        &copy; {new Date().getFullYear()} Medical Office. Todos los derechos reservados.
+      </footer>
     </div>
   );
 }

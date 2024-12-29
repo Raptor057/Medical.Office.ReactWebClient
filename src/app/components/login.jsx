@@ -9,7 +9,6 @@ export function CryptoLogin({
   setUsr,
   setPassword,
   handleSubmit,
-  handleSubmitNewUser,
 }) {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-500 to-indigo-600">
@@ -84,21 +83,6 @@ export function CryptoLogin({
             Iniciar Sesión
           </motion.button>
         </form>
-        {/* <div className="flex items-center justify-between mt-6">
-          <button
-            type="button"
-            onClick={handleSubmitNewUser}
-            className="text-sm text-blue-500 hover:underline focus:outline-none"
-          >
-            Crear nueva cuenta
-          </button>
-          <button
-            type="button"
-            className="text-sm text-gray-500 hover:underline focus:outline-none"
-          >
-            Recuperar cuenta
-          </button>
-        </div> */}
       </motion.div>
     </div>
   );
