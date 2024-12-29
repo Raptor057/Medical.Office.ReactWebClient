@@ -196,6 +196,9 @@ const MedicalOfficeWebApi = (() => {
         getPatientFiles: async (patientId,idfile) =>
             axiosInstance.get(`${apiUrl}/GetPatientFile/${patientId}/${idfile}`),
 
+        deletePatientFile: async (patientId, idFile) =>
+            axiosInstance.delete(`${apiUrl}/DeletePatientFile/${patientId}/${idFile}`),
+
         getAllConfigurations: async () =>
             axiosInstance.get(`${apiUrl}/getallconfigurations`),
 
