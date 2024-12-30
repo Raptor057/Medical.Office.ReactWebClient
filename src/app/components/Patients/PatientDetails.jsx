@@ -16,12 +16,7 @@ import {
   Button,
   Dialog,
   DialogBody,
-  DialogHeader, 
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
+  DialogHeader
 } from "@material-tailwind/react";
 
 export function PatientDetails({ patientData, onEdit, onInsert }) {
@@ -49,10 +44,7 @@ const {
   pathologicalBackground, // Antecedentes patológicos
   patientAllergies, // Alergias del paciente
   psychiatricHistory, // Historial psiquiátrico
-  patientsFilesList, // Lista de archivos del paciente
-  medicalAppointmentsActive, // Citas activas
-  medicalAppointmentsHistory, // Historial de citas
-} = patientData?.patientDataAndAntecedents || {};
+} = patientData || {};
 
   const handleOpenModal = () => {
     setOpenModal(!openModal);
