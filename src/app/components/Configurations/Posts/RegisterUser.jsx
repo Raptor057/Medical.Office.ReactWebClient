@@ -73,7 +73,7 @@ export default function RegisterUser() {
         specialtie: '',
       }); // Limpia el formulario
     } catch (err) {
-      setError(err?.message || 'Error al registrar el usuario.');
+      setError(err);
     } finally {
       setLoading(false);
     }
