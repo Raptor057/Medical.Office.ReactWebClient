@@ -5,6 +5,7 @@ import MedicalOfficeWebApi from '@/app/utils/HttpRequests';
 import { useRouter } from 'next/navigation';
 import CryptoLogin from '@/app/components/login';
 import Alert from '@/app/components/Alerts'; // Asegúrate de importar el componente Alert
+import MedicalAppointmentCalendar from '@/app/components/Configurations/Gets/MedicalAppointmentCalendar'; // Asegúrate de importar el componente MedicalAppointmentCalendar
 
 export default function LoginPage() {
   const router = useRouter();

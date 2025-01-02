@@ -113,6 +113,9 @@ const MedicalOfficeWebApi = (() => {
             axiosInstance.get(`${apiUrl}/GetPatientDataAndAntecedents/${idPatient}`),
         //#endregion
 
+        getMedicalAppointmentCalendar: async (id, idDoctor) =>
+            axiosInstance.get(`${apiUrl}/GetMedicalAppointmentCalendar/${id}/${idDoctor}`),
+
         //#region Insert Operations
         insertPatientData: async (patientData) =>
             axiosInstance.post(`${apiUrl}/insertpatient`, patientData),

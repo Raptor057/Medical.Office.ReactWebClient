@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { MultiLevelSidebar } from "../components/sidebar";
 import { PatientsList } from "../components/Patients/PatientsList";
 import MedicalOfficeWebApi from "../utils/HttpRequests";
+import MedicalAppointmentCalendar from "../components/Configurations/Gets/MedicalAppointmentCalendar";
 
 export default function HomeLayout() {
   const [currentView, setCurrentView] = useState("default");
@@ -59,7 +60,7 @@ export default function HomeLayout() {
               Día: {officeConfig.todaysWorkingHours.days}
             </p>
             <p className="text-sm text-gray-600">
-              Horario:{" "}
+              Horario: {" "}
               {officeConfig.todaysWorkingHours.laboral
                 ? `${officeConfig.todaysWorkingHours.openingTime} - ${officeConfig.todaysWorkingHours.closingTime}`
                 : "No Laboral"}
@@ -75,7 +76,12 @@ export default function HomeLayout() {
         <aside className="w-64 bg-gray-200 border-r">
           <MultiLevelSidebar setCurrentView={setCurrentView} />
         </aside>
-        <main className="flex-grow p-6 bg-white">{renderView()}</main>
+        <main className="flex-grow p-6 space-y-6 bg-white">
+          {renderView()}
+          <div className="bg-white p-6 rounded-lg shadow-md">
+            <MedicalAppointmentCalendar />
+          </div>
+        </main>
       </div>
     </div>
   );
