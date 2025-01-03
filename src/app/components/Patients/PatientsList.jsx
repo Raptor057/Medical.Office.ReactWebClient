@@ -1,7 +1,8 @@
 'use client';
+
 import React, { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { EyeIcon, UserPlusIcon } from "@heroicons/react/24/solid";
+import { EyeIcon, UserPlusIcon, CalendarDaysIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
@@ -9,28 +10,29 @@ import {
   Typography,
   Button,
   CardBody,
-  Chip,
   CardFooter,
   Avatar,
   IconButton,
   Tooltip,
 } from "@material-tailwind/react";
 import Link from "next/link";
+import ScheduleAppointment from "@/app/components/Forms/Posts/ScheduleAppointment";
 
 const TABLE_HEAD = [
   "Nombre Completo",
-  "Numero de Telefono",
+  "Número de Teléfono",
   "Fecha de Nacimiento",
-  "Ver Historial"
+  "Acciones",
 ];
 
 export function PatientsList({ patients = [] }) {
-  const [query, setQuery] = useState(""); // Texto del buscador
-  const [filteredPatients, setFilteredPatients] = useState(patients); // Lista filtrada
-  const [currentPage, setCurrentPage] = useState(1); // Página actual
-  const itemsPerPage = 50; // Elementos por página
+  const [query, setQuery] = useState("");
+  const [filteredPatients, setFilteredPatients] = useState(patients);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [appointmentModalOpen, setAppointmentModalOpen] = useState(false);
+  const [selectedPatientId, setSelectedPatientId] = useState(null);
+  const itemsPerPage = 50;
 
-  // Manejar búsqueda en todo el array
   const handleSearch = (event) => {
     const searchQuery = event.target.value.toLowerCase();
     setQuery(searchQuery);
@@ -42,10 +44,9 @@ export function PatientsList({ patients = [] }) {
     );
 
     setFilteredPatients(filtered);
-    setCurrentPage(1); // Reiniciar a la primera página después de buscar
+    setCurrentPage(1);
   };
 
-  // Lógica de paginación
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedPatients = filteredPatients.slice(
     startIndex,
@@ -53,6 +54,11 @@ export function PatientsList({ patients = [] }) {
   );
 
   const totalPages = Math.ceil(filteredPatients.length / itemsPerPage);
+
+  const handleScheduleAppointment = (patientId) => {
+    setSelectedPatientId(patientId);
+    setAppointmentModalOpen(true);
+  };
 
   return (
     <Card className="w-full">
@@ -72,7 +78,7 @@ export function PatientsList({ patients = [] }) {
             label="Buscar"
             icon={<MagnifyingGlassIcon className="w-5 h-5" />}
             value={query}
-            onChange={handleSearch} // Actualizar búsqueda
+            onChange={handleSearch}
           />
         </div>
       </CardHeader>
@@ -123,8 +129,8 @@ export function PatientsList({ patients = [] }) {
                         <Avatar
                           src={
                             photo
-                              ? `data:image/jpeg;base64,${photo}` // Mostrar imagen en Base64
-                              : "https://via.placeholder.com/150" // Imagen por defecto
+                              ? `data:image/jpeg;base64,${photo}`
+                              : "https://via.placeholder.com/150"
                           }
                           alt={`${name} ${fathersSurname}`}
                           size="sm"
@@ -173,18 +179,28 @@ export function PatientsList({ patients = [] }) {
                       </Typography>
                     </td>
                     <td className={classes}>
-                      <Tooltip content="Ver Historial Del Paciente">
-                        <Link
-                          href={{
-                            pathname: "/home/patients/list/patienthistory",
-                            query: { id },
-                          }}
-                        >
-                          <IconButton variant="text">
-                            <EyeIcon className="w-4 h-4" />
+                      <div className="flex items-center gap-2">
+                        <Tooltip content="Ver Historial Del Paciente">
+                          <Link
+                            href={{
+                              pathname: "/home/patients/list/patienthistory",
+                              query: { id },
+                            }}
+                          >
+                            <IconButton variant="text">
+                              <EyeIcon className="w-4 h-4" />
+                            </IconButton>
+                          </Link>
+                        </Tooltip>
+                        <Tooltip content="Agendar Cita">
+                          <IconButton
+                            variant="text"
+                            onClick={() => handleScheduleAppointment(id)}
+                          >
+                            <CalendarDaysIcon className="w-4 h-4" />
                           </IconButton>
-                        </Link>
-                      </Tooltip>
+                        </Tooltip>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -216,6 +232,12 @@ export function PatientsList({ patients = [] }) {
           </Button>
         </div>
       </CardFooter>
+
+      <ScheduleAppointment
+        open={appointmentModalOpen}
+        onClose={() => setAppointmentModalOpen(false)}
+        patientId={selectedPatientId}
+      />
     </Card>
   );
 }

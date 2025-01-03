@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from "react";
-import InsertMedicalAppointment from '@/app/components/Forms/Posts/InsertMedicalAppointment';
 import { useSearchParams } from "next/navigation";
 import InsertLoadFile from '@/app/components/Forms/Posts/InsertLoadFile';
 import PatientFilesList from '@/app/components/Forms/Gets/PatientFilesList';
@@ -13,10 +12,6 @@ import {
   Typography,
   Avatar,
   Chip,
-  Button,
-  Dialog,
-  DialogBody,
-  DialogHeader
 } from "@material-tailwind/react";
 
 export function PatientDetails({ patientData, onEdit, onInsert }) {
@@ -44,11 +39,9 @@ const {
   pathologicalBackground, // Antecedentes patológicos
   patientAllergies, // Alergias del paciente
   psychiatricHistory, // Historial psiquiátrico
+  medicalAppointmentsActive,
+  medicalAppointmentsHistory
 } = patientData || {};
-
-  const handleOpenModal = () => {
-    setOpenModal(!openModal);
-  };
 
 
   return (
@@ -245,6 +238,7 @@ const {
   <Typography variant="small" color="gray">
     Otros: {pathologicalBackground?.others || "N/A"}
   </Typography>
+
 </CardBody>
 
 
@@ -303,9 +297,76 @@ const {
         </Typography>
       </CardBody>
 
+        {/* Citas Activas */}
+<Card className="shadow-lg">
+  <CardHeader className="bg-green-500 text-white p-4">
+    <Typography variant="h6" color="white">
+      Citas Activas
+    </Typography>
+  </CardHeader>
+  <CardBody>
+    {medicalAppointmentsActive && medicalAppointmentsActive.length > 0 ? (
+      medicalAppointmentsActive.map((appointment) => (
+        <div key={appointment.id} className="mb-4 border-b pb-2">
+          <Typography variant="h6" color="blue-gray">
+            {appointment.typeOfAppointment} - {appointment.reasonForVisit}
+          </Typography>
+          <Typography variant="small" color="gray">
+            <strong>Fecha y Hora:</strong>{" "}
+            {new Date(appointment.appointmentDateTime).toLocaleString("es-MX")}
+          </Typography>
+          <Typography variant="small" color="gray">
+            <strong>Estado:</strong> {appointment.appointmentStatus}
+          </Typography>
+          <Typography variant="small" color="gray">
+            <strong>Notas:</strong> {appointment.notes || "Sin notas"}
+          </Typography>
+        </div>
+      ))
+    ) : (
+      <Typography variant="small" color="gray">
+        No hay citas activas para este paciente.
+      </Typography>
+    )}
+  </CardBody>
+</Card>
 
-      {/* Subir Archivos */}
-      <Card className="shadow-lg">
+{/* Historial de Citas */}
+<Card className="shadow-lg">
+  <CardHeader className="bg-gray-500 text-white p-4">
+    <Typography variant="h6" color="white">
+      Historial de Citas
+    </Typography>
+  </CardHeader>
+  <CardBody>
+    {medicalAppointmentsHistory && medicalAppointmentsHistory.length > 0 ? (
+      medicalAppointmentsHistory.map((appointment) => (
+        <div key={appointment.id} className="mb-4 border-b pb-2">
+          <Typography variant="h6" color="blue-gray">
+            {appointment.typeOfAppointment} - {appointment.reasonForVisit}
+          </Typography>
+          <Typography variant="small" color="gray">
+            <strong>Fecha y Hora:</strong>{" "}
+            {new Date(appointment.appointmentDateTime).toLocaleString("es-MX")}
+          </Typography>
+          <Typography variant="small" color="gray">
+            <strong>Estado:</strong> {appointment.appointmentStatus}
+          </Typography>
+          <Typography variant="small" color="gray">
+            <strong>Notas:</strong> {appointment.notes || "Sin notas"}
+          </Typography>
+        </div>
+      ))
+    ) : (
+      <Typography variant="small" color="gray">
+        No hay historial de citas para este paciente.
+      </Typography>
+    )}
+  </CardBody>
+</Card>
+
+ {/* Subir Archivos */}
+ <Card className="shadow-lg">
           <CardHeader className="bg-blue-500 text-white p-4">
             <Typography variant="h6" color="white">
               Subir Archivos
@@ -327,28 +388,6 @@ const {
             <PatientFilesList patientId={patientId} />
           </CardBody>
         </Card>
-
-
-       {/* Botón para agendar cita */}
-       <CardBody className="flex justify-end">
-        <Button
-          color="green"
-          onClick={handleOpenModal}
-          className="w-full md:w-auto"
-        >
-          Agendar Cita
-        </Button>
-      </CardBody>
-
-      
-
-      {/* Modal para agendar cita */}
-      <Dialog open={openModal} handler={handleOpenModal} size="lg">
-        <DialogHeader>Agendar Cita Médica</DialogHeader>
-        <DialogBody divider>
-          <InsertMedicalAppointment />
-        </DialogBody>
-      </Dialog>
 
     </Card>
   );

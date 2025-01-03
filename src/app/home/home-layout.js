@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { MultiLevelSidebar } from "../components/sidebar";
 import { PatientsList } from "../components/Patients/PatientsList";
-import MedicalOfficeWebApi from "../utils/HttpRequests";
-import MedicalAppointmentCalendar from "../components/Configurations/Gets/MedicalAppointmentCalendar";
+
+import MedicalOfficeWebApi from "@/app/utils/HttpRequests"; //"../utils/HttpRequests";
+import MedicalAppointmentCalendar from "@/app/components/Configurations/Gets/MedicalAppointmentCalendar"; //"../components/Configurations/Gets/MedicalAppointmentCalendar";
+
 
 export default function HomeLayout() {
   const [currentView, setCurrentView] = useState("default");
