@@ -4,7 +4,7 @@ import { PatientsList } from "../components/Patients/PatientsList";
 
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests"; //"../utils/HttpRequests";
 import MedicalAppointmentCalendar from "@/app/components/Configurations/Gets/MedicalAppointmentCalendar"; //"../components/Configurations/Gets/MedicalAppointmentCalendar";
-
+import CalendarLayoutCalendarLayout from "@/app/components/Configurations/Gets/Calendar/CalendarLayout"; //"../components/Configurations/Gets/Calendar/CalendarLayout";
 
 export default function HomeLayout() {
   const [currentView, setCurrentView] = useState("default");
@@ -81,7 +81,8 @@ export default function HomeLayout() {
         <main className="flex-grow p-6 space-y-6 bg-white">
           {renderView()}
           <div className="bg-white p-6 rounded-lg shadow-md">
-            <MedicalAppointmentCalendar />
+            {/* <MedicalAppointmentCalendar /> */}
+            <CalendarLayoutCalendarLayout />
           </div>
         </main>
       </div>
