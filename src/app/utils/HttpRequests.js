@@ -164,6 +164,9 @@ const MedicalOfficeWebApi = (() => {
         //#endregion
 
         //#region Update Operations
+        updateUser: async (id, userData) =>
+            axiosInstance.patch(`${apiUrl}/updateusers/${id}`, userData),
+
         updateActiveMedications: async (idPatient, medicationsData) =>
             axiosInstance.patch(`${apiUrl}/UpdateActiveMedications/${idPatient}`, medicationsData),
 
