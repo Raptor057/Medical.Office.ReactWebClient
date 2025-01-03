@@ -312,6 +312,12 @@ const {
             {appointment.typeOfAppointment} - {appointment.reasonForVisit}
           </Typography>
           <Typography variant="small" color="gray">
+            <strong>Paciente:</strong> {appointment.patientName}
+          </Typography>
+          <Typography variant="small" color="gray">
+            <strong>Doctor:</strong> {appointment.doctorName}
+          </Typography>
+          <Typography variant="small" color="gray">
             <strong>Fecha y Hora:</strong>{" "}
             {new Date(appointment.appointmentDateTime).toLocaleString("es-MX")}
           </Typography>
@@ -344,6 +350,12 @@ const {
         <div key={appointment.id} className="mb-4 border-b pb-2">
           <Typography variant="h6" color="blue-gray">
             {appointment.typeOfAppointment} - {appointment.reasonForVisit}
+          </Typography>
+          <Typography variant="small" color="gray">
+            <strong>Paciente:</strong> {appointment.patientName}
+          </Typography>
+          <Typography variant="small" color="gray">
+            <strong>Doctor:</strong> {appointment.doctorName}
           </Typography>
           <Typography variant="small" color="gray">
             <strong>Fecha y Hora:</strong>{" "}

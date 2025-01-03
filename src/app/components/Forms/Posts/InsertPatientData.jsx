@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import { Button, Input, Textarea, Typography } from "@material-tailwind/react";
+'use client';
+
+import React, { useState, useEffect } from "react";
+import { Button, Input, Textarea, Typography, Select, Option } from "@material-tailwind/react";
+import Link from "next/link";
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests"; // Ruta correcta para la API
 
 export default function InsertPatientDataForm() {
@@ -30,6 +33,20 @@ export default function InsertPatientDataForm() {
   const [loading, setLoading] = useState(false); // Estado de carga
   const [error, setError] = useState(null); // Estado para errores
   const [success, setSuccess] = useState(false); // Estado para éxito
+  const [genders, setGenders] = useState([]); // Lista de géneros
+
+  useEffect(() => {
+    const fetchGenders = async () => {
+      try {
+        const response = await MedicalOfficeWebApi.getAllConfigurations();
+        const gendersData = response?.allConfigurations?.genders || [];
+        setGenders(gendersData);
+      } catch (err) {
+        console.error("Error al obtener los géneros:", err);
+      }
+    };
+    fetchGenders();
+  }, []);
 
   // Manejo de cambios en los campos del formulario
   const handleChange = (e) => {
@@ -38,6 +55,28 @@ export default function InsertPatientDataForm() {
       ...formData,
       [name]: value,
     });
+  };
+
+  // Manejo de cambios en el archivo de imagen
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      if (file.size > 25 * 1024 * 1024) { // Máximo 25 MB
+        setError("El tamaño máximo permitido para la imagen es de 25 MB.");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        setFormData((prev) => ({ ...prev, photo: reader.result.split(",")[1] }));
+        setError(null); // Limpia cualquier error previo
+      };
+      reader.onerror = () => {
+        setError("Error al leer el archivo. Intente nuevamente.");
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   // Manejo del envío del formulario
@@ -51,8 +90,31 @@ export default function InsertPatientDataForm() {
       // Llamada al endpoint
       await MedicalOfficeWebApi.insertPatientData(formData);
       setSuccess(true); // Mostrar mensaje de éxito
+      setFormData({
+        name: "",
+        fathersSurname: "",
+        mothersSurname: "",
+        dateOfBirth: "",
+        gender: "",
+        address: "",
+        country: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        outsideNumber: "",
+        insideNumber: "",
+        phoneNumber: "",
+        email: "",
+        emergencyContactName: "",
+        emergencyContactPhone: "",
+        insuranceProvider: "",
+        policyNumber: "",
+        bloodType: "",
+        photo: "",
+        internalNotes: "",
+      }); // Limpiar el formulario
     } catch (err) {
-      setError(err); // Mostrar el error capturado
+      setError(err.message || "Error al registrar el paciente. Intente nuevamente.");
     } finally {
       setLoading(false);
     }
@@ -92,7 +154,22 @@ export default function InsertPatientDataForm() {
           onChange={handleChange}
           required
         />
-        <Input label="Género" name="gender" value={formData.gender} onChange={handleChange} required />
+        <div>
+          <Typography variant="small" className="mb-2">
+            Género
+          </Typography>
+          <Select
+            value={formData.gender}
+            onChange={(value) => setFormData((prev) => ({ ...prev, gender: value }))}
+            required
+          >
+            {genders.map((gender, index) => (
+              <Option key={index} value={gender.gender.trim()}>
+                {gender.gender.trim()}
+              </Option>
+            ))}
+          </Select>
+        </div>
         <Input label="Dirección" name="address" value={formData.address} onChange={handleChange} />
         <Input label="País" name="country" value={formData.country} onChange={handleChange} />
         <Input label="Ciudad" name="city" value={formData.city} onChange={handleChange} />
@@ -161,13 +238,16 @@ export default function InsertPatientDataForm() {
           onChange={handleChange}
           placeholder="Escribe aquí las notas internas..."
         />
-        <Textarea
-          label="Foto (Base64)"
-          name="photo"
-          value={formData.photo}
-          onChange={handleChange}
-          placeholder="Agrega la foto en formato Base64..."
-        />
+        <div>
+          <Typography variant="small" className="mb-2">
+            Foto del Paciente (Máximo 25 MB)
+          </Typography>
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+          />
+        </div>
       </div>
 
       {/* Botón de envío */}
