@@ -100,76 +100,76 @@ const MedicalExpressPosWebApi = (() => {
     return {
         //#region Gestión de Productos
         agregarProducto: async (productoData) =>
-            HttpRequest.post(`${apiUrl}/api/AgregarProducto`, productoData),
+            HttpRequest.post(`${apiUrl}/AgregarProducto`, productoData),
 
         actualizarProducto: async (productoID, productoData) =>
-            HttpRequest.put(`${apiUrl}/api/ActualizarProducto/${productoID}`, productoData),
+            HttpRequest.put(`${apiUrl}/ActualizarProducto/${productoID}`, productoData),
 
         actualizarStock: async (productoID, stockData) =>
-            HttpRequest.patch(`${apiUrl}/api/ActualizarStock/${productoID}`, stockData),
+            HttpRequest.patch(`${apiUrl}/ActualizarStock/${productoID}`, stockData),
 
         eliminarProducto: async (productoID) =>
-            HttpRequest.delete(`${apiUrl}/api/EliminarProducto/${productoID}`),
+            HttpRequest.delete(`${apiUrl}/EliminarProducto/${productoID}`),
 
         obtenerProductoPorId: async (productoID) =>
-            HttpRequest.get(`${apiUrl}/api/ObtenerProductoPorId/${productoID}`),
+            HttpRequest.get(`${apiUrl}/ObtenerProductoPorId/${productoID}`),
 
         obtenerTodosLosProductos: async () =>
-            HttpRequest.get(`${apiUrl}/api/ObtenerTodosLosProductos`),
+            HttpRequest.get(`${apiUrl}/ObtenerTodosLosProductos`),
 
         obtenerProductosConBajoStock: async (limiteStock) =>
-            HttpRequest.get(`${apiUrl}/api/ObtenerProductosConBajoStock?LimiteStock=${limiteStock}`),
+            HttpRequest.get(`${apiUrl}/ObtenerProductosConBajoStock?LimiteStock=${limiteStock}`),
         //#endregion
 
         //#region Gestión de Ventas
         registrarVenta: async (ventaData) =>
-            HttpRequest.post(`${apiUrl}/api/RegistrarVenta`, ventaData),
+            HttpRequest.post(`${apiUrl}/RegistrarVenta`, ventaData),
     
         eliminarVenta: async (ventaID) =>
-            HttpRequest.delete(`${apiUrl}/api/EliminarVenta/${ventaID}`),
+            HttpRequest.delete(`${apiUrl}/EliminarVenta/${ventaID}`),
     
         obtenerVentaPorId: async (ventaID) =>
-            HttpRequest.get(`${apiUrl}/api/ObtenerVentaPorId/${ventaID}`),
+            HttpRequest.get(`${apiUrl}/ObtenerVentaPorId/${ventaID}`),
     
         obtenerVentasPorRango: async (fechaInicio, fechaFin) =>
-            HttpRequest.get(`${apiUrl}/api/ObtenerVentasPorRango?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
+            HttpRequest.get(`${apiUrl}/ObtenerVentasPorRango?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
     
         listarTodasLasVentas: async () =>
-            HttpRequest.get(`${apiUrl}/api/ListarTodasLasVentas`),
+            HttpRequest.get(`${apiUrl}/ListarTodasLasVentas`),
     
         obtenerVentasPorDia: async (fechaInicio, fechaFin) =>
-            HttpRequest.get(`${apiUrl}/api/ObtenerVentasPorDia?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`),
+            HttpRequest.get(`${apiUrl}/ObtenerVentasPorDia?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`),
     
         actualizarVenta: async (ventaID, ventaData) =>
-            HttpRequest.put(`${apiUrl}/api/ActualizarVenta/${ventaID}`, ventaData),
+            HttpRequest.put(`${apiUrl}/ActualizarVenta/${ventaID}`, ventaData),
         //#endregion
 
         //#region Gestión de Cortes de Caja
         registrarCorte: async (corteData) =>
-            HttpRequest.post(`${apiUrl}/api/RegistrarCorte`, corteData),
+            HttpRequest.post(`${apiUrl}/RegistrarCorte`, corteData),
 
         eliminarCorte: async (corteID) =>
-            HttpRequest.delete(`${apiUrl}/api/EliminarCorte/${corteID}`),
+            HttpRequest.delete(`${apiUrl}/EliminarCorte/${corteID}`),
 
         obtenerCortePorId: async (corteID) =>
-            HttpRequest.get(`${apiUrl}/api/ObtenerCortePorId/${corteID}`),
+            HttpRequest.get(`${apiUrl}/ObtenerCortePorId/${corteID}`),
 
         obtenerTodosLosCortes: async () =>
-            HttpRequest.get(`${apiUrl}/api/ObtenerTodosLosCortes`),
+            HttpRequest.get(`${apiUrl}/ObtenerTodosLosCortes`),
 
         obtenerCortesPorRango: async (fechaInicio, fechaFin) =>
-            HttpRequest.get(`${apiUrl}/api/ObtenerCortesPorRango?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
+            HttpRequest.get(`${apiUrl}/ObtenerCortesPorRango?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
         //#endregion
 
         //#region Generación de Reportes
         obtenerVentasPorDia: async (fechaInicio, fechaFin) =>
-            HttpRequest.get(`${apiUrl}/api/ObtenerVentasPorDia?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
+            HttpRequest.get(`${apiUrl}/ObtenerVentasPorDia?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
 
         obtenerDetalleDeVentas: async (ventaID) =>
-            HttpRequest.get(`${apiUrl}/api/ObtenerDetalleDeVentas/${ventaID}`),
+            HttpRequest.get(`${apiUrl}/ObtenerDetalleDeVentas/${ventaID}`),
 
         obtenerResumenDeCortesPorDia: async (fechaInicio, fechaFin) =>
-            HttpRequest.get(`${apiUrl}/api/ObtenerResumenDeCortesPorDia?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
+            HttpRequest.get(`${apiUrl}/ObtenerResumenDeCortesPorDia?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
         //#endregion
     };
 })();
