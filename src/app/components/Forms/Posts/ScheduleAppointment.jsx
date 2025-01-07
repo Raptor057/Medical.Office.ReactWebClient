@@ -76,7 +76,8 @@ export default function ScheduleAppointment({ open, onClose, patientId }) {
       }, 2000);
     } catch (err) {
       console.error("Error al agendar la cita:", err);
-      setError("Error al guardar la cita. Por favor intente nuevamente.");
+      setError(err);
+      //setError("Error al guardar la cita. Por favor intente nuevamente.");
     } finally {
       setLoading(false);
     }
