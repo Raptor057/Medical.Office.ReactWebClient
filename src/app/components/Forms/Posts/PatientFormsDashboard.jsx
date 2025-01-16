@@ -10,25 +10,24 @@ import InsertNonPathologicalHistoryForm from "@/app/components/Forms/Posts/Inser
 import InsertPathologicalBackgroundForm from "@/app/components/Forms/Posts/InsertPathologicalBackground";
 import InsertPatientAllergiesForm from "@/app/components/Forms/Posts/InsertPatientAllergies";
 import InsertPsychiatricHistoryForm from "@/app/components/Forms/Posts/InsertPsychiatricHistory";
-import InsertLoadFile from "@/app/components/Forms/Posts/InsertLoadFile";
 
 export default function PatientFormsDashboard() {
   const searchParams = useSearchParams();
   const patientId = parseInt(searchParams.get("id")) || 0;
 
   return (
-    <div className="w-full min-h-screen bg-gray-100 p-6">
+    <div className="w-full min-h-screen p-6 bg-gray-100">
       <Typography
         variant="h3"
         color="blue-gray"
-        className="text-center font-bold mb-8"
+        className="mb-8 font-bold text-center"
       >
         Formularios de Paciente
       </Typography>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
         {/* Card para cada formulario */}
         <Card className="shadow-lg">
-          <CardHeader className="bg-blue-500 text-white p-4">
+          <CardHeader className="p-4 text-white bg-blue-500">
             <Typography variant="h6" color="white">
               Medicamentos Activos
             </Typography>
@@ -39,7 +38,7 @@ export default function PatientFormsDashboard() {
         </Card>
 
         <Card className="shadow-lg">
-          <CardHeader className="bg-blue-500 text-white p-4">
+          <CardHeader className="p-4 text-white bg-blue-500">
             <Typography variant="h6" color="white">
               Historial Familiar
             </Typography>
@@ -50,7 +49,7 @@ export default function PatientFormsDashboard() {
         </Card>
 
         <Card className="shadow-lg">
-          <CardHeader className="bg-blue-500 text-white p-4">
+          <CardHeader className="p-4 text-white bg-blue-500">
             <Typography variant="h6" color="white">
               Notas de Historial Médico
             </Typography>
@@ -61,7 +60,7 @@ export default function PatientFormsDashboard() {
         </Card>
 
         <Card className="shadow-lg">
-          <CardHeader className="bg-blue-500 text-white p-4">
+          <CardHeader className="p-4 text-white bg-blue-500">
             <Typography variant="h6" color="white">
               Antecedentes No Patológicos
             </Typography>
@@ -72,7 +71,7 @@ export default function PatientFormsDashboard() {
         </Card>
 
         <Card className="shadow-lg">
-          <CardHeader className="bg-blue-500 text-white p-4">
+          <CardHeader className="p-4 text-white bg-blue-500">
             <Typography variant="h6" color="white">
               Antecedentes Patológicos
             </Typography>
@@ -83,7 +82,7 @@ export default function PatientFormsDashboard() {
         </Card>
 
         <Card className="shadow-lg">
-          <CardHeader className="bg-blue-500 text-white p-4">
+          <CardHeader className="p-4 text-white bg-blue-500">
             <Typography variant="h6" color="white">
               Alergias del Paciente
             </Typography>
@@ -94,7 +93,7 @@ export default function PatientFormsDashboard() {
         </Card>
 
         <Card className="shadow-lg">
-          <CardHeader className="bg-blue-500 text-white p-4">
+          <CardHeader className="p-4 text-white bg-blue-500">
             <Typography variant="h6" color="white">
               Historial Psiquiátrico
             </Typography>

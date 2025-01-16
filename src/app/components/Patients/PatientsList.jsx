@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { EyeIcon, UserPlusIcon, CalendarDaysIcon } from "@heroicons/react/24/solid";
+import { EyeIcon, UserPlusIcon, CalendarDaysIcon, HomeIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
@@ -64,6 +64,11 @@ export function PatientsList({ patients = [] }) {
     <Card className="w-full">
       <CardHeader floated={false} shadow={false} className="rounded-none">
         <div className="flex items-center justify-between mb-8">
+        <Link href="/home">
+            <Button className="flex items-center gap-2">
+              <HomeIcon className="w-5 h-5" /> Inicio
+            </Button>
+          </Link>
           <Typography variant="h5" color="blue-gray">
             Lista de Pacientes
           </Typography>
