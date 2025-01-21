@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests";
 import { Typography, Dialog, DialogHeader, DialogBody, DialogFooter, Button } from "@material-tailwind/react";
+import { motion } from "framer-motion";
 
 const DAYS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 
@@ -46,33 +47,41 @@ export default function CalendarWeekView() {
     });
 
     return (
-      <div className="grid grid-cols-7 border-t">
+      <motion.div layout className="grid grid-cols-7 gap-4">
         {daysOfWeek.map((day, index) => {
           const dayAppointments = renderAppointmentsForDay(day);
           return (
-            <div key={index} className="p-4 border">
+            <motion.div
+              key={index}
+              whileHover={{ scale: 1.05 }}
+              className="p-4 border rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow duration-300 cursor-pointer"
+              onClick={() => setSelectedAppointment(dayAppointments[0])}
+            >
               <div className="text-center font-bold mb-2">
                 {DAYS[day.getDay()]} {day.getDate()}
               </div>
               <div className="space-y-2">
-                {dayAppointments.map((appointment, idx) => (
-                  <div
-                    key={idx}
-                    className={`p-2 rounded text-sm cursor-pointer ${
-                      appointment.appointmentStatus === "Activa"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                    onClick={() => setSelectedAppointment(appointment)}
-                  >
-                    {appointment.reasonForVisit} - {appointment.patientName}
-                  </div>
-                ))}
+                {dayAppointments.length > 0 ? (
+                  dayAppointments.map((appointment, idx) => (
+                    <div
+                      key={idx}
+                      className={`p-2 rounded text-sm text-center text-white ${
+                        appointment.appointmentStatus === "Activa"
+                          ? "bg-green-500"
+                          : "bg-red-500"
+                      }`}
+                    >
+                      {appointment.reasonForVisit}
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-gray-500 text-sm">Sin citas</div>
+                )}
               </div>
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     );
   };
 
@@ -90,25 +99,29 @@ export default function CalendarWeekView() {
 
   return (
     <div className="p-6 bg-gray-50">
-      <div className="flex justify-between mb-4">
-        <button
+      {/* Navegación semanal */}
+      <motion.div layout className="flex justify-between mb-4 items-center">
+        <Button
           onClick={handlePreviousWeek}
           className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
         >
           Semana Anterior
-        </button>
+        </Button>
         <Typography variant="h5" color="blue-gray" className="font-bold">
           Semana de {new Date(getStartOfWeek(currentDate)).toLocaleDateString("es-MX")}
         </Typography>
-        <button
+        <Button
           onClick={handleNextWeek}
           className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
         >
           Semana Siguiente
-        </button>
-      </div>
+        </Button>
+      </motion.div>
+
+      {/* Vista semanal */}
       {renderWeekView()}
 
+      {/* Modal de detalles de citas */}
       {selectedAppointment && (
         <Dialog open={!!selectedAppointment} handler={() => setSelectedAppointment(null)} size="lg">
           <DialogHeader>
@@ -133,7 +146,7 @@ export default function CalendarWeekView() {
               <strong>Estado:</strong> {selectedAppointment.appointmentStatus}
             </Typography>
             <Typography>
-              <strong>Notas:</strong> {selectedAppointment.notes || "N/A"}
+              <strong>Notas:</strong> {selectedAppointment.notes || "Sin notas"}
             </Typography>
           </DialogBody>
           <DialogFooter>

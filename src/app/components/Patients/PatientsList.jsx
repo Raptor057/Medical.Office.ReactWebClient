@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { EyeIcon, UserPlusIcon, CalendarDaysIcon, HomeIcon } from "@heroicons/react/24/solid";
+
 import {
   Card,
   CardHeader,
@@ -15,7 +15,10 @@ import {
   IconButton,
   Tooltip,
 } from "@material-tailwind/react";
+
 import Link from "next/link";
+import { EyeIcon, UserPlusIcon, CalendarDaysIcon, HomeIcon } from "@heroicons/react/24/solid";
+
 import ScheduleAppointment from "@/app/components/Forms/Posts/ScheduleAppointment";
 
 const TABLE_HEAD = [

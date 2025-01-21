@@ -115,16 +115,19 @@ export default function OfficeSetupForm() {
   };
 
   return (
+    
     <div>
       {/* Formulario de Inserción */}
+      
       <Card shadow={true} className="max-w-lg p-6 mx-auto bg-white rounded-lg">
-        <Typography
+        {/* <Typography
           variant="h4"
           color="blue-gray"
-          className="mb-6 text-center"
-        >
+          className="mb-6 text-center">
+
           Configuración de Oficina
-        </Typography>
+        </Typography> */}
+        
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label

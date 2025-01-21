@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Typography, Card, CardBody, Input, Button } from "@material-tailwind/react";
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests"; // Ruta correcta para la API
 
+
 export default function InsertOfficeSetupForm() {
   const [formData, setFormData] = useState({
     nameOfOffice: "",
@@ -51,7 +52,7 @@ export default function InsertOfficeSetupForm() {
     <Card className="p-6 space-y-6 bg-white rounded-lg shadow-md">
       <CardBody>
         <Typography variant="h4" color="blue-gray" className="font-bold text-center">
-          Configuración de Oficina
+          Configuración de 
         </Typography>
         <Typography color="gray" className="text-sm font-normal text-center">
           Ingresa los detalles de la oficina a registrar.

@@ -1,21 +1,12 @@
-'use client';
-
 import React, { useEffect, useState } from "react";
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests";
-import {
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-  Typography,
-  Button,
-} from "@material-tailwind/react";
+import { Dialog, DialogHeader, DialogBody, DialogFooter, Typography, Button } from "@material-tailwind/react";
+import { motion } from "framer-motion";
 
 const MONTH_NAMES = [
   "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
   "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
 ];
-
 const DAYS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 
 export default function CalendarMonthView() {
@@ -59,24 +50,25 @@ export default function CalendarMonthView() {
     const noOfDays = Array.from({ length: daysInMonth }, (_, i) => i + 1);
 
     return (
-      <div className="grid grid-cols-7 border-t">
+      <motion.div layout className="grid grid-cols-7 gap-4">
         {blankDays.map((_, index) => (
-          <div key={index} className="p-4"></div>
+          <div key={index} className="h-20"></div>
         ))}
         {noOfDays.map((date) => {
           const currentDay = new Date(year, month, date);
           const dayAppointments = getAppointmentsForDay(currentDay);
 
           return (
-            <div
+            <motion.div
               key={date}
-              className="p-4 border cursor-pointer hover:bg-gray-100"
+              whileHover={{ scale: 1.05 }}
+              className="h-20 border rounded-lg p-2 bg-white cursor-pointer shadow-sm hover:shadow-md transition-shadow duration-300"
               onClick={() => handleDayClick(currentDay)}
             >
-              <div className="text-center font-bold">{date}</div>
+              <div className="font-bold text-center">{date}</div>
               {dayAppointments.length > 0 && (
                 <div
-                  className={`mt-2 p-1 rounded text-center text-white ${
+                  className={`mt-2 p-1 rounded text-sm text-center text-white ${
                     dayAppointments.some((a) => a.appointmentStatus === "Activa")
                       ? "bg-green-500"
                       : "bg-red-500"
@@ -85,10 +77,10 @@ export default function CalendarMonthView() {
                   {dayAppointments.length} cita(s)
                 </div>
               )}
-            </div>
+            </motion.div>
           );
         })}
-      </div>
+      </motion.div>
     );
   };
 
@@ -112,33 +104,27 @@ export default function CalendarMonthView() {
 
   return (
     <div className="h-full w-full bg-gray-50 flex flex-col items-center justify-center p-6">
-      <div className="w-full max-w-6xl bg-white rounded-lg shadow-lg">
-        <div className="flex justify-between p-4">
-          <button
-            onClick={handlePreviousMonth}
-            className="p-2 bg-gray-200 rounded hover:bg-gray-300"
-          >
+      <motion.div layout className="w-full max-w-6xl bg-white rounded-lg shadow-lg p-4">
+        <div className="flex justify-between items-center mb-4">
+          <Button onClick={handlePreviousMonth} className="p-2 bg-gray-200 rounded hover:bg-gray-300">
             &lt;
-          </button>
-          <h2 className="text-xl font-bold">
+          </Button>
+          <Typography variant="h4" className="font-bold">
             {MONTH_NAMES[month]} {year}
-          </h2>
-          <button
-            onClick={handleNextMonth}
-            className="p-2 bg-gray-200 rounded hover:bg-gray-300"
-          >
+          </Typography>
+          <Button onClick={handleNextMonth} className="p-2 bg-gray-200 rounded hover:bg-gray-300">
             &gt;
-          </button>
+          </Button>
         </div>
-        <div className="grid grid-cols-7 text-center text-gray-600">
+        <div className="grid grid-cols-7 text-center text-gray-600 font-medium">
           {DAYS.map((day) => (
-            <div key={day} className="p-2 font-medium uppercase">
+            <div key={day} className="uppercase p-2">
               {day}
             </div>
           ))}
         </div>
         {renderMonthDays()}
-      </div>
+      </motion.div>
 
       {modalOpen && (
         <Dialog open={modalOpen} handler={() => setModalOpen(false)} size="lg">
@@ -149,26 +135,26 @@ export default function CalendarMonthView() {
                 <Typography variant="h6" color="blue-gray">
                   {appointment.reasonForVisit}
                 </Typography>
-                <Typography variant="small" color="gray">
-                  Paciente: {appointment.patientName || "Desconocido"}
+                <Typography>
+                  <strong>Paciente:</strong> {appointment.patientName || "Desconocido"}
                 </Typography>
-                <Typography variant="small" color="gray">
-                  Doctor: {appointment.doctorName || "Desconocido"}
+                <Typography>
+                  <strong>Doctor:</strong> {appointment.doctorName || "Desconocido"}
                 </Typography>
-                <Typography variant="small" color="gray">
-                  Fecha: {new Date(appointment.appointmentDateTime).toLocaleString("es-MX")}
+                <Typography>
+                  <strong>Fecha:</strong> {new Date(appointment.appointmentDateTime).toLocaleString("es-MX")}
                 </Typography>
-                <Typography variant="small" color="gray">
-                  Estado: {appointment.appointmentStatus}
+                <Typography>
+                  <strong>Estado:</strong> {appointment.appointmentStatus}
                 </Typography>
-                <Typography variant="small" color="gray">
-                  Notas: {appointment.notes || "Sin notas"}
+                <Typography>
+                  <strong>Notas:</strong> {appointment.notes || "Sin notas"}
                 </Typography>
               </div>
             ))}
           </DialogBody>
           <DialogFooter>
-            <Button color="red" onClick={() => setModalOpen(false)}>
+            <Button onClick={() => setModalOpen(false)} color="red">
               Cerrar
             </Button>
           </DialogFooter>

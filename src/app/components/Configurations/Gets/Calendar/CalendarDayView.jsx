@@ -1,10 +1,9 @@
-// 'use client';
+'use client';
 
 import React, { useState, useEffect } from "react";
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests";
-import { Typography, Button, Dialog, DialogHeader, DialogBody, DialogFooter } from "@material-tailwind/react";
-
-const DAYS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+import { Typography, Dialog, DialogHeader, DialogBody, DialogFooter, Button } from "@material-tailwind/react";
+import { motion } from "framer-motion";
 
 export default function CalendarDayView() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -46,7 +45,7 @@ export default function CalendarDayView() {
   return (
     <div className="p-6 bg-gray-50">
       {/* Navegación del día */}
-      <div className="flex justify-between mb-4">
+      <motion.div layout className="flex justify-between mb-4 items-center">
         <Button
           onClick={handlePreviousDay}
           className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
@@ -67,19 +66,20 @@ export default function CalendarDayView() {
         >
           Día Siguiente
         </Button>
-      </div>
+      </motion.div>
 
       {/* Citas del día */}
-      <div className="p-4 border rounded bg-white">
+      <motion.div layout className="p-4 border rounded-lg bg-white shadow-sm">
         {renderAppointmentsForDay().map((appointment, index) => (
-          <div
+          <motion.div
             key={index}
-            className={`p-2 mb-2 rounded text-sm shadow-md cursor-pointer ${
+            whileHover={{ scale: 1.05 }}
+            className={`p-4 mb-2 rounded-lg cursor-pointer shadow-md transition-shadow ${
               appointment.appointmentStatus === "Activa" ? "bg-green-100" : "bg-red-100"
             }`}
             onClick={() => setSelectedAppointment(appointment)}
           >
-            <Typography variant="small" color="blue-gray" className="font-bold">
+            <Typography variant="h6" color="blue-gray" className="font-bold">
               {appointment.reasonForVisit}
             </Typography>
             <Typography variant="small" color="gray" className="opacity-70">
@@ -97,22 +97,18 @@ export default function CalendarDayView() {
             <Typography variant="small" color="gray">
               Doctor: {appointment.doctorName || "N/A"}
             </Typography>
-          </div>
+          </motion.div>
         ))}
         {renderAppointmentsForDay().length === 0 && (
           <Typography variant="small" color="gray" className="text-center">
             No hay citas para este día.
           </Typography>
         )}
-      </div>
+      </motion.div>
 
       {/* Modal para detalles de la cita */}
       {selectedAppointment && (
-        <Dialog
-          open={Boolean(selectedAppointment)}
-          handler={() => setSelectedAppointment(null)}
-          size="lg"
-        >
+        <Dialog open={!!selectedAppointment} handler={() => setSelectedAppointment(null)} size="lg">
           <DialogHeader>
             <Typography variant="h5" color="blue-gray">
               Detalles de la Cita
