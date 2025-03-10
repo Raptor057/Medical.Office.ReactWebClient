@@ -1,10 +1,57 @@
+// 'use client';
+
+// import React, { useState } from "react";
+// import { useSearchParams } from "next/navigation";
+// import InsertLoadFile from '@/app/components/Forms/Posts/InsertLoadFile';
+// import PatientFilesList from '@/app/components/Forms/Gets/PatientFilesList';
+// import PatientAdvancementEditModal from "@/app/components/Patients/PatientAdvancementEditModal";
+
+// import {
+//   Card,
+//   CardHeader,
+//   CardBody,
+//   Typography,
+//   Avatar,
+//   Chip,
+// } from "@material-tailwind/react";
+
+// export function PatientDetails({ patientData, onEdit, onInsert }) {
+//   const searchParams = useSearchParams(); // Hook siempre al inicio
+//   const patientId = parseInt(searchParams.get("id")) || 0;
+
+//   const [openModal, setOpenModal] = useState(false);
+
+//   if (!patientData) {
+//     return (
+//       <div className="flex items-center justify-center min-h-screen">
+//         <Typography variant="h6" color="red">
+//           No se encontró información del paciente.
+//         </Typography>
+//       </div>
+//     );
+//   }
+
+// const {
+//   patientsData, // Información general del paciente
+//   activeMedications, // Medicamentos activos
+//   familyHistory, // Antecedentes familiares
+//   medicalHistoryNotes, // Notas del historial médico
+//   nonPathologicalHistory, // Antecedentes no patológicos
+//   pathologicalBackground, // Antecedentes patológicos
+//   patientAllergies, // Alergias del paciente
+//   psychiatricHistory, // Historial psiquiátrico
+//   medicalAppointmentsActive,
+//   medicalAppointmentsHistory,
+//   patientAdvancements
+// } = patientData || {};
+
 'use client';
 
 import React, { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import InsertLoadFile from '@/app/components/Forms/Posts/InsertLoadFile';
 import PatientFilesList from '@/app/components/Forms/Gets/PatientFilesList';
-
+import PatientAdvancementEditModal from "@/app/components/Patients/PatientAdvancementEditModal";
 import {
   Card,
   CardHeader,
@@ -12,14 +59,14 @@ import {
   Typography,
   Avatar,
   Chip,
+  Button,
 } from "@material-tailwind/react";
 
 export function PatientDetails({ patientData, onEdit, onInsert }) {
-  const searchParams = useSearchParams(); // Hook siempre al inicio
+  const searchParams = useSearchParams();
   const patientId = parseInt(searchParams.get("id")) || 0;
 
-  const [openModal, setOpenModal] = useState(false);
-
+  
   if (!patientData) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -30,20 +77,41 @@ export function PatientDetails({ patientData, onEdit, onInsert }) {
     );
   }
 
-const {
-  patientsData, // Información general del paciente
-  activeMedications, // Medicamentos activos
-  familyHistory, // Antecedentes familiares
-  medicalHistoryNotes, // Notas del historial médico
-  nonPathologicalHistory, // Antecedentes no patológicos
-  pathologicalBackground, // Antecedentes patológicos
-  patientAllergies, // Alergias del paciente
-  psychiatricHistory, // Historial psiquiátrico
-  medicalAppointmentsActive,
-  medicalAppointmentsHistory
-} = patientData || {};
+  const {
+    patientsData,
+    activeMedications,
+    familyHistory,
+    medicalHistoryNotes,
+    nonPathologicalHistory,
+    pathologicalBackground,
+    patientAllergies,
+    psychiatricHistory,
+    medicalAppointmentsActive,
+    medicalAppointmentsHistory,
+    patientAdvancements
+  } = patientData || {};
 
+  // Función para abrir el modal al hacer click en un avance
+  const handleAdvancementClick = (PatientAdvancementEditModal) => {
+    setSelectedAdvancement(PatientAdvancementEditModal);
+    setOpenAdvModal(true);
+  };
 
+    // Declaración de estados para el modal de edición de avances
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedAdvancement, setSelectedAdvancement] = useState(null);
+
+  const handleAdvModalClose = () => {
+    setOpenAdvModal(false);
+    setSelectedAdvancement(null);
+  };
+
+  const handleAdvancementUpdate = (updatedAdvancement) => {
+    // Aquí podrías actualizar el estado global o recargar la información
+    console.log("Avance actualizado:", updatedAdvancement);
+    handleAdvModalClose();
+  };
+  
   return (
     <Card className="w-full p-6 space-y-6 bg-gray-50">
       {/* Header: Foto y Nombre */}
@@ -299,7 +367,7 @@ const {
 
         {/* Citas Activas */}
 <Card className="shadow-lg">
-  <CardHeader className="bg-green-500 text-white p-4">
+  <CardHeader className="p-4 text-white bg-green-500">
     <Typography variant="h6" color="white">
       Citas Activas
     </Typography>
@@ -307,7 +375,7 @@ const {
   <CardBody>
     {medicalAppointmentsActive && medicalAppointmentsActive.length > 0 ? (
       medicalAppointmentsActive.map((appointment) => (
-        <div key={appointment.id} className="mb-4 border-b pb-2">
+        <div key={appointment.id} className="pb-2 mb-4 border-b">
           <Typography variant="h6" color="blue-gray">
             {appointment.typeOfAppointment} - {appointment.reasonForVisit}
           </Typography>
@@ -339,7 +407,7 @@ const {
 
 {/* Historial de Citas */}
 <Card className="shadow-lg">
-  <CardHeader className="bg-gray-500 text-white p-4">
+  <CardHeader className="p-4 text-white bg-gray-500">
     <Typography variant="h6" color="white">
       Historial de Citas
     </Typography>
@@ -347,7 +415,7 @@ const {
   <CardBody>
     {medicalAppointmentsHistory && medicalAppointmentsHistory.length > 0 ? (
       medicalAppointmentsHistory.map((appointment) => (
-        <div key={appointment.id} className="mb-4 border-b pb-2">
+        <div key={appointment.id} className="pb-2 mb-4 border-b">
           <Typography variant="h6" color="blue-gray">
             {appointment.typeOfAppointment} - {appointment.reasonForVisit}
           </Typography>
@@ -379,7 +447,7 @@ const {
 
  {/* Subir Archivos */}
  <Card className="shadow-lg">
-          <CardHeader className="bg-blue-500 text-white p-4">
+          <CardHeader className="p-4 text-white bg-blue-500">
             <Typography variant="h6" color="white">
               Subir Archivos
             </Typography>
@@ -391,7 +459,7 @@ const {
 
               {/* Subir Archivos */}
       <Card className="shadow-lg">
-          <CardHeader className="bg-blue-500 text-white p-4">
+          <CardHeader className="p-4 text-white bg-blue-500">
             <Typography variant="h6" color="white">
               Subir Archivos
             </Typography>
@@ -400,6 +468,55 @@ const {
             <PatientFilesList patientId={patientId} />
           </CardBody>
         </Card>
+
+        {/* */}
+        <Card className="shadow-lg">
+        <CardHeader className="p-4 text-white bg-purple-500">
+          <Typography variant="h6" color="white">
+            Abonos del Paciente
+          </Typography>
+        </CardHeader>
+        <CardBody>
+          {patientAdvancements && patientAdvancements.length > 0 ? (
+            patientAdvancements.map((advancement) => (
+              <div
+                key={advancement.id}
+                className="pb-2 mb-4 border-b cursor-pointer hover:bg-gray-100"
+                // onClick={() => handleClick(advancement)}
+                onClick={() => handleAdvancementClick(advancement)}
+
+              >
+                <Typography variant="h6" color="blue-gray">
+                  {advancement.concept}
+                </Typography>
+                <Typography variant="small" color="gray">
+                  <strong>Cantidad:</strong> {advancement.quantity}
+                </Typography>
+                <Typography variant="small" color="gray">
+                  <strong>Activo:</strong> {advancement.active ? "Sí" : "No"}
+                </Typography>
+                <Typography variant="small" color="gray">
+                  <strong>Fecha:</strong>{" "}
+                  {new Date(advancement.dateTimeSnap).toLocaleString("es-MX")}
+                </Typography>
+              </div>
+            ))
+          ) : (
+            <Typography variant="small" color="gray">
+              No hay avances registrados para este paciente.
+            </Typography>
+          )}
+        </CardBody>
+      </Card>
+
+      {openModal && selectedAdvancement && (
+  <PatientAdvancementEditModal
+    advancement={selectedAdvancement}
+    onClose={handleModalClose}
+    onUpdate={handleAdvancementUpdate}
+  />
+)}
+
 
     </Card>
   );

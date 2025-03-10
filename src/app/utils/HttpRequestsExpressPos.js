@@ -9,7 +9,7 @@ const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 // Crear una instancia de Axios con configuración predeterminada
 const axiosInstance = axios.create({
-    baseURL, 
+    baseURL,
     headers: {
         "Access-Control-Expose-Headers": "Content-Length",
         "Content-Type": "application/json",

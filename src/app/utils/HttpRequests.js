@@ -1,6 +1,7 @@
 'use client';
 
 import axios from 'axios';
+import { urlToUrlWithoutFlightMarker } from 'next/dist/client/components/app-router';
 
 // Obtener la baseURL desde las variables de entorno
 const baseURL = process.env.NEXT_PUBLIC_API_URL;
@@ -239,6 +240,15 @@ const MedicalOfficeWebApi = (() => {
         getUsers: async (id = 0, usr = "") =>
             axiosInstance.get(`${apiUrl}/UsersData`, { params: { id, usr } }),
         //#endregion
+
+        getPatientAdvancementByIDPatient: async (idPatient)=>
+            axiosInstance.get(`${apiUrl}/GetPatientAdvancement/${idPatient}`),
+
+        insertPatientAdvancement: async (patientAdvancement)=>
+            axiosInstance.post(`${apiUrl}/InsertPatientAdvancement`, patientAdvancement),
+
+        updatePatientAdvancement: async (Id,patientAdvancement)=>
+            axiosInstance.patch(`${apiUrl}/UpdatePatientAdvancement/${Id}`,patientAdvancement)
     };
 })();
 
