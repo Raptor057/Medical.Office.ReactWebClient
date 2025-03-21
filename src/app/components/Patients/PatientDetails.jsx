@@ -1,57 +1,13 @@
-// 'use client';
-
-// import React, { useState } from "react";
-// import { useSearchParams } from "next/navigation";
-// import InsertLoadFile from '@/app/components/Forms/Posts/InsertLoadFile';
-// import PatientFilesList from '@/app/components/Forms/Gets/PatientFilesList';
-// import PatientAdvancementEditModal from "@/app/components/Patients/PatientAdvancementEditModal";
-
-// import {
-//   Card,
-//   CardHeader,
-//   CardBody,
-//   Typography,
-//   Avatar,
-//   Chip,
-// } from "@material-tailwind/react";
-
-// export function PatientDetails({ patientData, onEdit, onInsert }) {
-//   const searchParams = useSearchParams(); // Hook siempre al inicio
-//   const patientId = parseInt(searchParams.get("id")) || 0;
-
-//   const [openModal, setOpenModal] = useState(false);
-
-//   if (!patientData) {
-//     return (
-//       <div className="flex items-center justify-center min-h-screen">
-//         <Typography variant="h6" color="red">
-//           No se encontró información del paciente.
-//         </Typography>
-//       </div>
-//     );
-//   }
-
-// const {
-//   patientsData, // Información general del paciente
-//   activeMedications, // Medicamentos activos
-//   familyHistory, // Antecedentes familiares
-//   medicalHistoryNotes, // Notas del historial médico
-//   nonPathologicalHistory, // Antecedentes no patológicos
-//   pathologicalBackground, // Antecedentes patológicos
-//   patientAllergies, // Alergias del paciente
-//   psychiatricHistory, // Historial psiquiátrico
-//   medicalAppointmentsActive,
-//   medicalAppointmentsHistory,
-//   patientAdvancements
-// } = patientData || {};
-
 'use client';
 
 import React, { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import InsertLoadFile from '@/app/components/Forms/Posts/InsertLoadFile';
 import PatientFilesList from '@/app/components/Forms/Gets/PatientFilesList';
-import PatientAdvancementEditModal from "@/app/components/Patients/PatientAdvancementEditModal";
+// Asegúrate de tener la importación de HttpRequests y del ícono TrashIcon
+import HttpRequests from "@/app/utils/HttpRequests";
+import { TrashIcon } from '@heroicons/react/24/outline';
+
 import {
   Card,
   CardHeader,
@@ -91,26 +47,52 @@ export function PatientDetails({ patientData, onEdit, onInsert }) {
     patientAdvancements
   } = patientData || {};
 
-  // Función para abrir el modal al hacer click en un avance
-  const handleAdvancementClick = (PatientAdvancementEditModal) => {
-    setSelectedAdvancement(PatientAdvancementEditModal);
-    setOpenAdvModal(true);
-  };
 
     // Declaración de estados para el modal de edición de avances
     const [openModal, setOpenModal] = useState(false);
     const [selectedAdvancement, setSelectedAdvancement] = useState(null);
-
-  const handleAdvModalClose = () => {
-    setOpenAdvModal(false);
-    setSelectedAdvancement(null);
-  };
 
   const handleAdvancementUpdate = (updatedAdvancement) => {
     // Aquí podrías actualizar el estado global o recargar la información
     console.log("Avance actualizado:", updatedAdvancement);
     handleAdvModalClose();
   };
+
+  //---------
+  // Corrige la función para abrir el modal
+const handleAdvancementClick = (advancement) => {
+  setSelectedAdvancement(advancement);
+  setOpenModal(true);
+};
+
+// Corrige la función para cerrar el modal
+const handleAdvModalClose = () => {
+  setOpenModal(false);
+  setSelectedAdvancement(null);
+};
+
+// Función para eliminar (borrado lógico) un avance
+const handleDeleteAdvancement = async (advancement) => {
+  try {
+    const payload = {
+      concept: advancement.concept,
+      quantity: advancement.quantity,
+      active: false,
+    };
+    await HttpRequests.updatePatientAdvancement(advancement.id, payload);
+    console.log("Avance eliminado:", advancement.id);
+    // Aquí puedes actualizar la UI, por ejemplo, eliminándolo de la lista:
+    setAdvancements((prev) => prev.filter((a) => a.id !== advancement.id));
+  } catch (error) {
+    console.error("Error eliminando el avance:", error);
+  }
+};
+
+// Estado local para la lista de avances (para actualizar la UI al eliminar)
+const [advancements, setAdvancements] = useState(patientAdvancements || []);
+
+// Estado para manejar la confirmación de eliminación
+const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   
   return (
     <Card className="w-full p-6 space-y-6 bg-gray-50">
@@ -470,52 +452,75 @@ export function PatientDetails({ patientData, onEdit, onInsert }) {
         </Card>
 
         {/* */}
-        <Card className="shadow-lg">
-        <CardHeader className="p-4 text-white bg-purple-500">
-          <Typography variant="h6" color="white">
-            Abonos del Paciente
-          </Typography>
-        </CardHeader>
-        <CardBody>
-          {patientAdvancements && patientAdvancements.length > 0 ? (
-            patientAdvancements.map((advancement) => (
-              <div
-                key={advancement.id}
-                className="pb-2 mb-4 border-b cursor-pointer hover:bg-gray-100"
-                // onClick={() => handleClick(advancement)}
-                onClick={() => handleAdvancementClick(advancement)}
-
-              >
-                <Typography variant="h6" color="blue-gray">
-                  {advancement.concept}
-                </Typography>
-                <Typography variant="small" color="gray">
-                  <strong>Cantidad:</strong> {advancement.quantity}
-                </Typography>
-                <Typography variant="small" color="gray">
-                  <strong>Activo:</strong> {advancement.active ? "Sí" : "No"}
-                </Typography>
-                <Typography variant="small" color="gray">
-                  <strong>Fecha:</strong>{" "}
-                  {new Date(advancement.dateTimeSnap).toLocaleString("es-MX")}
-                </Typography>
+        <Card className="w-full p-6 space-y-6 bg-gray-50">
+  <Card className="shadow-lg">
+    <CardHeader className="p-4 text-white bg-purple-500">
+      <Typography variant="h6" color="white">
+        Abonos del Paciente
+      </Typography>
+    </CardHeader>
+    <CardBody>
+      {advancements && advancements.length > 0 ? (
+        advancements.map((advancement) => (
+          <div
+            key={advancement.id}
+            className="flex items-center justify-between pb-2 mb-4 border-b hover:bg-gray-100"
+          >
+            <div
+              className="cursor-pointer"
+              onClick={() => handleAdvancementClick(advancement)}
+            >
+              <Typography variant="h6" color="blue-gray">
+                {advancement.concept}
+              </Typography>
+              <Typography variant="small" color="gray">
+                <strong>Cantidad:</strong> {advancement.quantity}
+              </Typography>
+              <Typography variant="small" color="gray">
+                <strong>Fecha:</strong>{" "}
+                {new Date(advancement.dateTimeSnap).toLocaleString("es-MX")}
+              </Typography>
+            </div>
+            {confirmDeleteId === advancement.id ? (
+              <div className="flex gap-2">
+                <Button
+                  color="green"
+                  variant="text"
+                  onClick={async () => {
+                    await handleDeleteAdvancement(advancement);
+                    window.location.reload();
+                  }}
+                >
+                  Confirmar
+                </Button>
+                <Button
+                  color="gray"
+                  variant="text"
+                  onClick={() => setConfirmDeleteId(null)}
+                >
+                  Cancelar
+                </Button>
               </div>
-            ))
-          ) : (
-            <Typography variant="small" color="gray">
-              No hay avances registrados para este paciente.
-            </Typography>
-          )}
-        </CardBody>
-      </Card>
+            ) : (
+              <Button
+                color="red"
+                variant="text"
+                onClick={() => setConfirmDeleteId(advancement.id)}
+              >
+                <TrashIcon className="w-5 h-5" />
+              </Button>
+            )}
+          </div>
+        ))
+      ) : (
+        <Typography variant="small" color="gray">
+          No hay avances registrados para este paciente.
+        </Typography>
+      )}
+    </CardBody>
+  </Card>
+</Card>
 
-      {openModal && selectedAdvancement && (
-  <PatientAdvancementEditModal
-    advancement={selectedAdvancement}
-    onClose={handleModalClose}
-    onUpdate={handleAdvancementUpdate}
-  />
-)}
 
 
     </Card>
