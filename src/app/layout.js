@@ -26,6 +26,9 @@ export default function RootLayout({ children }) {
         <Script
           src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js"
           strategy="afterInteractive" // Carga el script después de que se haya renderizado la página
+          dangerouslySetInnerHTML={{
+            __html: `window.NEXT_PUBLIC_API_URL="${process.env.NEXT_PUBLIC_API_URL}"`,
+          }}
         />
         {/* Layout UI */}
         <main>{children}</main>

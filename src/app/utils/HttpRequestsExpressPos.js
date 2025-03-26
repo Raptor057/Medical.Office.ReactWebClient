@@ -3,7 +3,10 @@
 import axios from 'axios';
 
 // Obtener la baseURL desde las variables de entorno
-const baseURL = process.env.NEXT_PUBLIC_API_URL;
+//const baseURL = process.env.NEXT_PUBLIC_API_URL;
+const baseURL = typeof window !== 'undefined'
+? window.NEXT_PUBLIC_API_URL
+: process.env.NEXT_PUBLIC_API_URL;
 
 //const baseURL = 'http://localhost:8080';
 

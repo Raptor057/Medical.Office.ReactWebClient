@@ -4,7 +4,10 @@ import axios from 'axios';
 import { urlToUrlWithoutFlightMarker } from 'next/dist/client/components/app-router';
 
 // Obtener la baseURL desde las variables de entorno
-const baseURL = process.env.NEXT_PUBLIC_API_URL;
+//const baseURL = process.env.NEXT_PUBLIC_API_URL;
+const baseURL = typeof window !== 'undefined'
+? window.NEXT_PUBLIC_API_URL
+: process.env.NEXT_PUBLIC_API_URL;
 
 //const baseURL = 'http://localhost:8080';
 
