@@ -100,81 +100,81 @@ axiosInstance.interceptors.response.use(
 
 
 const MedicalExpressPosWebApi = (() => {
-    const apiUrl = '/api'; // Base para las rutas específicas
+    //const apiUrl = '/api'; // Base para las rutas específicas
 
     return {
         //#region Gestión de Productos
         agregarProducto: async (productoData) =>
-            axiosInstance.post(`${apiUrl}/AgregarProducto`, productoData),
+            axiosInstance.post(`/api/AgregarProducto`, productoData),
 
         actualizarProducto: async (productoID, productoData) =>
-            axiosInstance.put(`${apiUrl}/ActualizarProducto/${productoID}`, productoData),
+            axiosInstance.put(`/api/ActualizarProducto/${productoID}`, productoData),
 
         actualizarStock: async (productoID, stockData) =>
-            axiosInstance.patch(`${apiUrl}/ActualizarStock/${productoID}`, stockData),
+            axiosInstance.patch(`/api/ActualizarStock/${productoID}`, stockData),
 
         eliminarProducto: async (productoID) =>
-            axiosInstance.delete(`${apiUrl}/EliminarProducto/${productoID}`),
+            axiosInstance.delete(`/api/EliminarProducto/${productoID}`),
 
         obtenerProductoPorId: async (productoID) =>
-            axiosInstance.get(`${apiUrl}/ObtenerProductoPorId/${productoID}`),
+            axiosInstance.get(`/api/ObtenerProductoPorId/${productoID}`),
 
         obtenerTodosLosProductos: async () =>
-            axiosInstance.get(`${apiUrl}/ObtenerTodosLosProductos`),
+            axiosInstance.get(`/api/ObtenerTodosLosProductos`),
 
         obtenerProductosConBajoStock: async (limiteStock) =>
-            axiosInstance.get(`${apiUrl}/ObtenerProductosConBajoStock?LimiteStock=${limiteStock}`),
+            axiosInstance.get(`/api/ObtenerProductosConBajoStock?LimiteStock=${limiteStock}`),
         //#endregion
 
         //#region Gestión de Ventas
         registrarVenta: async (ventaData) =>
-            axiosInstance.post(`${apiUrl}/RegistrarVenta`, ventaData),
+            axiosInstance.post(`/api/RegistrarVenta`, ventaData),
     
         eliminarVenta: async (ventaID) =>
-            axiosInstance.delete(`${apiUrl}/EliminarVenta/${ventaID}`),
+            axiosInstance.delete(`/api/EliminarVenta/${ventaID}`),
     
         obtenerVentaPorId: async (ventaID) =>
-            axiosInstance.get(`${apiUrl}/ObtenerVentaPorId/${ventaID}`),
+            axiosInstance.get(`/api/ObtenerVentaPorId/${ventaID}`),
     
         obtenerVentasPorRango: async (fechaInicio, fechaFin) =>
-            axiosInstance.get(`${apiUrl}/ObtenerVentasPorRango?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
+            axiosInstance.get(`/api/ObtenerVentasPorRango?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
     
         listarTodasLasVentas: async () =>
-            axiosInstance.get(`${apiUrl}/ListarTodasLasVentas`),
+            axiosInstance.get(`/api/ListarTodasLasVentas`),
     
         obtenerVentasPorDia: async (fechaInicio, fechaFin) =>
-            axiosInstance.get(`${apiUrl}/ObtenerVentasPorDia?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`),
+            axiosInstance.get(`/api/ObtenerVentasPorDia?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`),
     
         actualizarVenta: async (ventaID, ventaData) =>
-            axiosInstance.put(`${apiUrl}/ActualizarVenta/${ventaID}`, ventaData),
+            axiosInstance.put(`/api/ActualizarVenta/${ventaID}`, ventaData),
         //#endregion
 
         //#region Gestión de Cortes de Caja
         registrarCorte: async (corteData) =>
-            axiosInstance.post(`${apiUrl}/RegistrarCorte`, corteData),
+            axiosInstance.post(`/api/RegistrarCorte`, corteData),
 
         eliminarCorte: async (corteID) =>
-            axiosInstance.delete(`${apiUrl}/EliminarCorte/${corteID}`),
+            axiosInstance.delete(`/api/EliminarCorte/${corteID}`),
 
         obtenerCortePorId: async (corteID) =>
-            axiosInstance.get(`${apiUrl}/ObtenerCortePorId/${corteID}`),
+            axiosInstance.get(`/api/ObtenerCortePorId/${corteID}`),
 
         obtenerTodosLosCortes: async () =>
-            axiosInstance.get(`${apiUrl}/ObtenerTodosLosCortes`),
+            axiosInstance.get(`/api/ObtenerTodosLosCortes`),
 
         obtenerCortesPorRango: async (fechaInicio, fechaFin) =>
-            axiosInstance.get(`${apiUrl}/ObtenerCortesPorRango?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
+            axiosInstance.get(`/api/ObtenerCortesPorRango?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
         //#endregion
 
         //#region Generación de Reportes
         obtenerVentasPorDia: async (fechaInicio, fechaFin) =>
-            axiosInstance.get(`${apiUrl}/ObtenerVentasPorDia?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
+            axiosInstance.get(`/api/ObtenerVentasPorDia?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
 
         obtenerDetalleDeVentas: async (ventaID) =>
-            axiosInstance.get(`${apiUrl}/ObtenerDetalleDeVentas/${ventaID}`),
+            axiosInstance.get(`/api/ObtenerDetalleDeVentas/${ventaID}`),
 
         obtenerResumenDeCortesPorDia: async (fechaInicio, fechaFin) =>
-            axiosInstance.get(`${apiUrl}/ObtenerResumenDeCortesPorDia?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
+            axiosInstance.get(`/api/ObtenerResumenDeCortesPorDia?FechaInicio=${fechaInicio}&FechaFin=${fechaFin}`),
         //#endregion
     };
 })();

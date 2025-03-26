@@ -101,157 +101,158 @@ axiosInstance.interceptors.response.use(
 
 // Clase para gestionar la API
 const MedicalOfficeWebApi = (() => {
-    const apiUrl = '/api'; // Base para las rutas específicas
+    //const apiUrl = '/api'; // Base para las rutas específicas
+    const apiUrl = ''; // Base para las rutas específicas
 
     return {
         //#region Authentication
         login: async (usr, psswd) =>
-            axiosInstance.post(`${apiUrl}/login`, { Usr: usr, Psswd: psswd }),
+            axiosInstance.post(`/api/login`, { Usr: usr, Psswd: psswd }),
         //#endregion
 
         //#region Patient Data
         getPatientData: async (idPatient) =>
-            axiosInstance.get(`${apiUrl}/PatientData/${idPatient}`),
+            axiosInstance.get(`/api/PatientData/${idPatient}`),
 
         getPatientDataAndAntecedents: async (idPatient) =>
-            axiosInstance.get(`${apiUrl}/GetPatientDataAndAntecedents/${idPatient}`),
+            axiosInstance.get(`/api/GetPatientDataAndAntecedents/${idPatient}`),
         //#endregion
 
         getMedicalAppointmentCalendar: async (id, idDoctor) =>
-            axiosInstance.get(`${apiUrl}/GetMedicalAppointmentCalendar/${id}/${idDoctor}`),
+            axiosInstance.get(`/api/GetMedicalAppointmentCalendar/${id}/${idDoctor}`),
 
         //#region Insert Operations
 
         scheduleAppointment: async (appointmentData) =>
-            axiosInstance.post(`${apiUrl}/InsertMedicalAppointmentCalendar`, appointmentData),
+            axiosInstance.post(`/api/InsertMedicalAppointmentCalendar`, appointmentData),
 
         insertPatientData: async (patientData) =>
-            axiosInstance.post(`${apiUrl}/insertpatient`, patientData),
+            axiosInstance.post(`/api/insertpatient`, patientData),
 
         insertFamilyHistory: async (familyHistoryData) =>
-            axiosInstance.post(`${apiUrl}/insertfamilyhistory`, familyHistoryData),
+            axiosInstance.post(`/api/insertfamilyhistory`, familyHistoryData),
 
         insertMedicalHistoryNotes: async (medicalHistoryNotesData) =>
-            axiosInstance.post(`${apiUrl}/InsertMedicalHistoryNotes`, medicalHistoryNotesData),
+            axiosInstance.post(`/api/InsertMedicalHistoryNotes`, medicalHistoryNotesData),
 
         insertActiveMedications: async (activeMedicationsData) =>
-            axiosInstance.post(`${apiUrl}/insertactivemedications`, activeMedicationsData),
+            axiosInstance.post(`/api/insertactivemedications`, activeMedicationsData),
 
         insertNonPathologicalHistory: async (nonPathologicalData) =>
-            axiosInstance.post(`${apiUrl}/InsertNonPathologicalHistory`, nonPathologicalData),
+            axiosInstance.post(`/api/InsertNonPathologicalHistory`, nonPathologicalData),
 
         insertPathologicalBackground: async (pathologicalData) =>
-            axiosInstance.post(`${apiUrl}/InsertPathologicalBackground`, pathologicalData),
+            axiosInstance.post(`/api/InsertPathologicalBackground`, pathologicalData),
 
         insertPatientAllergies: async (allergiesData) =>
-            axiosInstance.post(`${apiUrl}/InsertPatientAllergies`, allergiesData),
+            axiosInstance.post(`/api/InsertPatientAllergies`, allergiesData),
 
         insertPsychiatricHistory: async (psychiatricData) =>
-            axiosInstance.post(`${apiUrl}/insertpsychiatricHistory`, psychiatricData),
+            axiosInstance.post(`/api/insertpsychiatricHistory`, psychiatricData),
 
         uploadPatientFile: async (fileData) =>
-            axiosInstance.post(`${apiUrl}/UploadPatientFile`, fileData),
+            axiosInstance.post(`/api/UploadPatientFile`, fileData),
 
         insertOfficeSetup: async (officeSetupData) =>
-            axiosInstance.post(`${apiUrl}/insertofficesetup`, officeSetupData),
+            axiosInstance.post(`/api/insertofficesetup`, officeSetupData),
 
         insertMedicalAppointmentCalendar: async (appointmentData) =>
-            axiosInstance.post(`${apiUrl}/InsertMedicalAppointmentCalendar`, appointmentData),
+            axiosInstance.post(`/api/InsertMedicalAppointmentCalendar`, appointmentData),
 
         insertPosition: async (position) =>
-            axiosInstance.post(`${apiUrl}/insertposition/${position}`),
+            axiosInstance.post(`/api/insertposition/${position}`),
 
         insertSpecialties: async (specialty) =>
-            axiosInstance.post(`${apiUrl}/insertspecialties/${specialty}`),
+            axiosInstance.post(`/api/insertspecialties/${specialty}`),
 
         registerUser: async (userData) =>
-            axiosInstance.post(`${apiUrl}/registerusers`, userData),
+            axiosInstance.post(`/api/registerusers`, userData),
 
         insertDoctor: async (doctorData) => // Nuevo faltante
-            axiosInstance.post(`${apiUrl}/InsertDoctor`, doctorData),
+            axiosInstance.post(`/api/InsertDoctor`, doctorData),
         //#endregion
 
         //#region Update Operations
         updateUser: async (id, userData) =>
-            axiosInstance.patch(`${apiUrl}/updateusers/${id}`, userData),
+            axiosInstance.patch(`/api/updateusers/${id}`, userData),
 
         updateActiveMedications: async (idPatient, medicationsData) =>
-            axiosInstance.patch(`${apiUrl}/UpdateActiveMedications/${idPatient}`, medicationsData),
+            axiosInstance.patch(`/api/UpdateActiveMedications/${idPatient}`, medicationsData),
 
         updateFamilyHistory: async (idPatient, familyHistoryData) =>
-            axiosInstance.patch(`${apiUrl}/UpdateFamilyHistory/${idPatient}`, familyHistoryData),
+            axiosInstance.patch(`/api/UpdateFamilyHistory/${idPatient}`, familyHistoryData),
 
         updateMedicalHistoryNotes: async (idPatient, notesData) =>
-            axiosInstance.patch(`${apiUrl}/UpdateMedicalHistoryNotes/${idPatient}`, notesData),
+            axiosInstance.patch(`/api/UpdateMedicalHistoryNotes/${idPatient}`, notesData),
 
         updateNonPathologicalHistory: async (idPatient, nonPathologicalData) =>
-            axiosInstance.patch(`${apiUrl}/UpdateNonPathologicalHistory/${idPatient}`, nonPathologicalData),
+            axiosInstance.patch(`/api/UpdateNonPathologicalHistory/${idPatient}`, nonPathologicalData),
 
         updatePathologicalBackground: async (idPatient, pathologicalData) =>
-            axiosInstance.patch(`${apiUrl}/UpdatePathologicalBackground/${idPatient}`, pathologicalData),
+            axiosInstance.patch(`/api/UpdatePathologicalBackground/${idPatient}`, pathologicalData),
 
         updatePatientAllergies: async (idPatient, allergiesData) =>
-            axiosInstance.patch(`${apiUrl}/UpdatePatientAllergies/${idPatient}`, allergiesData),
+            axiosInstance.patch(`/api/UpdatePatientAllergies/${idPatient}`, allergiesData),
 
         updatePsychiatricHistory: async (idPatient, psychiatricData) =>
-            axiosInstance.patch(`${apiUrl}/UpdatePsychiatricHistory/${idPatient}`, psychiatricData),
+            axiosInstance.patch(`/api/UpdatePsychiatricHistory/${idPatient}`, psychiatricData),
 
         updateOfficeSetup: async (officeSetupData) =>
-            axiosInstance.patch(`${apiUrl}/UpdateOfficeSetup`, officeSetupData),
+            axiosInstance.patch(`/api/UpdateOfficeSetup`, officeSetupData),
 
         updateLaboralDays: async (id, laboralDaysData) =>
-            axiosInstance.patch(`${apiUrl}/UpdateLaboralDays/${id}`, laboralDaysData),
+            axiosInstance.patch(`/api/UpdateLaboralDays/${id}`, laboralDaysData),
 
         updateDoctor: async (id, doctorData) =>
-            axiosInstance.patch(`${apiUrl}/updateDoctor/${id}`, doctorData),
+            axiosInstance.patch(`/api/updateDoctor/${id}`, doctorData),
         //#endregion
 
         //#region Get Operations
         getPatientFiles: async (patientId,idfile) =>
-            axiosInstance.get(`${apiUrl}/GetPatientFile/${patientId}/${idfile}`),
+            axiosInstance.get(`/api/GetPatientFile/${patientId}/${idfile}`),
 
         deletePatientFile: async (patientId, idFile) =>
-            axiosInstance.delete(`${apiUrl}/DeletePatientFile/${patientId}/${idFile}`),
+            axiosInstance.delete(`/api/DeletePatientFile/${patientId}/${idFile}`),
 
         getAllConfigurations: async () =>
-            axiosInstance.get(`${apiUrl}/getallconfigurations`),
+            axiosInstance.get(`/api/getallconfigurations`),
 
         getDoctors: async (id = 0) =>
-            axiosInstance.get(`${apiUrl}/GetDoctors/${id}`),
+            axiosInstance.get(`/api/GetDoctors/${id}`),
 
         getActiveMedications: async (patientId) =>
-            axiosInstance.get(`${apiUrl}/getactivemedications/${patientId}`),
+            axiosInstance.get(`/api/getactivemedications/${patientId}`),
 
         getFamilyHistory: async (patientID) =>
-            axiosInstance.get(`${apiUrl}/getfamilyhistory/${patientID}`),
+            axiosInstance.get(`/api/getfamilyhistory/${patientID}`),
 
         getMedicalHistoryNotes: async (patientID) =>
-            axiosInstance.get(`${apiUrl}/getmedicalhistorynotes/${patientID}`),
+            axiosInstance.get(`/api/getmedicalhistorynotes/${patientID}`),
 
         getNonPathologicalHistory: async (patientID) =>
-            axiosInstance.get(`${apiUrl}/GetNonPathologicalHistory/${patientID}`),
+            axiosInstance.get(`/api/GetNonPathologicalHistory/${patientID}`),
 
         getPathologicalBackground: async (patientID) =>
-            axiosInstance.get(`${apiUrl}/GetPathologicalBackground/${patientID}`),
+            axiosInstance.get(`/api/GetPathologicalBackground/${patientID}`),
 
         getPatientAllergies: async (patientID) =>
-            axiosInstance.get(`${apiUrl}/GetPatientAllergies/${patientID}`),
+            axiosInstance.get(`/api/GetPatientAllergies/${patientID}`),
 
         getPsychiatricHistory: async (patientId) =>
-            axiosInstance.get(`${apiUrl}/GetPsychiatricHistory/${patientId}`),
+            axiosInstance.get(`/api/GetPsychiatricHistory/${patientId}`),
 
         getUsers: async (id = 0, usr = "") =>
-            axiosInstance.get(`${apiUrl}/UsersData`, { params: { id, usr } }),
+            axiosInstance.get(`/api/UsersData`, { params: { id, usr } }),
         //#endregion
 
         getPatientAdvancementByIDPatient: async (idPatient)=>
-            axiosInstance.get(`${apiUrl}/GetPatientAdvancement/${idPatient}`),
+            axiosInstance.get(`/api/GetPatientAdvancement/${idPatient}`),
 
         insertPatientAdvancement: async (patientAdvancement)=>
-            axiosInstance.post(`${apiUrl}/InsertPatientAdvancement`, patientAdvancement),
+            axiosInstance.post(`/api/InsertPatientAdvancement`, patientAdvancement),
 
         updatePatientAdvancement: async (Id,patientAdvancement)=>
-            axiosInstance.patch(`${apiUrl}/UpdatePatientAdvancement/${Id}`,patientAdvancement)
+            axiosInstance.patch(`/api/UpdatePatientAdvancement/${Id}`,patientAdvancement)
     };
 })();
 
