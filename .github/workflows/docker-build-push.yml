@@ -36,4 +36,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            NEXT_PUBLIC_API_URL=""
+            NEXT_PUBLIC_API_URL=http://localhost:8080
