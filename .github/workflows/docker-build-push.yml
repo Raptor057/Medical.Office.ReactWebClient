@@ -27,6 +27,8 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.actor }}/medicalofficewebclient
+          tags: |
+            type=raw,value=latest
 
       - name: Build & Push Docker Image
         uses: docker/build-push-action@v5
