@@ -5,7 +5,6 @@ import MedicalOfficeWebApi from '@/app/utils/HttpRequests';
 import { useRouter } from 'next/navigation';
 import CryptoLogin from '@/app/components/login';
 import Alert from '@/app/components/Alerts'; // Asegúrate de importar el componente Alert
-import MedicalAppointmentCalendar from '@/app/components/Configurations/Gets/MedicalAppointmentCalendar'; // Asegúrate de importar el componente MedicalAppointmentCalendar
 
 export default function LoginPage() {
   const router = useRouter();
@@ -41,15 +40,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-indigo-600">
-      <h2 className="text-3xl font-bold text-white mb-4">
-        Bienvenido de nuevo
-      </h2>
-      <p className="text-sm text-white mb-8">
-        Por favor, ingresa tus credenciales para continuar.
-      </p>
-
-      {/* Componente de login */}
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 bg-gradient-to-r to-indigo-600">
       <CryptoLogin
         usr={usr}
         password={password}
@@ -60,7 +51,7 @@ export default function LoginPage() {
 
       {/* Componente de alerta para mensajes de éxito/error */}
       {alertData && (
-        <div className="fixed bottom-4 left-4 right-4 flex justify-center">
+        <div className="fixed flex justify-center bottom-4 left-4 right-4">
           <Alert
             isSuccess={alertData.isSuccess}
             message={alertData.message}
@@ -69,7 +60,7 @@ export default function LoginPage() {
         </div>
       )}
 
-      <footer className="absolute bottom-4 text-sm text-gray-200">
+      <footer className="absolute text-sm text-gray-200 bottom-4">
         &copy; {new Date().getFullYear()} Medical Office. Todos los derechos reservados.
       </footer>
     </div>
