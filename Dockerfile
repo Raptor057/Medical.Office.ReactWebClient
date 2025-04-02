@@ -30,7 +30,8 @@ COPY --from=build /usr/src/app/out .
 RUN rm /etc/nginx/conf.d/default.conf
 
 # Agregar configuración personalizada de Nginx
-COPY nginx.conf /etc/nginx/conf.d
+#COPY nginx.conf /etc/nginx/conf.d
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Exponer el puerto 80
 EXPOSE 80
