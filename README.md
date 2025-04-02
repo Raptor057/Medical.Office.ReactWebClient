@@ -177,4 +177,4 @@ export default function PatientDetailsPage() {
 ### **Siguiente Paso**
 Si quieres implementar navegación más compleja (como mantener datos mientras navegas), puedes explorar **Context API** o **Redux**. Pero para este caso, los parámetros de consulta son ideales. 
 
-¡Éxito y sigue aprendiendo! 🚀
+
