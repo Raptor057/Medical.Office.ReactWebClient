@@ -65,7 +65,7 @@ jobs:
           push: true
           tags: ${{ env.IMAGE_NAME }}:drmorales
           build-args: |
-            NEXT_PUBLIC_API_URL=http://webserver:8080
+            NEXT_PUBLIC_API_URL=http://192.168.100.13:8080
 
 
       ####################################
