@@ -1,4 +1,4 @@
-name: Docker Build and Push to GHCR (localhost & lan)
+name: Docker Build and Push Frontend (localhost & lan)
 
 on:
   workflow_dispatch:
@@ -6,7 +6,10 @@ on:
     branches:
       - main
     paths:
-      -  Medical.Office.ReactWebClient/version
+      - 'Medical.Office.ReactWebClient/version'
+
+env:
+  IMAGE_NAME: ghcr.io/raptor057/medicalofficewebclient
 
 jobs:
   build-and-push:
@@ -19,7 +22,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Login a GHCR
+      - name: Login to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -27,27 +30,27 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
 
       ####################################
-      # 🔧 Build & Push: localhost
+      # 🔧 Build & Push Docker Image: localhost
       ####################################
-      - name: Build & Push Docker Image (localhost)
+      - name: Build & Push Frontend (localhost)
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./Medical.Office.ReactWebClient
           push: true
-          tags: ghcr.io/${{ github.actor }}/medicalofficewebclient:localhost
+          tags: ${{ env.IMAGE_NAME }}:localhost
           build-args: |
             NEXT_PUBLIC_API_URL=http://localhost:8080
 
       ####################################
-      # 🔧 Build & Push: LAN (192.168.100.24)
+      # 🔧 Build & Push Docker Image: LAN
       ####################################
-      - name: Build & Push Docker Image (LAN)
+      - name: Build & Push Frontend (LAN)
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: ./Medical.Office.ReactWebClient
           push: true
           tags: |
-            ghcr.io/${{ github.actor }}/medicalofficewebclient:lan
-            ghcr.io/${{ github.actor }}/medicalofficewebclient:latest
+            ${{ env.IMAGE_NAME }}:lan
+            ${{ env.IMAGE_NAME }}:latest
           build-args: |
             NEXT_PUBLIC_API_URL=http://192.168.100.24:8080
