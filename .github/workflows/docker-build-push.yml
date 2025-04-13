@@ -1,4 +1,4 @@
-name: Docker Build and Push Frontend (localhost & lan)
+name: Docker Build and Push Frontend (localhost & cmi1)
 
 on:
   workflow_dispatch:
@@ -36,21 +36,23 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./Medical.Office.ReactWebClient
+          file: ./Medical.Office.ReactWebClient/Dockerfile
           push: true
-          tags: ${{ env.IMAGE_NAME }}:localhost
+          tags: |
+            ${{ env.IMAGE_NAME }}:localhost
+            ${{ env.IMAGE_NAME }}:latest
           build-args: |
             NEXT_PUBLIC_API_URL=http://localhost:8080
 
       ####################################
-      # 🔧 Build & Push Docker Image: LAN
+      # 🔧 Build & Push Docker Image: cmi1
       ####################################
-      - name: Build & Push Frontend (LAN)
+      - name: Build & Push Frontend (cmi1)
         uses: docker/build-push-action@v5
         with:
           context: ./Medical.Office.ReactWebClient
+          file: ./Medical.Office.ReactWebClient/Dockerfile
           push: true
-          tags: |
-            ${{ env.IMAGE_NAME }}:lan
-            ${{ env.IMAGE_NAME }}:latest
+          tags: ${{ env.IMAGE_NAME }}:cmi1
           build-args: |
             NEXT_PUBLIC_API_URL=http://192.168.100.24:8080
