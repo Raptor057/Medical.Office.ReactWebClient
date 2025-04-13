@@ -66,3 +66,16 @@ jobs:
           tags: ${{ env.IMAGE_NAME }}:drmorales
           build-args: |
             NEXT_PUBLIC_API_URL=http://webserver:8080
+
+
+      ####################################
+      # 🔧 Build & Push Docker Image: Sistec
+      ####################################
+      - name: Build & Push Frontend (Sistec)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:sistec
+          build-args: |
+            NEXT_PUBLIC_API_URL=http://192.168.80.229:8080
