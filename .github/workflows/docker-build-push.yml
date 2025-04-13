@@ -1,9 +1,12 @@
-name: Docker Build and Push to GHCR
+name: Docker Build and Push to GHCR (localhost & lan)
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - main  
+      - main
+    paths:
+      - version
 
 jobs:
   build-and-push:
@@ -11,6 +14,7 @@ jobs:
     permissions:
       packages: write
       contents: read
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -22,20 +26,28 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GHCR_PAT }}
 
-      - name: Docker Metadata
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/${{ github.actor }}/medicalofficewebclient
-          tags: |
-            type=raw,value=latest
-
-      - name: Build & Push Docker Image
+      ####################################
+      # 🔧 Build & Push: localhost
+      ####################################
+      - name: Build & Push Docker Image (localhost)
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ghcr.io/${{ github.actor }}/medicalofficewebclient:localhost
           build-args: |
             NEXT_PUBLIC_API_URL=http://localhost:8080
+
+      ####################################
+      # 🔧 Build & Push: LAN (192.168.100.24)
+      ####################################
+      - name: Build & Push Docker Image (LAN)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.actor }}/medicalofficewebclient:lan
+            ghcr.io/${{ github.actor }}/medicalofficewebclient:latest
+          build-args: |
+            NEXT_PUBLIC_API_URL=http://192.168.100.24:8080
