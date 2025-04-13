@@ -44,13 +44,25 @@ jobs:
             NEXT_PUBLIC_API_URL=http://localhost:8080
 
       ####################################
-      # 🔧 Build & Push Docker Image: cmi1
+      # 🔧 Build & Push Docker Image: RaptorServer
       ####################################
-      - name: Build & Push Frontend (cmi1)
+      - name: Build & Push Frontend (raptorserver)
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: ${{ env.IMAGE_NAME }}:cmi1
+          tags: ${{ env.IMAGE_NAME }}:raptorserver
           build-args: |
             NEXT_PUBLIC_API_URL=http://192.168.100.24:8080
+
+      ####################################
+      # 🔧 Build & Push Docker Image: CMI Dr. Morales
+      ####################################
+      - name: Build & Push Frontend (drmorales)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:drmorales
+          build-args: |
+            NEXT_PUBLIC_API_URL=http://webserver:8080
