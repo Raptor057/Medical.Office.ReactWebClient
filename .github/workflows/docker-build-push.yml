@@ -1,4 +1,4 @@
-name: Docker Build and Push Frontend (localhost & cmi1)
+name: Docker Build and Push Frontend
 
 on:
   workflow_dispatch:
