@@ -35,7 +35,7 @@ jobs:
       - name: Build & Push Frontend (localhost)
         uses: docker/build-push-action@v5
         with:
-          context: ./Medical.Office.ReactWebClient
+          context: .
           file: ./Medical.Office.ReactWebClient/Dockerfile
           push: true
           tags: |
@@ -50,7 +50,7 @@ jobs:
       - name: Build & Push Frontend (cmi1)
         uses: docker/build-push-action@v5
         with:
-          context: ./Medical.Office.ReactWebClient
+          context: .
           file: ./Medical.Office.ReactWebClient/Dockerfile
           push: true
           tags: ${{ env.IMAGE_NAME }}:cmi1
