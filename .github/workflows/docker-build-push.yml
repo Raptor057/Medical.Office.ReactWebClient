@@ -53,7 +53,7 @@ jobs:
           push: true
           tags: ${{ env.IMAGE_NAME }}:raptorserver
           build-args: |
-            NEXT_PUBLIC_API_URL=http://192.168.100.24:8080
+            NEXT_PUBLIC_API_URL=http://192.168.100.37:8080
 
       ####################################
       # 🔧 Build & Push Docker Image: CMI Dr. Morales
