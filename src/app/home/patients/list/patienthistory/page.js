@@ -67,7 +67,7 @@ export default function PatientDetailsPage() {
         <>
           <PatientDetails patientData={patientData} />
           {/* Botones para redirigir a Insertar o Actualizar paciente */}
-          <div className="mt-6 flex gap-4 justify-center">
+          <div className="flex justify-center gap-4 mt-6">
             <Button color="blue" onClick={handleInsertUpdateButtonClick}>
               Insertar / Actualizar Datos del Paciente
             </Button>

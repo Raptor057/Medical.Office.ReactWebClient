@@ -1,38 +1,3 @@
-// import React, { useState, useEffect, useRef } from "react";
-
-// const Ticket = ({ businessName, address, phone, items }) => {
-//   const ticketRef = useRef(null); // Referencia al contenedor del ticket
-//   const [dateTime, setDateTime] = useState({
-//     date: "",
-//     time: "",
-//   });
-
-//   useEffect(() => {
-//     const updateDateTime = () => {
-//       const now = new Date();
-//       setDateTime({
-//         date: now.toLocaleDateString(),
-//         time: now.toLocaleTimeString(),
-//       });
-//     };
-//     updateDateTime();
-//     const interval = setInterval(updateDateTime, 1000);
-//     return () => clearInterval(interval);
-//   }, []);
-
-//   const calculateTotal = () => {
-//     return items.reduce((total, item) => total + (item.price || 0) * item.quantity, 0);
-//   };
-
-//   const printTicket = () => {
-//     const printContent = ticketRef.current.innerHTML; // Obtiene solo el ticket
-//     const originalContent = document.body.innerHTML;
-
-//     document.body.innerHTML = printContent; // Reemplaza el contenido de la página con el ticket
-//     window.print();
-//     document.body.innerHTML = originalContent; // Restaura la página después de imprimir
-//     window.location.reload(); // Opcional: recarga la página para evitar problemas de estado
-//   };
 import React, { useState, useEffect, useRef } from "react";
 
 const Ticket = ({ businessName, address, phone, items }) => {
