@@ -3,11 +3,11 @@ import React, { useEffect, useState } from "react";
 import PatientConsultationCharges from "@/app/components/Patients/PatientPrescription/PatientConsultationCharges";
 import PatientDiagnostics from "@/app/components/Patients/PatientPrescription/PatientDiagnostics";
 import PatientLaboratoryAndImagingRequests from "@/app/components/Patients/PatientPrescription/PatientLaboratoryAndImagingRequests";
-// import PatientMedicalInstructions from "@/app/home/patients/PatientPrescription/PatientMedicalInstructions";
-// import PatientMedicalProcedures from "@/app/home/patients/PatientPrescription/PatientMedicalProcedures";
-// import PatientPrescription from "@/app/home/patients/PatientPrescription/PatientPrescription";
-// import PatientPrescriptionOfMedications from "@/app/home/patients/PatientPrescription/PatientPrescriptionOfMedications";
-// import PatientTreatmentPlan from "@/app/home/patients/PatientPrescription/PatientTreatmentPlan";
+import PatientMedicalInstructions from "@/app/components/Patients/PatientPrescription/PatientMedicalInstructions";
+import PatientMedicalProcedures from "@/app/components/Patients/PatientPrescription/PatientMedicalProcedures";
+import PatientPrescription from "@/app/components/Patients/PatientPrescription/PatientPrescription";
+import PatientPrescriptionOfMedications from "@/app/components/Patients/PatientPrescription/PatientPrescriptionOfMedications";
+import PatientTreatmentPlan from "@/app/components/Patients/PatientPrescription/PatientTreatmentPlan";
 
 export default function PatientPrescriptionPage() {
 
@@ -16,11 +16,11 @@ export default function PatientPrescriptionPage() {
       <PatientConsultationCharges />
       <PatientDiagnostics />
       <PatientLaboratoryAndImagingRequests />
-      {/* <PatientMedicalInstructions />
+      <PatientMedicalInstructions />
       <PatientMedicalProcedures />
       <PatientPrescription />
       <PatientPrescriptionOfMedications />
-      <PatientTreatmentPlan /> */}
+      <PatientTreatmentPlan />
     </div>
   );
 }

@@ -12,31 +12,31 @@ export default function PatientLaboratoryAndImagingRequests() {
   const [isExistingRecord, setIsExistingRecord] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setError(null);
-      try {
-        const response = await HttpRequestsPatientPrescription.obtenerSolicitudesLaboratorioEImagen(idPatient, idAppointment);
-        const data = response?.patientLaboratoryAndImagingRequests;
+useEffect(() => {
+  const fetchData = async () => {
+    setError(null);
+    try {
+      const response = await HttpRequestsPatientPrescription.obtenerSolicitudesLaboratorioEImagen(idPatient, idAppointment);
+      const data = response?.patientLaboratoryAndImaging;
 
-        if (data) {
-          setMedicalStudiesOrImagesTypes(data.medicalStudiesOrImagesTypes || "");
-          setComments(data.comments || "");
-          setIsExistingRecord(true);
-        } else {
-          setMedicalStudiesOrImagesTypes("");
-          setComments("");
-          setIsExistingRecord(false);
-        }
-      } catch (err) {
-        const errorMessage = typeof err === "string" ? err : err?.message || "Error al obtener los datos.";
-        setError(errorMessage);
+      if (data) {
+        setMedicalStudiesOrImagesTypes(data.medicalStudiesOrImagesTypes || "");
+        setComments(data.comments || "");
+        setIsExistingRecord(true);
+      } else {
+        setMedicalStudiesOrImagesTypes("");
+        setComments("");
         setIsExistingRecord(false);
       }
-    };
+    } catch (err) {
+      const errorMessage = typeof err === "string" ? err : err?.message || "Error al obtener los datos.";
+      setError(errorMessage);
+      setIsExistingRecord(false);
+    }
+  };
 
-    fetchData();
-  }, []);
+  fetchData();
+}, []);
 
   const handleSave = async (e) => {
     e.preventDefault();
