@@ -94,7 +94,7 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import HttpRequests from "@/app/utils/HttpRequests";
-import Ticket from "@/app/components/Ticket"; // Importa el componente Ticket
+import Ticket from "@/app/components/Ticket/Ticket"; // Importa el componente Ticket
 
 const InsertPatientAdvancementModal = ({ open, onClose, patientId }) => {
   const [concept, setConcept] = useState("");

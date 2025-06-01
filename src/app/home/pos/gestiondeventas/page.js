@@ -5,96 +5,63 @@ import RegistrarVenta from "@/app/components/ExpressPos/GestiondeVentas/Registra
 import EliminarVenta from "@/app/components/ExpressPos/GestiondeVentas/EliminarVenta";
 import VentasPorRango from "@/app/components/ExpressPos/GestiondeVentas/VentasPorRango";
 import DetalleDeVenta from "@/app/components/ExpressPos/GestiondeVentas/DetalleDeVenta";
-import { useRouter } from "next/navigation"; // Importa el hook para navegación
+import { useRouter } from "next/navigation";
+
+const tabs = [
+  { key: "registrar", label: "📝 Registrar Venta", color: "blue" },
+  { key: "eliminar", label: "🗑️ Eliminar Venta", color: "red" },
+  { key: "rango", label: "📆 Ventas por Rango", color: "green" },
+  { key: "detalle", label: "📋 Detalle de Venta", color: "yellow" },
+];
 
 const GestionarVentasPage = () => {
-  const [activeComponent, setActiveComponent] = useState("registrar");
-  const router = useRouter(); // Usa el hook para redirigir
+  const [activeTab, setActiveTab] = useState("registrar");
+  const router = useRouter();
 
   const renderComponent = () => {
-    switch (activeComponent) {
+    switch (activeTab) {
       case "registrar":
-        return (
-          <div className="relative p-6 bg-white rounded-lg shadow-lg border border-gray-200">
-            <RegistrarVenta />
-          </div>
-        );
+        return <RegistrarVenta />;
       case "eliminar":
-        return (
-          <div className="relative p-6 bg-white rounded-lg shadow-lg border border-gray-200">
-            <EliminarVenta />
-          </div>
-        );
+        return <EliminarVenta />;
       case "rango":
-        return (
-          <div className="relative p-6 bg-white rounded-lg shadow-lg border border-gray-200">
-            <VentasPorRango />
-          </div>
-        );
+        return <VentasPorRango />;
       case "detalle":
-        return (
-          <div className="relative p-6 bg-white rounded-lg shadow-lg border border-gray-200">
-            <DetalleDeVenta />
-          </div>
-        );
+        return <DetalleDeVenta />;
       default:
         return null;
     }
   };
 
   return (
-    <div className="p-4 bg-gradient-to-b from-gray-100 to-gray-200 min-h-screen">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex space-x-4">
-          <button
-            onClick={() => setActiveComponent("registrar")}
-            className={`px-4 py-2 rounded-lg text-white font-semibold ${
-              activeComponent === "registrar"
-                ? "bg-blue-600 hover:bg-blue-700"
-                : "bg-blue-500 hover:bg-blue-600"
-            }`}
-          >
-            Registrar Venta
-          </button>
-          <button
-            onClick={() => setActiveComponent("eliminar")}
-            className={`px-4 py-2 rounded-lg text-white font-semibold ${
-              activeComponent === "eliminar"
-                ? "bg-red-600 hover:bg-red-700"
-                : "bg-red-500 hover:bg-red-600"
-            }`}
-          >
-            Eliminar Venta
-          </button>
-          <button
-            onClick={() => setActiveComponent("rango")}
-            className={`px-4 py-2 rounded-lg text-white font-semibold ${
-              activeComponent === "rango"
-                ? "bg-green-600 hover:bg-green-700"
-                : "bg-green-500 hover:bg-green-600"
-            }`}
-          >
-            Ventas por Rango
-          </button>
-          <button
-            onClick={() => setActiveComponent("detalle")}
-            className={`px-4 py-2 rounded-lg text-white font-semibold ${
-              activeComponent === "detalle"
-                ? "bg-yellow-600 hover:bg-yellow-700"
-                : "bg-yellow-500 hover:bg-yellow-600"
-            }`}
-          >
-            Detalle de Venta
-          </button>
+    <div className="min-h-screen p-6 bg-gradient-to-b from-gray-100 to-gray-200">
+      <div className="flex flex-wrap items-center justify-between w-full gap-4 mx-auto mb-8 max-w-7xl">
+        <div className="flex flex-wrap gap-2">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`px-4 py-2 rounded-full text-white font-semibold transition ${
+                activeTab === tab.key
+                  ? `bg-${tab.color}-700`
+                  : `bg-${tab.color}-500 hover:bg-${tab.color}-600`
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
         <button
-          onClick={() => router.push("/home")} // Redirige al home
-          className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800"
+          onClick={() => router.push("/home")}
+          className="px-4 py-2 font-medium text-white bg-gray-800 rounded-full hover:bg-gray-900"
         >
-          Volver a Home
+          ⬅ Volver al Home
         </button>
       </div>
-      <div className="max-w-4xl mx-auto">{renderComponent()}</div>
+
+      <div className="w-full p-6 mx-auto bg-white shadow-lg max-w-7xl rounded-2xl">
+        {renderComponent()}
+      </div>
     </div>
   );
 };

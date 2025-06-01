@@ -2,29 +2,29 @@
 
 import React, { useEffect, useState } from "react";
 import MedicalExpressPosWebApi from "@/app/utils/HttpRequestsExpressPos";
+import { TrashIcon } from "@heroicons/react/24/solid";
+import { Typography } from "@material-tailwind/react";
 
 const EliminarProducto = () => {
   const [productos, setProductos] = useState([]);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState({ type: "", text: "" });
 
   const fetchProductos = async () => {
     try {
       const response = await MedicalExpressPosWebApi.obtenerTodosLosProductos();
       setProductos(response.productos || []);
     } catch (error) {
-      setMessage(`Error al cargar productos: ${error}`);
+      setMessage({ type: "error", text: `Error al cargar productos: ${error}` });
     }
   };
 
   const eliminarProducto = async (productoID) => {
     try {
       await MedicalExpressPosWebApi.eliminarProducto(productoID);
-      setMessage("Producto eliminado correctamente.");
-      setProductos((prev) =>
-        prev.filter((producto) => producto.productoID !== productoID)
-      );
+      setMessage({ type: "success", text: "✅ Producto eliminado correctamente." });
+      setProductos((prev) => prev.filter((p) => p.productoID !== productoID));
     } catch (error) {
-      setMessage(`Error al eliminar producto: ${error}`);
+      setMessage({ type: "error", text: `Error al eliminar producto: ${error}` });
     }
   };
 
@@ -33,77 +33,69 @@ const EliminarProducto = () => {
   }, []);
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="bg-red-500 text-white text-center py-3 rounded">
-        <h1 className="text-xl font-bold">Eliminar Producto</h1>
-      </div>
-      {message && (
-        <div className="bg-blue-100 text-blue-700 text-center py-2 mt-4 rounded">
-          <p>{message}</p>
+    <div className="min-h-screen p-6 bg-gradient-to-b from-gray-100 to-gray-200">
+      <div className="max-w-6xl mx-auto">
+        <div className="py-4 text-center text-white bg-red-600 shadow-lg rounded-t-xl">
+          <Typography variant="h5">Eliminar Producto</Typography>
         </div>
-      )}
-      <div className="overflow-x-auto mt-4">
-        <table className="min-w-full bg-white border border-gray-200 rounded-md">
-          <thead>
-            <tr className="bg-gray-100 border-b">
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                ID
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                Nombre
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                Precio
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                Stock
-              </th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">
-                Acción
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {productos.length > 0 ? (
-              productos.map((producto) => (
-                <tr
-                  key={producto.productoID}
-                  className="border-b hover:bg-gray-50"
-                >
-                  <td className="px-4 py-2 text-sm text-gray-700">
-                    {producto.productoID}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700">
-                    {producto.nombre}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700">
-                    {producto.precio?.toFixed(2) || "0.00"}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700">
-                    {producto.stock}
-                  </td>
-                  <td className="px-4 py-2 text-sm text-gray-700">
-                    <button
-                      className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                      onClick={() => eliminarProducto(producto.productoID)}
-                    >
-                      Eliminar
-                    </button>
+
+        {message.text && (
+          <div
+            className={`text-center py-2 rounded-b-xl mb-4 shadow-md font-medium ${
+              message.type === "success"
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
+
+        <div className="p-4 overflow-x-auto bg-white shadow-lg rounded-xl">
+          <table className="min-w-full text-sm text-left table-auto">
+            <thead className="font-semibold text-gray-700 bg-gray-100 border-b">
+              <tr>
+                <th className="px-4 py-3">ID</th>
+                <th className="px-4 py-3">Nombre</th>
+                <th className="px-4 py-3">Precio</th>
+                <th className="px-4 py-3">Stock</th>
+                <th className="px-4 py-3 text-center">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              {productos.length > 0 ? (
+                productos.map((producto) => (
+                  <tr
+                    key={producto.productoID}
+                    className="transition border-b hover:bg-gray-50"
+                  >
+                    <td className="px-4 py-2">{producto.productoID}</td>
+                    <td className="px-4 py-2">{producto.nombre}</td>
+                    <td className="px-4 py-2">
+                      ${parseFloat(producto.precio).toFixed(2)}
+                    </td>
+                    <td className="px-4 py-2">{producto.stock}</td>
+                    <td className="px-4 py-2 text-center">
+                      <button
+                        onClick={() => eliminarProducto(producto.productoID)}
+                        className="flex items-center justify-center gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-lg shadow-sm transition"
+                      >
+                        <TrashIcon className="w-4 h-4" />
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="py-6 text-center text-gray-600">
+                    No se encontraron productos.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="px-4 py-2 text-center text-sm text-gray-700"
-                >
-                  No se encontraron productos.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

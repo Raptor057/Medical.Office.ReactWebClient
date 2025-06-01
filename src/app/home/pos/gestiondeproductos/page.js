@@ -1,110 +1,65 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import AgregarProducto from "@/app/components/ExpressPos/GestiondeProductos/AgregarProducto";
-import ActualizarProducto from "@/app/components/ExpressPos/GestiondeProductos/ActualizarProducto";
-import EliminarProducto from "@/app/components/ExpressPos/GestiondeProductos/EliminarProducto";
-import ListarProductos from "@/app/components/ExpressPos/GestiondeProductos/ListarProductos";
-import { useRouter } from "next/navigation"; // Importa el hook para redirigir
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import AgregarProducto from '@/app/components/ExpressPos/GestiondeProductos/AgregarProducto';
+import ActualizarProducto from '@/app/components/ExpressPos/GestiondeProductos/ActualizarProducto';
+import EliminarProducto from '@/app/components/ExpressPos/GestiondeProductos/EliminarProducto';
+import ListarProductos from '@/app/components/ExpressPos/GestiondeProductos/ListarProductos';
+
+const tabs = [
+  { key: 'listar', label: '📋 Listar' },
+  { key: 'agregar', label: '➕ Agregar' },
+  // { key: 'actualizar', label: '🔄 Actualizar' },
+  { key: 'eliminar', label: '❌ Eliminar' },
+];
 
 const GestionDeProductosPage = () => {
-  const [activeComponent, setActiveComponent] = useState("listar");
-  const router = useRouter(); // Usa el hook para navegación
+  const [activeTab, setActiveTab] = useState('listar');
+  const router = useRouter();
 
-  const renderComponent = () => {
-    switch (activeComponent) {
-      case "agregar":
-        return (
-          <div className="relative p-6 bg-white rounded-lg shadow-lg border border-gray-200">
-            <button
-              onClick={() => setActiveComponent("listar")}
-              className="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-lg font-bold"
-            >
-              ✕
-            </button>
-            <AgregarProducto />
-          </div>
-        );
-      case "actualizar":
-        return (
-          <div className="relative p-6 bg-white rounded-lg shadow-lg border border-gray-200">
-            <button
-              onClick={() => setActiveComponent("listar")}
-              className="absolute top-2 right-2 text-gray-500 hover:text-red-500 text-lg font-bold"
-            >
-              ✕
-            </button>
-            <ActualizarProducto />
-          </div>
-        );
-      case "eliminar":
-        return (
-          <div className="p-6 bg-white rounded-lg shadow-lg border border-gray-200">
-            <EliminarProducto />
-          </div>
-        );
+  const renderTab = () => {
+    switch (activeTab) {
+      case 'agregar':
+        return <AgregarProducto />;
+      case 'actualizar':
+        return <ActualizarProducto />;
+      case 'eliminar':
+        return <EliminarProducto />;
       default:
-        return (
-          <div className="p-6 bg-white rounded-lg shadow-lg border border-gray-200">
-            <ListarProductos />
-          </div>
-        );
+        return <ListarProductos />;
     }
   };
 
   return (
-    <div className="p-4 bg-gradient-to-b from-gray-100 to-gray-200 min-h-screen">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex space-x-4">
-          <button
-            onClick={() => setActiveComponent("listar")}
-            className={`px-4 py-2 rounded-lg text-white font-semibold ${
-              activeComponent === "listar"
-                ? "bg-blue-600 hover:bg-blue-700"
-                : "bg-blue-500 hover:bg-blue-600"
-            }`}
-          >
-            Listar Productos
-          </button>
-          <button
-            onClick={() => setActiveComponent("agregar")}
-            className={`px-4 py-2 rounded-lg text-white font-semibold ${
-              activeComponent === "agregar"
-                ? "bg-green-600 hover:bg-green-700"
-                : "bg-green-500 hover:bg-green-600"
-            }`}
-          >
-            Agregar Producto
-          </button>
-          <button
-            onClick={() => setActiveComponent("actualizar")}
-            className={`px-4 py-2 rounded-lg text-white font-semibold ${
-              activeComponent === "actualizar"
-                ? "bg-yellow-600 hover:bg-yellow-700"
-                : "bg-yellow-500 hover:bg-yellow-600"
-            }`}
-          >
-            Actualizar Producto
-          </button>
-          <button
-            onClick={() => setActiveComponent("eliminar")}
-            className={`px-4 py-2 rounded-lg text-white font-semibold ${
-              activeComponent === "eliminar"
-                ? "bg-red-600 hover:bg-red-700"
-                : "bg-red-500 hover:bg-red-600"
-            }`}
-          >
-            Eliminar Producto
-          </button>
+    <div className="flex flex-col min-h-screen p-6 bg-gradient-to-br from-gray-100 to-gray-300">
+      <div className="flex items-center justify-between w-full mx-auto mb-8 max-w-7xl">
+        <div className="flex flex-wrap gap-2">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`px-4 py-2 text-sm sm:text-base rounded-full transition font-semibold shadow-md ${
+                activeTab === tab.key
+                  ? 'bg-blue-700 text-white'
+                  : 'bg-white text-gray-700 hover:bg-blue-100'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
         <button
-          onClick={() => router.push("/home")} // Redirige al home
-          className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800"
+          onClick={() => router.push('/home')}
+          className="px-4 py-2 text-white bg-gray-800 rounded-full shadow-md hover:bg-gray-900"
         >
-          Volver a Home
+          ⬅ Volver al Home
         </button>
       </div>
-      <div className="max-w-4xl mx-auto">{renderComponent()}</div>
+
+      <div className="flex-1 w-full p-6 mx-auto overflow-auto bg-white shadow-lg max-w-7xl rounded-2xl">
+        {renderTab()}
+      </div>
     </div>
   );
 };

@@ -10,37 +10,38 @@ import {
   Input,
   Typography,
 } from "@material-tailwind/react";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import MedicalExpressPosWebApi from "@/app/utils/HttpRequestsExpressPos";
 
 const ActualizarProducto = ({ productoId, onUpdateSuccess }) => {
-  const [formData, setFormData] = useState({
-    nombre: "",
-    precio: "",
-    stock: "",
-  });
+  const [formData, setFormData] = useState({ nombre: "", precio: "", stock: "" });
   const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
 
   useEffect(() => {
-    const fetchProducto = async () => {
-      try {
-        setLoading(true);
-        const producto = await MedicalExpressPosWebApi.obtenerProductoPorId(productoId);
-        setFormData({
-          nombre: producto.nombre,
-          precio: producto.precio,
-          stock: producto.stock,
-        });
-        setLoading(false);
-      } catch (err) {
-        setError("Error al cargar el producto.");
-        setLoading(false);
-      }
-    };
+const fetchProducto = async () => {
+  try {
+    setLoading(true);
+    const response = await MedicalExpressPosWebApi.obtenerProductoPorId(productoId);
+    const producto = response.producto; // ✅ CORRECTO
 
-    if (productoId) {
-      fetchProducto();
-    }
+    setFormData({
+      nombre: producto.nombre ?? "",
+      precio: producto.precio ?? 0,
+      stock: producto.stock ?? 0,
+    });
+  } catch (err) {
+    setError("Error al cargar el producto.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
+    if (productoId) fetchProducto();
   }, [productoId]);
 
   const handleInputChange = (e) => {
@@ -51,81 +52,99 @@ const ActualizarProducto = ({ productoId, onUpdateSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setSuccessMsg(null);
+
+    if (parseFloat(formData.precio) < 0 || parseInt(formData.stock) < 0) {
+      setError("El precio y el stock no pueden ser negativos.");
+      return;
+    }
 
     try {
-      setLoading(true);
+      setSubmitting(true);
       await MedicalExpressPosWebApi.actualizarProducto(productoId, {
-        nombre: formData.nombre,
+        nombre: formData.nombre.trim(),
         precio: parseFloat(formData.precio),
         stock: parseInt(formData.stock, 10),
       });
-      setLoading(false);
+      setSuccessMsg("✅ Producto actualizado correctamente.");
       if (onUpdateSuccess) onUpdateSuccess();
     } catch (err) {
       setError("Error al actualizar el producto.");
-      setLoading(false);
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <Card className="w-full max-w-xl mx-auto">
-      <CardHeader color="blue" className="text-center">
-        <Typography variant="h5" color="white">
-          Actualizar Producto
-        </Typography>
-      </CardHeader>
-      <CardBody className="space-y-6">
-        {loading && <Typography color="blue">Cargando...</Typography>}
-        {error && <Typography color="red">{error}</Typography>}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <Input
-              label="Nombre"
-              id="nombre"
-              name="nombre"
-              value={formData.nombre}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <Input
-              label="Precio"
-              type="number"
-              id="precio"
-              name="precio"
-              value={formData.precio}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <div>
-            <Input
-              label="Stock"
-              type="number"
-              id="stock"
-              name="stock"
-              value={formData.stock}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-          <Button
-            type="submit"
-            color="blue"
-            fullWidth
-            disabled={loading}
-          >
-            {loading ? "Actualizando..." : "Actualizar Producto"}
-          </Button>
-        </form>
-      </CardBody>
-      <CardFooter>
-        <Typography variant="small" color="gray" className="text-center">
-          Asegúrese de que los campos sean correctos antes de enviar.
-        </Typography>
-      </CardFooter>
-    </Card>
+    <div className="flex items-center justify-center min-h-screen p-6 bg-gradient-to-b from-gray-100 to-gray-300">
+      <Card className="w-full max-w-3xl shadow-lg rounded-2xl">
+        <CardHeader floated={false} shadow={false} className="py-4 text-center text-white bg-blue-600 rounded-t-2xl">
+          <Typography variant="h5">Actualizar Producto</Typography>
+        </CardHeader>
+
+        <CardBody className="flex flex-col gap-6">
+          {loading && (
+            <div className="font-medium text-center text-blue-700">Cargando información del producto...</div>
+          )}
+
+          {error && (
+            <div className="px-4 py-2 font-medium text-center text-red-800 bg-red-100 rounded-md">
+              {error}
+            </div>
+          )}
+
+          {successMsg && (
+            <div className="px-4 py-2 font-medium text-center text-green-800 bg-green-100 rounded-md">
+              {successMsg}
+            </div>
+          )}
+
+          {!loading && (
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <Input
+                label="Nombre del Producto"
+                name="nombre"
+                value={formData.nombre}
+                onChange={handleInputChange}
+                required
+              />
+              <Input
+                label="Precio"
+                name="precio"
+                type="number"
+                value={formData.precio}
+                onChange={handleInputChange}
+                required
+              />
+              <Input
+                label="Stock"
+                name="stock"
+                type="number"
+                value={formData.stock}
+                onChange={handleInputChange}
+                required
+              />
+              <Button
+                type="submit"
+                color="blue"
+                fullWidth
+                disabled={submitting}
+                className="flex items-center justify-center gap-2 font-semibold"
+              >
+                {submitting && <ArrowPathIcon className="w-5 h-5 animate-spin" />}
+                {submitting ? "Actualizando..." : "Actualizar Producto"}
+              </Button>
+            </form>
+          )}
+        </CardBody>
+
+        <CardFooter className="text-center">
+          <Typography variant="small" color="gray">
+            Asegúrese de que los datos sean correctos antes de enviar.
+          </Typography>
+        </CardFooter>
+      </Card>
+    </div>
   );
 };
 
