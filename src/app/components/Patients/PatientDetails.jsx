@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import InsertLoadFile from '@/app/components/Forms/Posts/InsertLoadFile';
 import PatientFilesList from '@/app/components/Forms/Gets/PatientFilesList';
-// Asegúrate de tener la importación de HttpRequests y del ícono TrashIcon
 import HttpRequests from "@/app/utils/HttpRequests";
 import { TrashIcon } from '@heroicons/react/24/outline';
 
@@ -22,7 +21,7 @@ export function PatientDetails({ patientData, onEdit, onInsert }) {
   const searchParams = useSearchParams();
   const patientId = parseInt(searchParams.get("id")) || 0;
 
-  
+
   if (!patientData) {
     return (
       <div className="flex items-center justify-center min-h-screen">

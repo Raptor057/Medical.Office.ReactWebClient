@@ -1,8 +1,17 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests";
-import { Typography, Dialog, DialogHeader, DialogBody, DialogFooter, Button } from "@material-tailwind/react";
+import {
+  Typography,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+  Button,
+} from "@material-tailwind/react";
 import { motion } from "framer-motion";
 
 export default function CalendarDayView() {
@@ -11,136 +20,134 @@ export default function CalendarDayView() {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
 
   useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await MedicalOfficeWebApi.getMedicalAppointmentCalendar(0, 0);
+        setAppointments(response?.calendar || []);
+      } catch (err) {
+        console.error("Error al obtener las citas:", err);
+      }
+    };
     fetchAppointments();
   }, [currentDate]);
 
-  const fetchAppointments = async () => {
-    try {
-      const response = await MedicalOfficeWebApi.getMedicalAppointmentCalendar(0, 0);
-      setAppointments(response?.calendar || []);
-    } catch (err) {
-      console.error("Error al obtener las citas:", err);
-    }
-  };
-
-  const renderAppointmentsForDay = () =>
+  const getAppointmentsForDay = () =>
     appointments.filter(
-      (appointment) =>
-        new Date(appointment.appointmentDateTime).toDateString() ===
-        currentDate.toDateString()
+      (a) => new Date(a.appointmentDateTime).toDateString() === currentDate.toDateString()
     );
 
-  const handlePreviousDay = () => {
+  const changeDay = (dir) => {
     const newDate = new Date(currentDate);
-    newDate.setDate(currentDate.getDate() - 1);
+    newDate.setDate(newDate.getDate() + dir);
     setCurrentDate(newDate);
   };
 
-  const handleNextDay = () => {
-    const newDate = new Date(currentDate);
-    newDate.setDate(currentDate.getDate() + 1);
-    setCurrentDate(newDate);
-  };
+  const router = useRouter();
+
+const handleStartAppointment = () => {
+  if (!selectedAppointment) return;
+
+  const { id, idPatient } = selectedAppointment;
+  router.push(`/home/patients/patientprescription?id=${id}&idPatient=${idPatient}`);
+};
+
 
   return (
-    <div className="p-6 bg-gray-50">
-      {/* Navegación del día */}
-      <motion.div layout className="flex justify-between mb-4 items-center">
-        <Button
-          onClick={handlePreviousDay}
-          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-        >
-          Día Anterior
-        </Button>
-        <Typography variant="h5" color="blue-gray" className="font-bold">
-          {currentDate.toLocaleDateString("es-MX", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </Typography>
-        <Button
-          onClick={handleNextDay}
-          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-        >
-          Día Siguiente
-        </Button>
-      </motion.div>
-
-      {/* Citas del día */}
-      <motion.div layout className="p-4 border rounded-lg bg-white shadow-sm">
-        {renderAppointmentsForDay().map((appointment, index) => (
-          <motion.div
-            key={index}
-            whileHover={{ scale: 1.05 }}
-            className={`p-4 mb-2 rounded-lg cursor-pointer shadow-md transition-shadow ${
-              appointment.appointmentStatus === "Activa" ? "bg-green-100" : "bg-red-100"
-            }`}
-            onClick={() => setSelectedAppointment(appointment)}
-          >
-            <Typography variant="h6" color="blue-gray" className="font-bold">
-              {appointment.reasonForVisit}
-            </Typography>
-            <Typography variant="small" color="gray" className="opacity-70">
-              {`${new Date(appointment.appointmentDateTime).toLocaleTimeString("es-MX", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })} - ${new Date(appointment.endOfAppointmentDateTime).toLocaleTimeString("es-MX", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}`}
-            </Typography>
-            <Typography variant="small" color="gray">
-              Paciente: {appointment.patientName || "N/A"}
-            </Typography>
-            <Typography variant="small" color="gray">
-              Doctor: {appointment.doctorName || "N/A"}
-            </Typography>
-          </motion.div>
-        ))}
-        {renderAppointmentsForDay().length === 0 && (
-          <Typography variant="small" color="gray" className="text-center">
-            No hay citas para este día.
+    <div className="w-full px-4 py-6 bg-gray-100">
+      <div className="max-w-3xl p-4 mx-auto bg-white rounded-lg shadow-lg">
+        <motion.div layout className="flex flex-col items-center justify-between gap-4 mb-4 sm:flex-row">
+          <Button onClick={() => changeDay(-1)} variant="outlined">
+            Día Anterior
+          </Button>
+          <Typography variant="h5" className="font-bold text-center text-blue-gray-800">
+            {currentDate.toLocaleDateString("es-MX", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
           </Typography>
-        )}
-      </motion.div>
+          <Button onClick={() => changeDay(1)} variant="outlined">
+            Día Siguiente
+          </Button>
+        </motion.div>
 
-      {/* Modal para detalles de la cita */}
-      {selectedAppointment && (
-        <Dialog open={!!selectedAppointment} handler={() => setSelectedAppointment(null)} size="lg">
-          <DialogHeader>
-            <Typography variant="h5" color="blue-gray">
-              Detalles de la Cita
+        <motion.div layout className="p-4 bg-white border rounded-lg shadow-sm">
+          {getAppointmentsForDay().length > 0 ? (
+            getAppointmentsForDay().map((appt, idx) => (
+              <motion.div
+                key={idx}
+                whileHover={{ scale: 1.02 }}
+                className={`p-4 mb-3 rounded-lg shadow-md transition cursor-pointer border-l-4 ${
+                  appt.appointmentStatus === "Activa" ? "border-green-500 bg-green-50" : "border-red-500 bg-red-50"
+                }`}
+                onClick={() => setSelectedAppointment(appt)}
+              >
+                <Typography variant="h6" className="font-semibold text-blue-gray-800">
+                  {appt.reasonForVisit}
+                </Typography>
+                <Typography variant="small" className="text-gray-600">
+                  {new Date(appt.appointmentDateTime).toLocaleTimeString("es-MX", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })} - {new Date(appt.endOfAppointmentDateTime).toLocaleTimeString("es-MX", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </Typography>
+                <Typography variant="small" className="text-gray-600">
+                  Paciente: {appt.patientName || "N/A"}
+                </Typography>
+                <Typography variant="small" className="text-gray-600">
+                  Doctor: {appt.doctorName || "N/A"}
+                </Typography>
+              </motion.div>
+            ))
+          ) : (
+            <Typography variant="small" color="gray" className="text-center">
+              No hay citas para este día.
             </Typography>
-          </DialogHeader>
-          <DialogBody>
-            <Typography variant="small" color="gray">
-              <strong>Razón:</strong> {selectedAppointment.reasonForVisit}
-            </Typography>
-            <Typography variant="small" color="gray">
-              <strong>Paciente:</strong> {selectedAppointment.patientName || "N/A"}
-            </Typography>
-            <Typography variant="small" color="gray">
-              <strong>Doctor:</strong> {selectedAppointment.doctorName || "N/A"}
-            </Typography>
-            <Typography variant="small" color="gray">
-              <strong>Fecha:</strong> {new Date(selectedAppointment.appointmentDateTime).toLocaleString("es-MX")}
-            </Typography>
-            <Typography variant="small" color="gray">
-              <strong>Estado:</strong> {selectedAppointment.appointmentStatus}
-            </Typography>
-            <Typography variant="small" color="gray">
-              <strong>Notas:</strong> {selectedAppointment.notes || "N/A"}
-            </Typography>
-          </DialogBody>
-          <DialogFooter>
+          )}
+        </motion.div>
+
+        {selectedAppointment && (
+          <Dialog open={!!selectedAppointment} handler={() => setSelectedAppointment(null)} size="lg">
+            <DialogHeader>
+              <Typography variant="h5" color="blue-gray">
+                Detalles de la Cita
+              </Typography>
+            </DialogHeader>
+            <DialogBody divider>
+              <Typography variant="h6">
+                <strong>Razón:</strong> {selectedAppointment.reasonForVisit}
+              </Typography>
+              <Typography>
+                <strong>Paciente:</strong> {selectedAppointment.patientName || "N/A"}
+              </Typography>
+              <Typography>
+                <strong>Doctor:</strong> {selectedAppointment.doctorName || "N/A"}
+              </Typography>
+              <Typography>
+                <strong>Fecha:</strong> {new Date(selectedAppointment.appointmentDateTime).toLocaleString("es-MX")}
+              </Typography>
+              <Typography>
+                <strong>Estado:</strong> {selectedAppointment.appointmentStatus}
+              </Typography>
+              <Typography>
+                <strong>Notas:</strong> {selectedAppointment.notes || "Sin notas"}
+              </Typography>
+            </DialogBody>
+          <DialogFooter className="flex justify-between w-full">
+            <Button color="blue" onClick={handleStartAppointment}>
+              Iniciar cita
+            </Button>
             <Button color="red" onClick={() => setSelectedAppointment(null)}>
               Cerrar
             </Button>
           </DialogFooter>
-        </Dialog>
-      )}
+          </Dialog>
+        )}
+      </div>
     </div>
   );
 }
