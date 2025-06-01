@@ -29,17 +29,15 @@ export default function AutoCorteCaja() {
       const fechaInicio = obtenerFechaHoyUTC(true);
       const fechaFin = obtenerFechaHoyUTC(false);
 
-      console.log("Verificando corte con fechas (UTC):", { fechaInicio, fechaFin });
-
       const response = await MedicalExpressPosWebApi.obtenerCortesPorRango(
         fechaInicio,
         fechaFin
       );
 
-      if (response.isSuccess && response.data && response.data.length > 0) {
+      if (response?.isSuccess && response.data?.length > 0) {
         setCorteExistente(true);
       } else {
-        obtenerVentasDelDia();
+        await obtenerVentasDelDia();
       }
     } catch (error) {
       console.error("Error al verificar el corte del día:", error);
@@ -50,35 +48,20 @@ export default function AutoCorteCaja() {
   };
 
   const obtenerVentasDelDia = async () => {
-    setLoading(true);
     try {
       const fechaInicio = obtenerFechaHoyUTC(true);
       const fechaFin = obtenerFechaHoyUTC(false);
-
-      console.log("Buscando ventas con fechas (UTC):", { fechaInicio, fechaFin });
 
       const response = await MedicalExpressPosWebApi.obtenerVentasPorRango(
         fechaInicio,
         fechaFin
       );
 
-      console.log("Respuesta de ventas:", response);
-
-      if (response.isSuccess && response.ventas) {
-        const ventas = response.ventas;
-
-        if (ventas.length === 0) {
-          console.log("No se encontraron ventas.");
-        }
-
-        // Cálculo del total vendido y total de ventas
-        const total = ventas.reduce((acumulado, venta) => acumulado + venta.total, 0);
-
-        setVentasDia(ventas);
+      if (response?.ventas?.length > 0) {
+        const total = response.ventas.reduce((acc, venta) => acc + venta.total, 0);
+        setVentasDia(response.ventas);
         setTotalVendido(total);
-        setTotalVentas(ventas.length);
-
-        console.log("Ventas procesadas:", { total, ventas });
+        setTotalVentas(response.ventas.length);
       } else {
         setVentasDia([]);
         setTotalVendido(0);
@@ -88,28 +71,25 @@ export default function AutoCorteCaja() {
     } catch (error) {
       console.error("Error al obtener las ventas del día:", error);
       setMensaje("Error al obtener las ventas del día.");
-    } finally {
-      setLoading(false);
     }
   };
 
   const generarCorte = async () => {
     try {
-      const fechaHoraActual = new Date().toISOString(); // Fecha actual en UTC
+      const fechaHoraActual = new Date().toISOString();
       const corteData = {
         FechaHora: fechaHoraActual,
         TotalVendido: totalVendido,
         TotalVentas: totalVentas,
       };
 
-      console.log("Datos del corte a enviar:", corteData);
-
       const response = await MedicalExpressPosWebApi.registrarCorte(corteData);
-      if (response.isSuccess) {
+      if (response?.isSuccess === true) {
         setMensaje("Corte generado exitosamente.");
         setCorteExistente(true);
       } else {
-        setMensaje("Error al generar el corte: " + response.message);
+        const msg = response?.message ?? JSON.stringify(response?.data ?? "Respuesta inesperada del servidor.");
+        setMensaje("Error al generar el corte: " + msg);
       }
     } catch (error) {
       console.error("Error al generar el corte:", error);
@@ -118,28 +98,37 @@ export default function AutoCorteCaja() {
   };
 
   return (
-    <div className="p-6 bg-white shadow-md rounded-md">
-      <h1 className="text-2xl font-bold mb-4">Generar Corte Automático</h1>
-      {loading && <p>Cargando datos...</p>}
+    <div className="container px-4 py-6 mx-auto">
+      <div className="py-3 text-center text-white bg-blue-500 rounded">
+        <h1 className="text-xl font-bold">Generar Corte Automático</h1>
+      </div>
+
+      {loading && <p className="mt-4 text-center text-gray-600">Cargando datos...</p>}
+
       {corteExistente ? (
-        <p className="text-red-500">Ya existe un corte registrado para el día de hoy.</p>
+        <p className="mt-4 text-center text-red-600">Ya existe un corte registrado para el día de hoy.</p>
       ) : (
-        <div>
-          <p className="mb-4">
+        <div className="p-4 mt-6 bg-white border rounded shadow-md">
+          <p className="mb-2 text-gray-700">
             Total Vendido: <strong>${totalVendido.toFixed(2)}</strong>
           </p>
-          <p className="mb-4">
+          <p className="mb-4 text-gray-700">
             Total de Ventas: <strong>{totalVentas}</strong>
           </p>
           <button
             onClick={generarCorte}
-            className="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+            className="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700"
           >
             Generar Corte
           </button>
         </div>
       )}
-      {mensaje && <p className="mt-4 text-green-500">{mensaje}</p>}
+
+      {mensaje && (
+        <div className="py-2 mt-4 text-sm text-center text-blue-700 bg-blue-100 rounded">
+          {mensaje}
+        </div>
+      )}
     </div>
   );
 }

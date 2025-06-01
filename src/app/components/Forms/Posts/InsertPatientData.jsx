@@ -1,7 +1,17 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import { Button, Input, Textarea, Typography } from "@material-tailwind/react";
+import {
+  Button,
+  Input,
+  Textarea,
+  Typography,
+  Tabs,
+  TabsHeader,
+  TabsBody,
+  Tab,
+  TabPanel
+} from "@material-tailwind/react";
 import Link from "next/link";
 import { HomeIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests";
@@ -19,6 +29,7 @@ export default function InsertPatientDataForm() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [genders, setGenders] = useState([]);
+  const [activeTab, setActiveTab] = useState("general");
 
   useEffect(() => {
     const fetchGenders = async () => {
@@ -60,13 +71,16 @@ export default function InsertPatientDataForm() {
     }
   };
 
-  return (
-    <form
-    onSubmit={handleSubmit}
-    className="flex flex-col w-full h-full p-6 mx-auto space-y-10 bg-white rounded-lg shadow-md max-w-7xl">
+  const tabs = [
+    { label: "General", value: "general" },
+    { label: "Contacto", value: "contact" },
+    { label: "Seguro", value: "insurance" },
+    { label: "Notas y Foto", value: "notes" }
+  ];
 
-      {/* Encabezado */}
-      <div className="flex items-center justify-between">
+  return (
+    <form onSubmit={handleSubmit} className="w-full h-full max-w-5xl p-6 mx-auto bg-white rounded-lg shadow-md">
+      <div className="flex items-center justify-between mb-6">
         <Link href="/home">
           <Button className="flex items-center gap-2" color="blue-gray">
             <HomeIcon className="w-5 h-5" /> Inicio
@@ -77,78 +91,67 @@ export default function InsertPatientDataForm() {
         </Typography>
       </div>
 
-      {/* Información General */}
-      <section>
-        <Typography variant="h5" className="mb-4 font-semibold text-blue-gray-700">Información General</Typography>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Input label="Nombre" name="name" value={formData.name} onChange={handleChange} required />
-          <Input label="Apellido Paterno" name="fathersSurname" value={formData.fathersSurname} onChange={handleChange} required />
-          <Input label="Apellido Materno" name="mothersSurname" value={formData.mothersSurname} onChange={handleChange} />
-          <Input type="date" label="Fecha de Nacimiento" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />
-          {/* Select Género */}
-          <div className="relative">
-            <label htmlFor="gender" className="block mb-1 text-sm font-medium text-gray-700">Género</label>
-            <select
-              id="gender"
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              required
-              className="block w-full py-2 pl-3 pr-10 text-base text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
-            >
-              <option value="">Seleccione género</option>
-              {genders.map((g, i) => (
-                <option key={i} value={g.gender.trim()}>{g.gender.trim()}</option>
-              ))}
-            </select>
-            <ChevronDownIcon className="absolute w-5 h-5 text-gray-400 pointer-events-none top-9 right-3" />
-          </div>
-        </div>
-      </section>
+      <Tabs value={activeTab} className="mt-6">
+        <TabsHeader>
+          {tabs.map(({ label, value }) => (
+            <Tab key={value} value={value} onClick={() => setActiveTab(value)}>
+              {label}
+            </Tab>
+          ))}
+        </TabsHeader>
+        <TabsBody>
+          <TabPanel value="general">
+            <div className="grid gap-4 md:grid-cols-2">
+              <Input label="Nombre" name="name" value={formData.name} onChange={handleChange} required />
+              <Input label="Apellido Paterno" name="fathersSurname" value={formData.fathersSurname} onChange={handleChange} required />
+              <Input label="Apellido Materno" name="mothersSurname" value={formData.mothersSurname} onChange={handleChange} />
+              <Input type="date" label="Fecha de Nacimiento" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />
+              <div className="relative">
+                <label htmlFor="gender" className="block mb-1 text-sm font-medium text-gray-700">Género</label>
+                <select id="gender" name="gender" value={formData.gender} onChange={handleChange} required className="block w-full py-2 pl-3 pr-10 text-base text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm">
+                  <option value="">Seleccione género</option>
+                  {genders.map((g, i) => (<option key={i} value={g.gender.trim()}>{g.gender.trim()}</option>))}
+                </select>
+                <ChevronDownIcon className="absolute w-5 h-5 text-gray-400 pointer-events-none top-9 right-3" />
+              </div>
+            </div>
+          </TabPanel>
 
-      {/* Contacto */}
-      <section>
-        <Typography variant="h5" className="mb-4 font-semibold text-blue-gray-700">Información de Contacto</Typography>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Input label="Teléfono" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required />
-          <Input label="Correo Electrónico" type="email" name="email" value={formData.email} onChange={handleChange} />
-          <Input label="Dirección" name="address" value={formData.address} onChange={handleChange} />
-          <Input label="Ciudad" name="city" value={formData.city} onChange={handleChange} />
-          <Input label="Estado" name="state" value={formData.state} onChange={handleChange} />
-          <Input label="Código Postal" name="zipCode" value={formData.zipCode} onChange={handleChange} />
-        </div>
-      </section>
+          <TabPanel value="contact">
+            <div className="grid gap-4 md:grid-cols-2">
+              <Input label="Teléfono" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required />
+              <Input label="Correo Electrónico" type="email" name="email" value={formData.email} onChange={handleChange} />
+              <Input label="Dirección" name="address" value={formData.address} onChange={handleChange} />
+              <Input label="Ciudad" name="city" value={formData.city} onChange={handleChange} />
+              <Input label="Estado" name="state" value={formData.state} onChange={handleChange} />
+              <Input label="Código Postal" name="zipCode" value={formData.zipCode} onChange={handleChange} />
+            </div>
+          </TabPanel>
 
-      {/* Seguro */}
-      <section>
-        <Typography variant="h5" className="mb-4 font-semibold text-blue-gray-700">Información del Seguro</Typography>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Input label="Proveedor de Seguro" name="insuranceProvider" value={formData.insuranceProvider} onChange={handleChange} />
-          <Input label="Número de Póliza" name="policyNumber" value={formData.policyNumber} onChange={handleChange} />
-          <Input label="Tipo de Sangre" name="bloodType" value={formData.bloodType} onChange={handleChange} />
-        </div>
-      </section>
+          <TabPanel value="insurance">
+            <div className="grid gap-4 md:grid-cols-2">
+              <Input label="Proveedor de Seguro" name="insuranceProvider" value={formData.insuranceProvider} onChange={handleChange} />
+              <Input label="Número de Póliza" name="policyNumber" value={formData.policyNumber} onChange={handleChange} />
+              <Input label="Tipo de Sangre" name="bloodType" value={formData.bloodType} onChange={handleChange} />
+            </div>
+          </TabPanel>
 
-      {/* Notas y Foto */}
-      <section>
-        <Typography variant="h5" className="mb-4 font-semibold text-blue-gray-700">Notas y Foto</Typography>
-        <div className="grid gap-4">
-          <Textarea label="Notas Internas" name="internalNotes" value={formData.internalNotes} onChange={handleChange} />
-          <div>
-            <label className="block mb-1 text-sm font-medium text-gray-700">Foto del Paciente (máx 25MB)</label>
-            <Input type="file" accept="image/*" onChange={handleFileChange} />
-          </div>
-        </div>
-      </section>
+          <TabPanel value="notes">
+            <Textarea label="Notas Internas" name="internalNotes" value={formData.internalNotes} onChange={handleChange} />
+            <div className="mt-4">
+              <label className="block mb-1 text-sm font-medium text-gray-700">Foto del Paciente (máx 25MB)</label>
+              <Input type="file" accept="image/*" onChange={handleFileChange} />
+            </div>
+          </TabPanel>
+        </TabsBody>
+      </Tabs>
 
-      {/* Botón de acción */}
-      <div className="flex justify-end">
+      <div className="flex justify-end mt-6">
         <Button type="submit" color="blue" disabled={loading}>
           {loading ? "Guardando..." : "Guardar Paciente"}
         </Button>
       </div>
 
-      {/* Mensajes */}
       {success && <Typography color="green" className="text-center">¡Paciente registrado con éxito!</Typography>}
       {error && <Typography color="red" className="text-center">{error}</Typography>}
     </form>

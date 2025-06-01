@@ -1,67 +1,53 @@
 'use client';
 
 import React, { useState } from 'react';
+import { Typography, Button, Tab, TabPanel, Tabs, TabsHeader, TabsBody } from '@material-tailwind/react';
 import { useRouter } from 'next/navigation';
 import AgregarProducto from '@/app/components/ExpressPos/GestiondeProductos/AgregarProducto';
 import ActualizarProducto from '@/app/components/ExpressPos/GestiondeProductos/ActualizarProducto';
 import EliminarProducto from '@/app/components/ExpressPos/GestiondeProductos/EliminarProducto';
 import ListarProductos from '@/app/components/ExpressPos/GestiondeProductos/ListarProductos';
 
-const tabs = [
-  { key: 'listar', label: '📋 Listar' },
-  { key: 'agregar', label: '➕ Agregar' },
-  // { key: 'actualizar', label: '🔄 Actualizar' },
-  { key: 'eliminar', label: '❌ Eliminar' },
-];
-
-const GestionDeProductosPage = () => {
+export default function GestionDeProductosPage() {
   const [activeTab, setActiveTab] = useState('listar');
   const router = useRouter();
 
-  const renderTab = () => {
-    switch (activeTab) {
-      case 'agregar':
-        return <AgregarProducto />;
-      case 'actualizar':
-        return <ActualizarProducto />;
-      case 'eliminar':
-        return <EliminarProducto />;
-      default:
-        return <ListarProductos />;
-    }
-  };
-
   return (
-    <div className="flex flex-col min-h-screen p-6 bg-gradient-to-br from-gray-100 to-gray-300">
-      <div className="flex items-center justify-between w-full mx-auto mb-8 max-w-7xl">
-        <div className="flex flex-wrap gap-2">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`px-4 py-2 text-sm sm:text-base rounded-full transition font-semibold shadow-md ${
-                activeTab === tab.key
-                  ? 'bg-blue-700 text-white'
-                  : 'bg-white text-gray-700 hover:bg-blue-100'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-        <button
-          onClick={() => router.push('/home')}
-          className="px-4 py-2 text-white bg-gray-800 rounded-full shadow-md hover:bg-gray-900"
-        >
+    <div className="w-full min-h-screen p-6 space-y-6 bg-gray-100">
+      <div className="flex items-center justify-between">
+        <Typography variant="h4" color="blue-gray" className="font-bold">
+          Gestión de Productos
+        </Typography>
+        <Button onClick={() => router.push('/home')} className="flex items-center gap-2 bg-gray-800 hover:bg-gray-900">
           ⬅ Volver al Home
-        </button>
+        </Button>
       </div>
 
-      <div className="flex-1 w-full p-6 mx-auto overflow-auto bg-white shadow-lg max-w-7xl rounded-2xl">
-        {renderTab()}
-      </div>
+      <Tabs value={activeTab} className="bg-white rounded-lg shadow-lg">
+        <TabsHeader>
+          <Tab value="listar" onClick={() => setActiveTab('listar')}>
+            📋 Listar
+          </Tab>
+          <Tab value="agregar" onClick={() => setActiveTab('agregar')}>
+            ➕ Agregar
+          </Tab>
+          <Tab value="eliminar" onClick={() => setActiveTab('eliminar')}>
+            ❌ Eliminar
+          </Tab>
+        </TabsHeader>
+
+        <TabsBody>
+          <TabPanel value="listar">
+            <ListarProductos />
+          </TabPanel>
+          <TabPanel value="agregar">
+            <AgregarProducto />
+          </TabPanel>
+          <TabPanel value="eliminar">
+            <EliminarProducto />
+          </TabPanel>
+        </TabsBody>
+      </Tabs>
     </div>
   );
-};
-
-export default GestionDeProductosPage;
+}

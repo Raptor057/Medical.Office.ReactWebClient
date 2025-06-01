@@ -8,24 +8,22 @@ import {
   Button,
   Input,
   Switch,
-  Select,
-  Option,
 } from "@material-tailwind/react";
+import { ChevronDownIcon } from "@heroicons/react/16/solid";
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests";
 
 export default function UpdateLaboralDaysForm() {
-  const [workingHours, setWorkingHours] = useState([]); // Lista de horarios laborales
-  const [selectedDay, setSelectedDay] = useState(null); // Día seleccionado para actualizar
+  const [workingHours, setWorkingHours] = useState([]);
+  const [selectedDay, setSelectedDay] = useState(null);
   const [formData, setFormData] = useState({
     laboral: true,
     openingTime: "",
     closingTime: "",
   });
-  const [loading, setLoading] = useState(false); // Estado de carga
-  const [error, setError] = useState(null); // Estado para errores
-  const [success, setSuccess] = useState(false); // Estado de éxito
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
 
-  // Obtener horarios laborales
   useEffect(() => {
     const fetchWorkingHours = async () => {
       setLoading(true);
@@ -35,7 +33,7 @@ export default function UpdateLaboralDaysForm() {
         const workingHoursDto = configData.allConfigurations?.weeklyWorkingHours?.workingHoursDto || [];
         setWorkingHours(workingHoursDto);
       } catch (err) {
-        setError(err); // Capturar mensaje legible
+        setError(err);
       } finally {
         setLoading(false);
       }
@@ -44,8 +42,8 @@ export default function UpdateLaboralDaysForm() {
     fetchWorkingHours();
   }, []);
 
-  // Manejo de selección de día
-  const handleDayChange = (id) => {
+  const handleDayChange = (e) => {
+    const id = parseInt(e.target.value);
     const selected = workingHours.find((day) => day.id === id);
     if (selected) {
       setSelectedDay(id);
@@ -59,7 +57,6 @@ export default function UpdateLaboralDaysForm() {
     setError(null);
   };
 
-  // Manejo de cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -75,7 +72,6 @@ export default function UpdateLaboralDaysForm() {
     });
   };
 
-  // Manejo del envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -85,8 +81,6 @@ export default function UpdateLaboralDaysForm() {
     try {
       await MedicalOfficeWebApi.updateLaboralDays(selectedDay, formData);
       setSuccess(true);
-
-      // Actualizar la lista localmente
       setWorkingHours((prev) =>
         prev.map((day) =>
           day.id === selectedDay
@@ -95,41 +89,45 @@ export default function UpdateLaboralDaysForm() {
         )
       );
     } catch (err) {
-      setError(err); // Capturar mensaje legible
+      setError(err);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-6 space-y-6 bg-gray-100 min-h-screen">
-      <Typography variant="h4" color="blue-gray" className="font-bold text-center">
+    <div className="min-h-screen p-6 space-y-6 bg-gray-100">
+      {/* <Typography variant="h4" color="blue-gray" className="font-bold text-center">
         Actualizar Días Laborales
-      </Typography>
+      </Typography> */}
 
-      {/* Mensajes de carga o error */}
       {loading && <Typography color="blue-gray">Cargando datos...</Typography>}
       {error && <Typography color="red">{error}</Typography>}
 
-      {/* Selector de día */}
-      <Card className="shadow-md p-4">
-        <Typography variant="h6" color="blue-gray" className="font-bold mb-4">
+      <Card className="p-4 shadow-md">
+        <Typography variant="h6" color="blue-gray" className="mb-4 font-bold">
           Seleccione un día para actualizar
         </Typography>
-        <Select
-          label="Día"
-          value={selectedDay || ""}
-          onChange={(e) => handleDayChange(parseInt(e))}
-        >
-          {workingHours.map((day) => (
-            <Option key={day.id} value={day.id}>
-              {day.days}
-            </Option>
-          ))}
-        </Select>
+        <div className="relative w-full">
+          <select
+            id="day-select"
+            name="day"
+            value={selectedDay || ""}
+            onChange={handleDayChange}
+            className="block w-full px-3 py-2 text-base text-gray-900 bg-white rounded-md appearance-none outline outline-1 outline-gray-300 focus:outline-2 focus:outline-indigo-600 sm:text-sm"
+          >
+            <option value="" disabled>Selecciona un día</option>
+            {workingHours.map((day) => (
+              <option key={day.id} value={day.id}>{day.days}</option>
+            ))}
+          </select>
+          <ChevronDownIcon
+            className="absolute w-5 h-5 text-gray-500 transform -translate-y-1/2 pointer-events-none right-3 top-1/2"
+            aria-hidden="true"
+          />
+        </div>
       </Card>
 
-      {/* Formulario de actualización */}
       {selectedDay && (
         <form onSubmit={handleSubmit} className="p-6 bg-white rounded-lg shadow-md">
           <Typography variant="h5" color="blue-gray" className="font-bold text-center">
@@ -175,7 +173,6 @@ export default function UpdateLaboralDaysForm() {
             </Button>
           </div>
 
-          {/* Mensajes de éxito */}
           {success && (
             <Typography color="green" className="mt-2">
               ¡Horario actualizado con éxito!

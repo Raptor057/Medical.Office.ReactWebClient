@@ -13,16 +13,19 @@ import {
   DialogHeader,
   DialogBody,
   DialogFooter,
+  Spinner,
+  Alert
 } from '@material-tailwind/react';
+import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/20/solid';
 import MedicalOfficeWebApi from '@/app/utils/HttpRequests';
 
 export default function UsersList() {
-  const [users, setUsers] = useState([]); // Lista de usuarios
-  const [statuses, setStatuses] = useState([]); // Lista de estados
-  const [roles, setRoles] = useState([]); // Lista de roles
-  const [positions, setPositions] = useState([]); // Lista de puestos
-  const [specialties, setSpecialties] = useState([]); // Lista de especialidades
-  const [selectedUser, setSelectedUser] = useState(null); // Usuario seleccionado
+  const [users, setUsers] = useState([]);
+  const [statuses, setStatuses] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [positions, setPositions] = useState([]);
+  const [specialties, setSpecialties] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({
     psswd: '',
     name: '',
@@ -32,19 +35,19 @@ export default function UsersList() {
     specialtie: '',
     status: '',
   });
-  const [loading, setLoading] = useState(false); // Estado de carga
-  const [error, setError] = useState(null); // Estado de error
-  const [success, setSuccess] = useState(false); // Estado de éxito
-  const [isModalOpen, setIsModalOpen] = useState(false); // Control del modal
+  const [loading, setLoading] = useState(false);
+  const [loadingData, setLoadingData] = useState(true);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Obtener la lista de usuarios, estados, roles, puestos y especialidades
   useEffect(() => {
     const fetchUsersAndConfigurations = async () => {
       try {
-        const usersResponse = await MedicalOfficeWebApi.getUsers(0); // Obtener usuarios
+        const usersResponse = await MedicalOfficeWebApi.getUsers(0);
         setUsers(usersResponse.userDtoList.userDtosList || []);
 
-        const configResponse = await MedicalOfficeWebApi.getAllConfigurations(); // Obtener configuraciones
+        const configResponse = await MedicalOfficeWebApi.getAllConfigurations();
         const configurations = configResponse?.allConfigurations || {};
         setStatuses(configurations.userStatues || []);
         setRoles(configurations.roles || []);
@@ -52,13 +55,15 @@ export default function UsersList() {
         setSpecialties(configurations.specialties || []);
       } catch (err) {
         console.error('Error al obtener usuarios o configuraciones:', err);
+        setError('No se pudieron cargar los datos.');
+      } finally {
+        setLoadingData(false);
       }
     };
 
     fetchUsersAndConfigurations();
   }, []);
 
-  // Manejo de cambios en los campos del formulario
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -67,7 +72,6 @@ export default function UsersList() {
     }));
   };
 
-  // Manejo de la selección de un usuario para editar
   const handleUpdateClick = (user) => {
     setSelectedUser(user);
     setFormData({
@@ -84,7 +88,6 @@ export default function UsersList() {
     setIsModalOpen(true);
   };
 
-  // Manejo del envío del formulario de actualización
   const handleUpdateUser = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -92,7 +95,7 @@ export default function UsersList() {
     setSuccess(false);
 
     try {
-      await MedicalOfficeWebApi.updateUser(selectedUser.id, formData); // Llamada al API
+      await MedicalOfficeWebApi.updateUser(selectedUser.id, formData);
       setSuccess(true);
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
@@ -101,53 +104,59 @@ export default function UsersList() {
       );
       setIsModalOpen(false);
     } catch (err) {
-      setError(err);
+      setError('Error al actualizar el usuario.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-6 space-y-6 bg-gray-100 min-h-screen">
-      <Typography variant="h4" color="blue-gray" className="font-bold text-center">
-        Lista de Usuarios
-      </Typography>
+    <div className="w-full">
+      {loadingData ? (
+        <div className="flex justify-center py-10">
+          <Spinner color="blue" />
+        </div>
+      ) : (
+        <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {users.map((user) => (
+            <li
+              key={user.id}
+              className="flex flex-col col-span-1 text-center bg-white divide-y divide-gray-200 rounded-lg shadow"
+            >
+              <div className="flex flex-col flex-1 p-6">
+                <img
+                  className="flex-shrink-0 w-24 h-24 mx-auto bg-gray-100 rounded-full"
+                  src={`https://ui-avatars.com/api/?name=${user.name}+${user.lastname}`}
+                  alt="avatar"
+                />
+                <h3 className="mt-6 text-sm font-medium text-gray-900">
+                  {user.name} {user.lastname}
+                </h3>
+                <dl className="flex-grow mt-1">
+                  <dd className="text-sm text-gray-500">{user.position}</dd>
+                  <dd className="text-sm text-gray-500">Especialidad: {user.specialtie}</dd>
+                  <dd className="text-sm text-gray-500">Rol: {user.role}</dd>
+                  <dd className="text-sm text-gray-500">Estado: {user.status}</dd>
+                </dl>
+              </div>
+              <div>
+                <div className="flex -mt-px divide-x divide-gray-200">
+                  <div className="flex flex-1 w-0">
+                    <Button
+                      onClick={() => handleUpdateClick(user)}
+                      className="w-full text-sm rounded-none rounded-bl-lg"
+                      color="blue"
+                    >
+                      Editar Usuario
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {users.map((user) => (
-          <Card key={user.id} className="shadow-md">
-            <CardBody>
-              <Typography variant="h5" color="blue-gray" className="font-bold">
-                {user.name} {user.lastname}
-              </Typography>
-              <Typography color="gray">
-                <strong>Usuario:</strong> {user.usr}
-              </Typography>
-              <Typography color="gray">
-                <strong>Rol:</strong> {user.role}
-              </Typography>
-              <Typography color="gray">
-                <strong>Puesto:</strong> {user.position}
-              </Typography>
-              <Typography color="gray">
-                <strong>Especialidad:</strong> {user.specialtie}
-              </Typography>
-              <Typography color="gray">
-                <strong>Estado:</strong> {user.status}
-              </Typography>
-              <Button
-                color="blue"
-                onClick={() => handleUpdateClick(user)}
-                className="mt-4"
-              >
-                Editar Usuario
-              </Button>
-            </CardBody>
-          </Card>
-        ))}
-      </div>
-
-      {/* Modal de actualización */}
       <Dialog open={isModalOpen} handler={setIsModalOpen} size="lg">
         <DialogHeader>
           <Typography variant="h4" color="blue-gray">
@@ -156,105 +165,41 @@ export default function UsersList() {
         </DialogHeader>
         <DialogBody>
           <form className="space-y-4">
-            <Input
-              label="Nombre"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              label="Apellido"
-              name="lastname"
-              value={formData.lastname}
-              onChange={handleChange}
-              required
-            />
-            <Input
-              label="Contraseña"
-              name="psswd"
-              type="password"
-              value={formData.psswd}
-              onChange={handleChange}
-            />
-            <div>
-              <Typography variant="small" className="mb-2">
-                Estado
-              </Typography>
-              <Select
-                value={formData.status}
-                onChange={(value) => setFormData((prev) => ({ ...prev, status: value }))}
-                required
-              >
-                {statuses.map((status, index) => (
-                  <Option key={index} value={status.typeUserStatuses}>
-                    {status.typeUserStatuses}
-                  </Option>
-                ))}
-              </Select>
-            </div>
-            <div>
-              <Typography variant="small" className="mb-2">
-                Rol
-              </Typography>
-              <Select
-                value={formData.role}
-                onChange={(value) => setFormData((prev) => ({ ...prev, role: value }))}
-                required
-              >
-                {roles.map((role, index) => (
-                  <Option key={index} value={role.rolesName}>
-                    {role.rolesName}
-                  </Option>
-                ))}
-              </Select>
-            </div>
-            <div>
-              <Typography variant="small" className="mb-2">
-                Puesto
-              </Typography>
-              <Select
-                value={formData.position}
-                onChange={(value) => setFormData((prev) => ({ ...prev, position: value }))}
-                required
-              >
-                {positions.map((position, index) => (
-                  <Option key={index} value={position.positionName}>
-                    {position.positionName}
-                  </Option>
-                ))}
-              </Select>
-            </div>
-            <div>
-              <Typography variant="small" className="mb-2">
-                Especialidad
-              </Typography>
-              <Select
-                value={formData.specialtie}
-                onChange={(value) => setFormData((prev) => ({ ...prev, specialtie: value }))}
-                required
-              >
-                {specialties.map((specialty, index) => (
-                  <Option key={index} value={specialty.specialty}>
-                    {specialty.specialty}
-                  </Option>
-                ))}
-              </Select>
-            </div>
+            <Input label="Nombre" name="name" value={formData.name} onChange={handleChange} required />
+            <Input label="Apellido" name="lastname" value={formData.lastname} onChange={handleChange} required />
+            <Input label="Contraseña" name="psswd" type="password" value={formData.psswd} onChange={handleChange} />
+            <Select label="Estado" value={formData.status} onChange={(value) => setFormData((prev) => ({ ...prev, status: value }))} required>
+              {statuses.map((status, index) => (
+                <Option key={index} value={status.typeUserStatuses}>{status.typeUserStatuses}</Option>
+              ))}
+            </Select>
+            <Select label="Rol" value={formData.role} onChange={(value) => setFormData((prev) => ({ ...prev, role: value }))} required>
+              {roles.map((role, index) => (
+                <Option key={index} value={role.rolesName}>{role.rolesName}</Option>
+              ))}
+            </Select>
+            <Select label="Puesto" value={formData.position} onChange={(value) => setFormData((prev) => ({ ...prev, position: value }))} required>
+              {positions.map((position, index) => (
+                <Option key={index} value={position.positionName}>{position.positionName}</Option>
+              ))}
+            </Select>
+            <Select label="Especialidad" value={formData.specialtie} onChange={(value) => setFormData((prev) => ({ ...prev, specialtie: value }))} required>
+              {specialties.map((specialty, index) => (
+                <Option key={index} value={specialty.specialty}>{specialty.specialty}</Option>
+              ))}
+            </Select>
           </form>
         </DialogBody>
         <DialogFooter>
-          <Button color="red" onClick={() => setIsModalOpen(false)}>
-            Cancelar
-          </Button>
+          <Button color="red" onClick={() => setIsModalOpen(false)}>Cancelar</Button>
           <Button color="blue" onClick={handleUpdateUser} disabled={loading}>
             {loading ? 'Guardando...' : 'Guardar Cambios'}
           </Button>
         </DialogFooter>
       </Dialog>
 
-      {success && <Typography color="green">¡Usuario actualizado con éxito!</Typography>}
-      {error && <Typography color="red">{error}</Typography>}
+      {success && <Alert color="green">¡Usuario actualizado con éxito!</Alert>}
+      {error && <Alert color="red">{error}</Alert>}
     </div>
   );
 }

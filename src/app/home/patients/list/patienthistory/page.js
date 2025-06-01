@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';  // Importamos useRouter para redir
 import MedicalOfficeWebApi from '@/app/utils/HttpRequests';
 import { PatientDetails } from '@/app/components/Patients/PatientDetails';
 
+
+
 export default function PatientDetailsPage() {
   const [id, setId] = useState(null);
   const router = useRouter();  // Inicializamos el router para la redirección

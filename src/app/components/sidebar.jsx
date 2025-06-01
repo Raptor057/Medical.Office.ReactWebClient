@@ -109,27 +109,27 @@ export function MultiLevelSidebar() {
                   Gestión de Cortes
                 </Link>
               </ListItem>
-              <ListItem className="hover:bg-blue-100">
+              {/* <ListItem className="hover:bg-blue-100">
                 <Link href="/home/pos/generaciondereportes" className="flex w-full">
                   <ListItemPrefix>
                     <ChevronDownIcon strokeWidth={2} className="w-5 h-3" />
                   </ListItemPrefix>
                   Reportes
                 </Link>
-              </ListItem>
+              </ListItem> */}
             </List>
           </AccordionBody>
         </Accordion>
 
         {/* Perfil */}
-        <ListItem className="hover:bg-blue-100">
+        {/* <ListItem className="hover:bg-blue-100">
           <Link href="/profile" className="flex w-full">
             <ListItemPrefix>
               <UserCircleIcon className="w-5 h-5 text-blue-500" />
             </ListItemPrefix>
             Ver Perfil
           </Link>
-        </ListItem>
+        </ListItem> */}
 
         {/* Configuración */}
         <Accordion open={open === 3} icon={<ChevronDownIcon strokeWidth={2.5} className={`mx-auto h-4 w-4 transition-transform ${open === 3 ? "rotate-180" : ""}`} />}>

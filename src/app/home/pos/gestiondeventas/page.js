@@ -1,69 +1,60 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import RegistrarVenta from "@/app/components/ExpressPos/GestiondeVentas/RegistrarVenta";
-import EliminarVenta from "@/app/components/ExpressPos/GestiondeVentas/EliminarVenta";
-import VentasPorRango from "@/app/components/ExpressPos/GestiondeVentas/VentasPorRango";
-import DetalleDeVenta from "@/app/components/ExpressPos/GestiondeVentas/DetalleDeVenta";
-import { useRouter } from "next/navigation";
+import React, { useState } from 'react';
+import { Typography, Button, Tab, TabPanel, Tabs, TabsHeader, TabsBody } from '@material-tailwind/react';
+import { HomeIcon } from '@heroicons/react/24/solid';
+import { useRouter } from 'next/navigation';
+import RegistrarVenta from '@/app/components/ExpressPos/GestiondeVentas/RegistrarVenta';
+import EliminarVenta from '@/app/components/ExpressPos/GestiondeVentas/EliminarVenta';
+import VentasPorRango from '@/app/components/ExpressPos/GestiondeVentas/VentasPorRango';
+import DetalleDeVenta from '@/app/components/ExpressPos/GestiondeVentas/DetalleDeVenta';
 
-const tabs = [
-  { key: "registrar", label: "📝 Registrar Venta", color: "blue" },
-  { key: "eliminar", label: "🗑️ Eliminar Venta", color: "red" },
-  { key: "rango", label: "📆 Ventas por Rango", color: "green" },
-  { key: "detalle", label: "📋 Detalle de Venta", color: "yellow" },
-];
-
-const GestionarVentasPage = () => {
-  const [activeTab, setActiveTab] = useState("registrar");
+export default function GestionarVentasPage() {
+  const [activeTab, setActiveTab] = useState('registrar');
   const router = useRouter();
 
-  const renderComponent = () => {
-    switch (activeTab) {
-      case "registrar":
-        return <RegistrarVenta />;
-      case "eliminar":
-        return <EliminarVenta />;
-      case "rango":
-        return <VentasPorRango />;
-      case "detalle":
-        return <DetalleDeVenta />;
-      default:
-        return null;
-    }
-  };
-
   return (
-    <div className="min-h-screen p-6 bg-gradient-to-b from-gray-100 to-gray-200">
-      <div className="flex flex-wrap items-center justify-between w-full gap-4 mx-auto mb-8 max-w-7xl">
-        <div className="flex flex-wrap gap-2">
-          {tabs.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
-              className={`px-4 py-2 rounded-full text-white font-semibold transition ${
-                activeTab === tab.key
-                  ? `bg-${tab.color}-700`
-                  : `bg-${tab.color}-500 hover:bg-${tab.color}-600`
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-        <button
-          onClick={() => router.push("/home")}
-          className="px-4 py-2 font-medium text-white bg-gray-800 rounded-full hover:bg-gray-900"
-        >
-          ⬅ Volver al Home
-        </button>
+    <div className="w-full min-h-screen p-6 space-y-6 bg-gray-100">
+      <div className="flex items-center justify-between">
+        <Typography variant="h4" color="blue-gray" className="font-bold">
+          Gestión de Ventas
+        </Typography>
+        <Button onClick={() => router.push('/home')} className="flex items-center gap-2">
+          <HomeIcon className="w-5 h-5" /> Inicio
+        </Button>
       </div>
 
-      <div className="w-full p-6 mx-auto bg-white shadow-lg max-w-7xl rounded-2xl">
-        {renderComponent()}
-      </div>
+      <Tabs value={activeTab} className="bg-white rounded-lg shadow-lg">
+        <TabsHeader>
+          <Tab value="registrar" onClick={() => setActiveTab('registrar')}>
+            📝 Registrar Venta
+          </Tab>
+          <Tab value="eliminar" onClick={() => setActiveTab('eliminar')}>
+            🗑️ Eliminar Venta
+          </Tab>
+          <Tab value="rango" onClick={() => setActiveTab('rango')}>
+            📆 Ventas por Rango
+          </Tab>
+          <Tab value="detalle" onClick={() => setActiveTab('detalle')}>
+            📋 Detalle de Venta
+          </Tab>
+        </TabsHeader>
+
+        <TabsBody>
+          <TabPanel value="registrar">
+            <RegistrarVenta />
+          </TabPanel>
+          <TabPanel value="eliminar">
+            <EliminarVenta />
+          </TabPanel>
+          <TabPanel value="rango">
+            <VentasPorRango />
+          </TabPanel>
+          <TabPanel value="detalle">
+            <DetalleDeVenta />
+          </TabPanel>
+        </TabsBody>
+      </Tabs>
     </div>
   );
-};
-
-export default GestionarVentasPage;
+}
