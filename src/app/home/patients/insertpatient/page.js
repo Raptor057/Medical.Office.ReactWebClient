@@ -8,7 +8,7 @@ export default function InsertPatientPage() {
   };
 
   return (
-    <div className="min-h-screen p-6 bg-gray-100">
+    <div className="w-screen h-screen overflow-y-auto bg-gray-100">
       <InsertPatientDataForm onSuccess={handleSuccess} />
     </div>
   );

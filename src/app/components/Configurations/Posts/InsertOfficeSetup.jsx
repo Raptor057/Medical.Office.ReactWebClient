@@ -14,25 +14,16 @@ import {
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests";
 
 export default function OfficeSetupForm() {
-  const [formData, setFormData] = useState({
-    nameOfOffice: "",
-    address: "",
-  });
+  const [formData, setFormData] = useState({ nameOfOffice: "", address: "" });
+  const [updateData, setUpdateData] = useState({ nameOfOffice: "", address: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [updateData, setUpdateData] = useState({
-    nameOfOffice: "",
-    address: "",
-  });
 
-  // Obtener configuración existente al cargar el componente
   useEffect(() => {
     const fetchOfficeSetup = async () => {
       setLoading(true);
-      setError(null);
       try {
         const configData = await MedicalOfficeWebApi.getAllConfigurations();
         const officeSetup = configData?.allConfigurations?.officeSetup;
@@ -43,7 +34,7 @@ export default function OfficeSetupForm() {
           });
         }
       } catch (err) {
-        setError(err || "Error al obtener la configuración de la oficina.");
+        setError("Error al obtener la configuración.");
       } finally {
         setLoading(false);
       }
@@ -52,54 +43,39 @@ export default function OfficeSetupForm() {
     fetchOfficeSetup();
   }, []);
 
-  // Manejo de cambios en el formulario
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleUpdateChange = (e) => {
-    const { name, value } = e.target;
-    setUpdateData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const handleUpdateChange = (e) =>
+    setUpdateData({ ...updateData, [e.target.name]: e.target.value });
 
-  // Manejo del envío del formulario para inserción
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
     setSuccess(false);
-
+    setError(null);
     try {
       await MedicalOfficeWebApi.insertOfficeSetup(formData);
       setSuccess(true);
     } catch (err) {
-      setError(err);
+      setError("Error al guardar la configuración.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Manejo del envío del formulario para actualización
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
     setSuccess(false);
-
+    setError(null);
     try {
       await MedicalOfficeWebApi.updateOfficeSetup(updateData);
+      setFormData(updateData);
       setSuccess(true);
       setIsModalOpen(false);
-      setFormData(updateData); // Actualizar el estado principal
     } catch (err) {
-      setError(err);
+      setError("Error al actualizar la configuración.");
     } finally {
       setLoading(false);
     }
@@ -110,162 +86,95 @@ export default function OfficeSetupForm() {
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
   return (
-    
-    <div>
-      {/* Formulario de Inserción */}
-      
-      <Card shadow={true} className="max-w-lg p-6 mx-auto bg-white rounded-lg">
-        {/* <Typography
-          variant="h4"
-          color="blue-gray"
-          className="mb-6 text-center">
+    <div className="w-full max-w-3xl mx-auto">
+      <Card shadow={true} className="p-6 bg-white rounded-lg">
+        <Typography variant="h5" color="blue-gray" className="mb-6 font-semibold text-center">
+          Configuración de la Oficina
+        </Typography>
 
-          Configuración de Oficina
-        </Typography> */}
-        
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label
-              htmlFor="nameOfOffice"
-              className="block mb-2 text-sm font-medium text-gray-700"
-            >
-              Nombre de la Oficina
-            </label>
-            <Input
-              type="text"
-              name="nameOfOffice"
-              id="nameOfOffice"
-              value={formData.nameOfOffice}
-              onChange={handleChange}
-              placeholder="Ingresa el nombre de la oficina"
-              size="md"
-              className="text-gray-800"
-            />
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label htmlFor="nameOfOffice" className="block mb-1 text-sm font-medium text-gray-700">
+                Nombre de la Oficina
+              </label>
+              <Input
+                id="nameOfOffice"
+                name="nameOfOffice"
+                value={formData.nameOfOffice}
+                onChange={handleChange}
+                placeholder="Ej. Consultorio Principal"
+              />
+            </div>
+            <div>
+              <label htmlFor="address" className="block mb-1 text-sm font-medium text-gray-700">
+                Dirección
+              </label>
+              <Input
+                id="address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Ej. Calle 123, Colonia, Ciudad"
+              />
+            </div>
           </div>
 
-          <div>
-            <label
-              htmlFor="address"
-              className="block mb-2 text-sm font-medium text-gray-700"
-            >
-              Dirección
-            </label>
-            <Input
-              type="text"
-              name="address"
-              id="address"
-              value={formData.address}
-              onChange={handleChange}
-              placeholder="Ingresa la dirección de la oficina"
-              size="md"
-              className="text-gray-800"
-            />
-          </div>
-
-          <div className="flex justify-between">
-            <Button
-              type="submit"
-              color="indigo"
-              className="w-full text-lg font-semibold"
-            >
+          <div className="flex flex-col justify-end gap-4 md:flex-row">
+            <Button type="submit" color="blue" fullWidth={!false}>
               Guardar Configuración
             </Button>
-            <Button
-              type="button"
-              color="green"
-              onClick={handleOpenModal}
-              className="ml-2 text-lg font-semibold"
-            >
+            <Button type="button" color="green" onClick={handleOpenModal} fullWidth={!false}>
               Actualizar Configuración
             </Button>
           </div>
         </form>
+
+        {/* Mensajes de estado */}
+        {loading && <Typography className="mt-4 text-center text-blue-gray-500">Procesando...</Typography>}
+        {success && <Typography className="mt-4 text-center text-green-600">¡Operación exitosa!</Typography>}
+        {error && <Typography className="mt-4 text-center text-red-600">{error}</Typography>}
       </Card>
 
       {/* Modal de Actualización */}
-      <Dialog open={isModalOpen} handler={setIsModalOpen} size="md">
-        <DialogHeader>Actualizar Configuración de Oficina</DialogHeader>
-        <DialogBody>
-          <form onSubmit={handleUpdateSubmit} className="space-y-6">
+      <Dialog open={isModalOpen} handler={setIsModalOpen}>
+        <DialogHeader>Actualizar Configuración</DialogHeader>
+        <form onSubmit={handleUpdateSubmit}>
+          <DialogBody className="space-y-6">
             <div>
-              <label
-                htmlFor="updateNameOfOffice"
-                className="block mb-2 text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="updateNameOfOffice" className="block mb-1 text-sm font-medium text-gray-700">
                 Nombre de la Oficina
               </label>
               <Input
-                type="text"
-                name="nameOfOffice"
                 id="updateNameOfOffice"
+                name="nameOfOffice"
                 value={updateData.nameOfOffice}
                 onChange={handleUpdateChange}
-                placeholder="Actualiza el nombre de la oficina"
-                size="md"
-                className="text-gray-800"
               />
             </div>
-
             <div>
-              <label
-                htmlFor="updateAddress"
-                className="block mb-2 text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="updateAddress" className="block mb-1 text-sm font-medium text-gray-700">
                 Dirección
               </label>
               <Input
-                type="text"
-                name="address"
                 id="updateAddress"
+                name="address"
                 value={updateData.address}
                 onChange={handleUpdateChange}
-                placeholder="Actualiza la dirección de la oficina"
-                size="md"
-                className="text-gray-800"
               />
             </div>
-          </form>
-        </DialogBody>
-        <DialogFooter>
-          <Button
-            color="red"
-            onClick={handleCloseModal}
-            className="text-lg font-semibold"
-          >
-            Cancelar
-          </Button>
-          <Button
-            type="submit"
-            color="green"
-            onClick={handleUpdateSubmit}
-            className="ml-2 text-lg font-semibold"
-          >
-            Guardar Cambios
-          </Button>
-        </DialogFooter>
+          </DialogBody>
+          <DialogFooter className="flex justify-end gap-2">
+            <Button color="red" onClick={() => setIsModalOpen(false)}>
+              Cancelar
+            </Button>
+            <Button type="submit" color="green">
+              Guardar Cambios
+            </Button>
+          </DialogFooter>
+        </form>
       </Dialog>
-
-      {/* Mensajes */}
-      {loading && (
-        <Typography color="blue-gray" className="mt-2 text-center">
-          Cargando...
-        </Typography>
-      )}
-      {success && (
-        <Typography color="green" className="mt-2 text-center">
-          ¡Operación exitosa!
-        </Typography>
-      )}
-      {error && (
-        <Typography color="red" className="mt-2 text-center">
-          {error}
-        </Typography>
-      )}
     </div>
   );
 }

@@ -17,19 +17,23 @@ export default function LoginPage() {
     try {
       // Llamada a la API
       const data = await MedicalOfficeWebApi.login(usr, password);
+      console.log("Login response:", data);
+
 
       // Manejo del token y redirección
       const token = data?.userLoginResponseDto?.token;
-      if (token) {
-        localStorage.setItem('authToken', token);
-        setAlertData({ isSuccess: true, message: data?.userLoginResponseDto.welcomeMessageIsSuccess});
-        setTimeout(() => {
-          setAlertData(null);
-          router.push('/home'); // Redirige al home después del éxito
-        }, 2000);
-      } else {
-        throw new Error('No se pudo obtener el token de autenticación.');
-      }
+    if (data?.userLoginResponseDto && data.userLoginResponseDto.token) {
+      const token = data.userLoginResponseDto.token;
+      localStorage.setItem('authToken', token);
+      setAlertData({ isSuccess: true, message: data.userLoginResponseDto.welcomeMessageIsSuccess });
+
+      setTimeout(() => {
+        setAlertData(null);
+        router.push('/home');
+      }, 2000);
+    } else {
+      throw new Error(data?.userLoginResponseDto?.errorMessage || 'No se pudo obtener el token.');
+    }
     } catch (error) {
       // Manejo de errores
       setAlertData({

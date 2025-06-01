@@ -1,31 +1,57 @@
 'use client';
 
 import React from "react";
-import { Typography } from "@material-tailwind/react";
+import Link from "next/link";
+import { Typography, Button, Card, CardBody } from "@material-tailwind/react";
+import { HomeIcon } from "@heroicons/react/24/solid";
+
 import InsertDoctorsForm from "@/app/components/Configurations/Posts/InsertDoctorsForm";
 import DoctorsList from "@/app/components/Configurations/Gets/DoctorsList";
 
-import {Button} from "@material-tailwind/react";
-import Link from "next/link";
-import {HomeIcon } from "@heroicons/react/24/solid";
-
 export default function DoctorsConfiguration() {
   return (
-    <div className="w-full min-h-screen bg-gray-100 flex flex-col justify-center items-center p-6">
-      <div className="max-w-3xl w-full p-6 bg-white rounded-lg shadow-lg">
-      <Link href="/home">
-            <Button className="flex items-center gap-2">
-              <HomeIcon className="w-5 h-5" /> Inicio
+    <div className="w-full min-h-screen px-4 py-10 bg-gray-50 lg:px-12">
+      <div className="mx-auto space-y-10 max-w-7xl">
+
+        {/* Botón de regreso */}
+        <div className="flex justify-start">
+          <Link href="/home">
+            <Button className="flex items-center gap-2" color="blue-gray">
+              <HomeIcon className="w-5 h-5" />
+              Inicio
             </Button>
           </Link>
-        <Typography variant="h3" color="blue-gray" className="font-bold text-center">
-          Configuración de Doctores
-        </Typography>
-        <Typography color="gray" className="text-center mt-4">
-          Aquí podrás gestionar los datos de los doctores, incluyendo agregar, editar o eliminar información.
-        </Typography>
-        <InsertDoctorsForm />
-        <DoctorsList />
+        </div>
+
+        {/* Título principal */}
+        <div className="text-center">
+          <Typography variant="h3" color="blue-gray" className="font-bold">
+            Configuración de Doctores
+          </Typography>
+          <Typography color="gray" className="mt-2">
+            Gestiona la información del personal médico: agrega, edita o revisa los registros existentes.
+          </Typography>
+        </div>
+
+        {/* Sección: Insertar doctor */}
+        <Card shadow={true} className="p-6">
+          <CardBody>
+            <Typography variant="h5" color="blue-gray" className="mb-4 font-semibold">
+              Registrar nuevo doctor
+            </Typography>
+            <InsertDoctorsForm />
+          </CardBody>
+        </Card>
+
+        {/* Sección: Lista de doctores */}
+        <Card shadow={true} className="p-6">
+          <CardBody>
+            <Typography variant="h5" color="blue-gray" className="mb-4 font-semibold">
+              Lista de doctores registrados
+            </Typography>
+            <DoctorsList />
+          </CardBody>
+        </Card>
       </div>
     </div>
   );

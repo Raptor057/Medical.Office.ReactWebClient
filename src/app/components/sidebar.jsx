@@ -38,22 +38,9 @@ export function MultiLevelSidebar() {
 
       <List>
         {/* Pacientes */}
-        <Accordion
-          open={open === 1}
-          icon={
-            <ChevronDownIcon
-              strokeWidth={2.5}
-              className={`mx-auto h-4 w-4 transition-transform ${
-                open === 1 ? "rotate-180" : ""
-              }`}
-            />
-          }
-        >
+        <Accordion open={open === 1} icon={<ChevronDownIcon strokeWidth={2.5} className={`mx-auto h-4 w-4 transition-transform ${open === 1 ? "rotate-180" : ""}`} />}>
           <ListItem className="p-0" selected={open === 1}>
-            <AccordionHeader
-              onClick={() => handleOpen(1)}
-              className="p-3 border-b-0"
-            >
+            <AccordionHeader onClick={() => handleOpen(1)} className="p-3 border-b-0">
               <ListItemPrefix>
                 <PresentationChartBarIcon className="w-5 h-5 text-blue-500" />
               </ListItemPrefix>
@@ -85,22 +72,9 @@ export function MultiLevelSidebar() {
         </Accordion>
 
         {/* Punto de Venta */}
-        <Accordion
-          open={open === 2}
-          icon={
-            <ChevronDownIcon
-              strokeWidth={2.5}
-              className={`mx-auto h-4 w-4 transition-transform ${
-                open === 2 ? "rotate-180" : ""
-              }`}
-            />
-          }
-        >
+        <Accordion open={open === 2} icon={<ChevronDownIcon strokeWidth={2.5} className={`mx-auto h-4 w-4 transition-transform ${open === 2 ? "rotate-180" : ""}`} />}>
           <ListItem className="p-0" selected={open === 2}>
-            <AccordionHeader
-              onClick={() => handleOpen(2)}
-              className="p-3 border-b-0"
-            >
+            <AccordionHeader onClick={() => handleOpen(2)} className="p-3 border-b-0">
               <ListItemPrefix>
                 <PresentationChartBarIcon className="w-5 h-5 text-blue-500" />
               </ListItemPrefix>
@@ -158,22 +132,9 @@ export function MultiLevelSidebar() {
         </ListItem>
 
         {/* Configuración */}
-        <Accordion
-          open={open === 3}
-          icon={
-            <ChevronDownIcon
-              strokeWidth={2.5}
-              className={`mx-auto h-4 w-4 transition-transform ${
-                open === 3 ? "rotate-180" : ""
-              }`}
-            />
-          }
-        >
+        <Accordion open={open === 3} icon={<ChevronDownIcon strokeWidth={2.5} className={`mx-auto h-4 w-4 transition-transform ${open === 3 ? "rotate-180" : ""}`} />}>
           <ListItem className="p-0" selected={open === 3}>
-            <AccordionHeader
-              onClick={() => handleOpen(3)}
-              className="p-3 border-b-0"
-            >
+            <AccordionHeader onClick={() => handleOpen(3)} className="p-3 border-b-0">
               <ListItemPrefix>
                 <Cog6ToothIcon className="w-5 h-5 text-blue-500" />
               </ListItemPrefix>
@@ -220,30 +181,20 @@ export function MultiLevelSidebar() {
           </AccordionBody>
         </Accordion>
 
-      {/* Cerrar Sesión */}
-      <ListItem
-        className="cursor-pointer hover:bg-red-50"
-        onClick={() => {
-        // Eliminar información de la sesión
-        localStorage.removeItem('authToken'); // Elimina el token de autenticación
-        localStorage.removeItem('refreshToken'); // Opcional: elimina el refresh token si lo usas
-        sessionStorage.clear(); // Limpia el sessionStorage por completo (si es necesario)
-
-        // Redirigir al login
-        window.location.href = '/'; // Asegúrate de que "/" sea tu página de inicio de sesión
-        }}
-        >
-        <ListItemPrefix>
-        <PowerIcon className="w-5 h-5 text-red-500" />
-        </ListItemPrefix>
-          <Typography
-          color="red"
-          className="mr-auto font-medium"
-          >
-          Cerrar Sesión
+        {/* Cerrar Sesión */}
+        <ListItem className="cursor-pointer hover:bg-red-50" onClick={() => {
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('refreshToken');
+          sessionStorage.clear();
+          window.location.href = '/';
+        }}>
+          <ListItemPrefix>
+            <PowerIcon className="w-5 h-5 text-red-500" />
+          </ListItemPrefix>
+          <Typography color="red" className="mr-auto font-medium">
+            Cerrar Sesión
           </Typography>
-      </ListItem>
-
+        </ListItem>
       </List>
     </Card>
   );

@@ -1,34 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from "react";
-import { Button, Input, Textarea, Typography, Select, Option } from "@material-tailwind/react";
+import { Button, Input, Textarea, Typography } from "@material-tailwind/react";
 import Link from "next/link";
-import { HomeIcon } from "@heroicons/react/24/solid";
+import { HomeIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import MedicalOfficeWebApi from "@/app/utils/HttpRequests";
 
 export default function InsertPatientDataForm() {
   const [formData, setFormData] = useState({
-    name: "",
-    fathersSurname: "",
-    mothersSurname: "",
-    dateOfBirth: "",
-    gender: "",
-    address: "",
-    country: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    outsideNumber: "",
-    insideNumber: "",
-    phoneNumber: "",
-    email: "",
-    emergencyContactName: "",
-    emergencyContactPhone: "",
-    insuranceProvider: "",
-    policyNumber: "",
-    bloodType: "",
-    photo: "",
-    internalNotes: "",
+    name: "", fathersSurname: "", mothersSurname: "", dateOfBirth: "", gender: "",
+    address: "", country: "", city: "", state: "", zipCode: "", outsideNumber: "",
+    insideNumber: "", phoneNumber: "", email: "", emergencyContactName: "",
+    emergencyContactPhone: "", insuranceProvider: "", policyNumber: "",
+    bloodType: "", photo: "", internalNotes: ""
   });
 
   const [loading, setLoading] = useState(false);
@@ -40,8 +24,7 @@ export default function InsertPatientDataForm() {
     const fetchGenders = async () => {
       try {
         const response = await MedicalOfficeWebApi.getAllConfigurations();
-        const gendersData = response?.allConfigurations?.genders || [];
-        setGenders(gendersData);
+        setGenders(response?.allConfigurations?.genders || []);
       } catch (err) {
         console.error("Error al obtener los géneros:", err);
       }
@@ -49,119 +32,84 @@ export default function InsertPatientDataForm() {
     fetchGenders();
   }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      if (file.size > 25 * 1024 * 1024) {
-        setError("El tamaño máximo permitido para la imagen es de 25 MB.");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = () => {
-        setFormData((prev) => ({ ...prev, photo: reader.result.split(",")[1] }));
-        setError(null);
-      };
-      reader.onerror = () => {
-        setError("Error al leer el archivo. Intente nuevamente.");
-      };
-      reader.readAsDataURL(file);
+    if (file?.size > 25 * 1024 * 1024) {
+      setError("El tamaño máximo permitido para la imagen es de 25 MB.");
+      return;
     }
+    const reader = new FileReader();
+    reader.onload = () => setFormData(prev => ({ ...prev, photo: reader.result.split(",")[1] }));
+    reader.onerror = () => setError("Error al leer el archivo.");
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccess(false);
-
+    setLoading(true); setError(null); setSuccess(false);
     try {
       await MedicalOfficeWebApi.insertPatientData(formData);
       setSuccess(true);
-      setFormData({
-        name: "",
-        fathersSurname: "",
-        mothersSurname: "",
-        dateOfBirth: "",
-        gender: "",
-        address: "",
-        country: "",
-        city: "",
-        state: "",
-        zipCode: "",
-        outsideNumber: "",
-        insideNumber: "",
-        phoneNumber: "",
-        email: "",
-        emergencyContactName: "",
-        emergencyContactPhone: "",
-        insuranceProvider: "",
-        policyNumber: "",
-        bloodType: "",
-        photo: "",
-        internalNotes: "",
-      });
+      setFormData(Object.fromEntries(Object.keys(formData).map(k => [k, ""])));
     } catch (err) {
-      setError(err.message || "Error al registrar el paciente. Intente nuevamente.");
+      setError(err.message || "Error al registrar el paciente.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 space-y-8 bg-white rounded-lg shadow-md">
-      {/* Botón de regreso a inicio */}
-      <Link href="/home">
-        <Button className="flex items-center gap-2">
-          <HomeIcon className="w-5 h-5" /> Inicio
-        </Button>
-      </Link>
+    <form
+    onSubmit={handleSubmit}
+    className="flex flex-col w-full h-full p-6 mx-auto space-y-10 bg-white rounded-lg shadow-md max-w-7xl">
 
-      <Typography variant="h4" color="blue-gray" className="font-bold text-center">
-        Registrar Nuevo Paciente
-      </Typography>
+      {/* Encabezado */}
+      <div className="flex items-center justify-between">
+        <Link href="/home">
+          <Button className="flex items-center gap-2" color="blue-gray">
+            <HomeIcon className="w-5 h-5" /> Inicio
+          </Button>
+        </Link>
+        <Typography variant="h4" className="font-bold text-center text-blue-gray-800">
+          Registrar Nuevo Paciente
+        </Typography>
+      </div>
 
       {/* Información General */}
       <section>
-        <Typography variant="h5" color="blue-gray" className="mb-4 font-semibold">
-          Información General
-        </Typography>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <Typography variant="h5" className="mb-4 font-semibold text-blue-gray-700">Información General</Typography>
+        <div className="grid gap-4 md:grid-cols-2">
           <Input label="Nombre" name="name" value={formData.name} onChange={handleChange} required />
           <Input label="Apellido Paterno" name="fathersSurname" value={formData.fathersSurname} onChange={handleChange} required />
-          <Input label="Apellido Materno" name="mothersSurname" value={formData.mothersSurname} onChange={handleChange}  />
+          <Input label="Apellido Materno" name="mothersSurname" value={formData.mothersSurname} onChange={handleChange} />
           <Input type="date" label="Fecha de Nacimiento" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleChange} required />
-          <div>
-            <Typography variant="small" className="mb-2">Género</Typography>
-              <Select
+          {/* Select Género */}
+          <div className="relative">
+            <label htmlFor="gender" className="block mb-1 text-sm font-medium text-gray-700">Género</label>
+            <select
+              id="gender"
+              name="gender"
               value={formData.gender}
-              
-              onChange={(value) => {
-                console.log("Valor seleccionado:", value);
-                setFormData((prev) => ({ ...prev, gender: value }));
-              }}
-              >
-            {genders.map((gender, index) => (
-              <Option key={index} value={gender.gender.trim()}>
-              {gender.gender.trim()}
-              </Option>
-            ))}
-            </Select>
-
+              onChange={handleChange}
+              required
+              className="block w-full py-2 pl-3 pr-10 text-base text-gray-900 bg-white border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm"
+            >
+              <option value="">Seleccione género</option>
+              {genders.map((g, i) => (
+                <option key={i} value={g.gender.trim()}>{g.gender.trim()}</option>
+              ))}
+            </select>
+            <ChevronDownIcon className="absolute w-5 h-5 text-gray-400 pointer-events-none top-9 right-3" />
           </div>
         </div>
       </section>
 
-      {/* Información de Contacto */}
+      {/* Contacto */}
       <section>
-        <Typography variant="h5" color="blue-gray" className="mb-4 font-semibold">
-          Información de Contacto
-        </Typography>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <Typography variant="h5" className="mb-4 font-semibold text-blue-gray-700">Información de Contacto</Typography>
+        <div className="grid gap-4 md:grid-cols-2">
           <Input label="Teléfono" name="phoneNumber" value={formData.phoneNumber} onChange={handleChange} required />
           <Input label="Correo Electrónico" type="email" name="email" value={formData.email} onChange={handleChange} />
           <Input label="Dirección" name="address" value={formData.address} onChange={handleChange} />
@@ -171,12 +119,10 @@ export default function InsertPatientDataForm() {
         </div>
       </section>
 
-      {/* Información del Seguro */}
+      {/* Seguro */}
       <section>
-        <Typography variant="h5" color="blue-gray" className="mb-4 font-semibold">
-          Información del Seguro
-        </Typography>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <Typography variant="h5" className="mb-4 font-semibold text-blue-gray-700">Información del Seguro</Typography>
+        <div className="grid gap-4 md:grid-cols-2">
           <Input label="Proveedor de Seguro" name="insuranceProvider" value={formData.insuranceProvider} onChange={handleChange} />
           <Input label="Número de Póliza" name="policyNumber" value={formData.policyNumber} onChange={handleChange} />
           <Input label="Tipo de Sangre" name="bloodType" value={formData.bloodType} onChange={handleChange} />
@@ -185,26 +131,26 @@ export default function InsertPatientDataForm() {
 
       {/* Notas y Foto */}
       <section>
-        <Typography variant="h5" color="blue-gray" className="mb-4 font-semibold">
-          Notas y Foto
-        </Typography>
-        <div className="grid grid-cols-1 gap-4">
-          <Textarea label="Notas Internas" name="internalNotes" value={formData.internalNotes} onChange={handleChange} placeholder="Escribe aquí las notas internas..." />
+        <Typography variant="h5" className="mb-4 font-semibold text-blue-gray-700">Notas y Foto</Typography>
+        <div className="grid gap-4">
+          <Textarea label="Notas Internas" name="internalNotes" value={formData.internalNotes} onChange={handleChange} />
           <div>
-            <Typography variant="small" className="mb-2">Foto del Paciente (Máximo 25 MB)</Typography>
+            <label className="block mb-1 text-sm font-medium text-gray-700">Foto del Paciente (máx 25MB)</label>
             <Input type="file" accept="image/*" onChange={handleFileChange} />
           </div>
         </div>
       </section>
 
+      {/* Botón de acción */}
       <div className="flex justify-end">
         <Button type="submit" color="blue" disabled={loading}>
           {loading ? "Guardando..." : "Guardar Paciente"}
         </Button>
       </div>
 
-      {success && <Typography color="green" className="mt-2">¡Paciente registrado con éxito!</Typography>}
-      {error && <Typography color="red" className="mt-2">{error}</Typography>}
+      {/* Mensajes */}
+      {success && <Typography color="green" className="text-center">¡Paciente registrado con éxito!</Typography>}
+      {error && <Typography color="red" className="text-center">{error}</Typography>}
     </form>
   );
 }
