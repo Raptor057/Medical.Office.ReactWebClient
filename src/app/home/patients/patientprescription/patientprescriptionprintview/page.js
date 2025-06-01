@@ -1,5 +1,5 @@
 'use client';
-
+export const dynamic = 'force-dynamic';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import HttpRequestsPatientPrescription from '@/app/utils/HttpRequestsPatientPrescription';
@@ -17,9 +17,17 @@ function replaceNulls(obj) {
 }
 
 export default function PatientPrescriptionPrintView() {
-  const searchParams = useSearchParams();
-  const appointmentId = searchParams.get('id');
-  const patientId = searchParams.get('idPatient');
+const [appointmentId, setAppointmentId] = useState(null);
+const [patientId, setPatientId] = useState(null);
+
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    const params = new URLSearchParams(window.location.search);
+    setAppointmentId(params.get("id"));
+    setPatientId(params.get("idPatient"));
+  }
+}, []);
+
 
   const [data, setData] = useState({
     consultation: {},
@@ -36,6 +44,10 @@ export default function PatientPrescriptionPrintView() {
   const [isReadyToPrint, setIsReadyToPrint] = useState(false);
 
   useEffect(() => {
+    if (!appointmentId || !patientId) {
+  return <div className="p-10 text-gray-500">Cargando receta médica...</div>;
+}
+
     const safeFetch = async (promise, propertyName) => {
       try {
         const res = await promise;

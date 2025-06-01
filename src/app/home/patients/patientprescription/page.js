@@ -1,7 +1,7 @@
 'use client';
+export const dynamic = 'force-dynamic';
+import React, { useEffect, useState } from "react";
 
-import React, { useState } from "react";
-import { useSearchParams } from "next/navigation";
 
 import {
   Tabs,
@@ -21,9 +21,18 @@ import PatientPrescriptionOfMedications from "@/app/components/Patients/PatientP
 import PatientTreatmentPlan from "@/app/components/Patients/PatientPrescription/PatientTreatmentPlan";
 
 export default function PatientPrescriptionPage() {
-  const searchParams = useSearchParams();
-  const appointmentId = searchParams.get("id");
-  const patientId = searchParams.get("idPatient");
+const [appointmentId, setAppointmentId] = useState(null);
+const [patientId, setPatientId] = useState(null);
+
+useEffect(() => {
+  if (typeof window !== "undefined") {
+    const params = new URLSearchParams(window.location.search);
+    setAppointmentId(params.get("id"));
+    setPatientId(params.get("idPatient"));
+  }
+}, []);
+
+
   const [activeTab, setActiveTab] = useState("consultation");
 
   const tabs = [
