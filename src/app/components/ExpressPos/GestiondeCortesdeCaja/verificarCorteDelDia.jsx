@@ -1,9 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation"; // ← Importa useRouter
 import MedicalExpressPosWebApi from "@/app/utils/HttpRequestsExpressPos";
 
 export default function AutoCorteCaja() {
+  const router = useRouter(); // ← Inicializa router
+
   const [ventasDia, setVentasDia] = useState([]);
   const [totalVendido, setTotalVendido] = useState(0);
   const [totalVentas, setTotalVentas] = useState(0);
@@ -99,6 +102,16 @@ export default function AutoCorteCaja() {
 
   return (
     <div className="container px-4 py-6 mx-auto">
+      {/* Botón de regreso */}
+      <div className="mb-4">
+        <button
+          onClick={() => router.push("/home")}
+          className="px-4 py-2 text-sm text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
+        >
+          ← Volver al Home
+        </button>
+      </div>
+
       <div className="py-3 text-center text-white bg-blue-500 rounded">
         <h1 className="text-xl font-bold">Generar Corte Automático</h1>
       </div>

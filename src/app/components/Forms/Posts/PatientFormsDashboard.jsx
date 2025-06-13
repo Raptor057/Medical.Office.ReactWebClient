@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Tabs,
   TabsHeader,
@@ -9,6 +9,7 @@ import {
   Tab,
   TabPanel,
   Typography,
+  Button,
 } from "@material-tailwind/react";
 import InsertActiveMedicationsForm from "@/app/components/Forms/Posts/InsertActiveMedications";
 import InsertFamilyHistoryForm from "@/app/components/Forms/Posts/InsertFamilyHistory";
@@ -19,6 +20,7 @@ import InsertPatientAllergiesForm from "@/app/components/Forms/Posts/InsertPatie
 import InsertPsychiatricHistoryForm from "@/app/components/Forms/Posts/InsertPsychiatricHistory";
 
 export default function PatientFormsDashboard() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const patientId = parseInt(searchParams.get("id")) || 0;
   const [activeTab, setActiveTab] = useState("medications");
@@ -63,7 +65,21 @@ export default function PatientFormsDashboard() {
 
   return (
     <div className="min-h-screen p-6 bg-gray-100">
-      <Typography variant="h3" color="blue-gray" className="mb-6 font-bold text-center">
+      <div className="flex justify-start mb-6">
+        <Button
+          variant="outlined"
+          color="gray"
+          onClick={() => router.push(`/home/patients/list/patienthistory?id=${patientId}`)}
+        >
+          ← Regresar al Historial del Paciente
+        </Button>
+      </div>
+
+      <Typography
+        variant="h3"
+        color="blue-gray"
+        className="mb-6 font-bold text-center"
+      >
         Formularios de Paciente
       </Typography>
 

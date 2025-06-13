@@ -59,23 +59,26 @@ export default function PatientDetailsPage() {
     );
   }
 
-  return (
-    <div className="min-h-screen p-6 bg-gray-100">
-      {loading ? (
-        <Typography variant="h6" color="blue-gray">
-          Cargando detalles del paciente...
-        </Typography>
-      ) : (
-        <>
-          <PatientDetails patientData={patientData} />
-          {/* Botones para redirigir a Insertar o Actualizar paciente */}
-          <div className="flex justify-center gap-4 mt-6">
-            <Button color="blue" onClick={handleInsertUpdateButtonClick}>
-              Insertar / Actualizar Datos del Paciente
-            </Button>
-          </div>
-        </>
-      )}
-    </div>
-  );
+return (
+  <div className="min-h-screen p-6 bg-gray-100">
+    {loading ? (
+      <Typography variant="h6" color="blue-gray">
+        Cargando detalles del paciente...
+      </Typography>
+    ) : (
+      <>
+        <div className="flex justify-center gap-4 mt-6">
+          <Button color="gray" variant="outlined" onClick={() => router.push('/home/patients/list')}>
+            Regresar
+          </Button>
+          <Button color="blue" onClick={handleInsertUpdateButtonClick}>
+            Insertar / Actualizar Datos del Paciente
+          </Button>
+        </div>
+        <PatientDetails patientData={patientData} />
+      </>
+    )}
+  </div>
+);
+
 }
